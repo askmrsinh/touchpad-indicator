@@ -1,0 +1,19 @@
+touchpad-indicator is a minimalist Touchpad management extension for the Gnome Shell.
+
+It allows you to switch your Touchpad On or Off.
+You're able to choice between one of two methods to control your touchpad. Either "Xinput" or "Synclient". The first one should work always and is set to default, the second one needs the program "synclient" installed on your pc. The advantage of synclient is, that you additional to On or Off could only disable Tap and Scroll.
+
+Also it is possible to automatically switch off the touchpad at startup of gnome-shell, if a mouse is detected. Default is that touchpad is disabled if a mouse is detected.
+
+To choose these options you could eiher modify the extension.js file and change the values at lines 40 / 41 or execute the following commands in a terminal and then edit the values through dconf.
+
+Commands:
+    cd ~ 
+    sudo cp .local/share/gnome-shell/extensions/org.gnome.shell.extensions.touchpad-indicator.gschema.xml /usr/share/glib-2.0/schemas/
+    sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+Now you should be able to change the values through dconf.
+
+
+To install, extract the archive or copy the folder to
+~/.local/share/gnome-shell/extensions/ and restart the shell.
