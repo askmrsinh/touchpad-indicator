@@ -24,56 +24,39 @@
  */
 
 const St = imports.gi.St;
-const Gettext = imports.gettext.domain('gnome-shell-extension-touchpad-indicator');
 const Gio = imports.gi.Gio;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
-const Util = imports.misc.util;
-
 
 const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad','bcm5974');
 const MOUSE = new Array('mouse');
 
 // Set your default behaviour here (read README for extended explanations):
-var METHOD = 0; // possible values: '0' for xinput or '1'  for synclient
 var DISABLE_TOUCHPAD_AT_STARTUP = true; //possible values: 'true' or 'false'
+var SYNCLIENT_EXISTS = false; //possible values: 'true' or 'false', set only to 'true' if 'synclient' exits on your PC
 
 
 // Settings
-const WEATHER_SETTINGS_SCHEMA = 'org.gnome.shell.extensions.touchpad-indicator';
-const METHOD_KEY = 'method-to-disable';
-const DISABLE_TOUCHPAD_AT_STARTUP_KEY = 'disable-touchpad-at-startup';
-
-// Keep enums in sync with GSettings schemas
-const MethodToDisable = {
-    XINPUT: 0,
-    SYNCLIENT: 1
-}
+const TOUCHPAD_SETTINGS_SCHEMA = 'org.gnome.settings-daemon.peripherals.touchpad'; 
 
 
 function getSettings(schema) {
-    if (Gio.Settings.list_schemas().indexOf(schema) == -1) {
-        throw _("Schema \"%s\" not found.").format(schema);
-        return false;
-    }
     return new Gio.Settings({ schema: schema });
 };
 
 function execute_sync(command) {
-    var valor = GLib.spawn_command_line_sync(command);
-    return valor[1];
+    return GLib.spawn_command_line_sync(command);
 };
 
 function execute_async(command) {
-    var valor = GLib.spawn_command_line_async(command);
-    return valor;
+    return GLib.spawn_command_line_async(command);
 };
 
 function is_there_mouse() {
     let comp = execute_sync('xinput --list');
-    return search_mouse(comp);
+    return search_mouse(comp[1]);
 };
 
 function search_mouse(where) {
@@ -84,173 +67,6 @@ function search_mouse(where) {
         }
     }
     return false;
-};
-
-
-function TouchpadXInput() {
-    this._init();
-}
-
-TouchpadXInput.prototype = {
-    _init: function() {
-        this.ids = this._get_ids();
-    },
-
-    _get_ids: function() {
-        var tpids = new Array();
-        let y = 0;
-        let all_ids = this._get_all_ids();
-        for (let id = 0; id < all_ids.length; id++) {
-            if (this._is_touchpad(all_ids[id]) == true) {
-                tpids[y] = all_ids[id];
-                y++;
-            }
-        }
-        return tpids;
-    },
-
-    _get_all_ids: function() {
-        var devids = new Array();
-        let lines = execute_sync('xinput --list');
-        lines = lines.toString().split('\n');
-	    let y = 0;
-        for (let line = 0; line < lines.length; line++) {
-            if (lines[line].indexOf('id=')!=-1) {
-                 devids[y] = lines[line].toString().split('=')[1].split('[')[0].split('\t')[0];
-                 y++;
-            }  
-        }
-        return devids;
-    },
-
-    _is_touchpad: function(id) {
-        let comp = execute_sync('xinput --list-props ' + id.toString());
-        return this._search_touchpad(comp);
-    },
-
-    _is_there_touchpad: function() {
-        let comp = execute_sync('xinput --list');
-        return this._search_touchpad(comp);
-    },
-
-    _search_touchpad: function(where) {
-        where = where.toString().toLowerCase();
-        for (let tpid = 0; tpid < TOUCHPADS.length; tpid++) {
-            if (!(where.indexOf(TOUCHPADS[tpid].toString()) == -1)) {
-                return true;
-            }
-        }
-        return false;
-    },
-
-    _set_touchpad_enabled: function(id) {
-        if (execute_async('xinput set-prop ' + id.toString() + ' "Device Enabled" 1') == true) {
-            return true;
-        }
-        return false;
-    },
-
-    _set_touchpad_disabled: function(id) {
-        if (execute_async('xinput set-prop ' + id.toString() + ' "Device Enabled" 0') == true) {
-            return true;
-        }
-        return false;
-    },
-
-    _disable_all_touchpads: function() {
-        for (let id = 0; id < this.ids.length; id++) {
-            this._set_touchpad_disabled(this.ids[id]);
-            //Thread.sleep(1);
-        }
-        return !this._all_touchpad_enabled();
-    },
-
-    _enable_all_touchpads: function() {
-        for (let id = 0; id < this.ids.length; id++) {
-            this._set_touchpad_enabled(this.ids[id]);
-            //Thread.sleep(1);
-        }
-        return this._all_touchpad_enabled();
-    },
-
-    _lock_tab_and_scroll: function() {
-        return false;
-    },
-
-    _is_touchpad_enabled: function(id) {
-        var lines = execute_sync('xinput --list-props ' + id.toString());
-        lines = lines.toString().split('\n');
-        for (let line = 0; line < lines.length; line++) {
-            if (lines[line].toString().toLowerCase().indexOf('device enabled') != -1) {
-                if (lines[line].toString().split(':')[1].indexOf('1') != -1) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    },
-
-    _all_touchpad_enabled: function() {
-        if (this._is_there_touchpad() == false) {
-            return false;
-        }
-        for (let id = 0; id < this.ids.length; id++) {
-            if (this._is_touchpad_enabled(this.ids[id]) == false) {
-                return false;
-            }
-        }
-        return true;
-    }
-};
-
-
-function TouchpadSynClient() {
-    this._init();
-}
-
-TouchpadSynClient.prototype = {
-    _init: function() {
-    },
-
-    _disable_all_touchpads: function() {
-        if (execute_async('synclient TouchpadOff=1 LEDStatus=1') == true) {
-            return true;
-        }
-        return false;
-    },
-
-    _enable_all_touchpads: function() {
-        if (execute_async('synclient TouchpadOff=0 LEDStatus=0') == true) {
-            return true;
-        }
-        return false;
-    },
-
-    _lock_tab_and_scroll: function() {
-        if (execute_async('synclient TouchpadOff=2 LEDStatus=0') == true) {
-            return true;
-        }
-        return false;
-    },
-
-    _is_touchpad_enabled: function() {
-	    var tp = execute_sync('synclient -l');
-	    tp = tp.toString().split('\n');
-	    for (let i = 0; i < tp.length; i++) {
-	        if (tp[i].indexOf('TouchpadOff') != -1) {
-	            tp = tp[i];
-	            break;
-	        }
-	    }
-        if (tp.indexOf('1') != -1) {
-	        return false;
-	    }
-        return true;
-    },
-
-    _all_touchpad_enabled: function() {
-        return this._is_touchpad_enabled();
-    }
 };
 
 
@@ -275,7 +91,7 @@ PopupMenuItem.prototype = {
 };
 
 
-let button_definition;
+let button;
 let touchpad;
 
 function touchpadButton() {
@@ -286,70 +102,93 @@ touchpadButton.prototype = {
     __proto__: PanelMenu.SystemStatusButton.prototype,
 
     _init: function() {
-        let settings = getSettings(WEATHER_SETTINGS_SCHEMA);
-        if (settings != false) {
-            METHOD  = settings.get_enum(METHOD_KEY);
-            DISABLE_TOUCHPAD_AT_STARTUP = settings.get_boolean(DISABLE_TOUCHPAD_AT_STARTUP_KEY);
-        };
+        touchpad = getSettings(TOUCHPAD_SETTINGS_SCHEMA);
 
-        touchpad = this._chooseMethod();
-	    if (DISABLE_TOUCHPAD_AT_STARTUP == true) {
-            if (is_there_mouse() == true) {
-	            touchpad._disable_all_touchpads();
+	    if (DISABLE_TOUCHPAD_AT_STARTUP) {
+            if (is_there_mouse()) {
+                if (this._touchpad_enabled())
+    	            this._disable_touchpad(this);
+            } else {
+                this._enable_touchpad(this);
             }
 	    }
-	
+
         button_icon = 'input-touchpad';
-        if (touchpad._all_touchpad_enabled() == false) {
+        if (!this._touchpad_enabled()) {
             button_icon = 'touchpad-disabled';
         }
+
         PanelMenu.SystemStatusButton.prototype._init.call(this, button_icon, 'Turn Touchpad On/Off');
-            
+
+        touchpad.connect('changed::touchpad-enabled', this._onChangeIcon);
+
         this._enableItem = new PopupMenuItem('Enable touchpad', 0, 'input-touchpad', this._onMenuSelect);
         this._disableItem = new PopupMenuItem('Disable touchpad', 1, 'touchpad-disabled', this._onMenuSelect);
         this._lockItem = new PopupMenuItem('Lock tap & scroll', 2, 'input-touchpad', this._onMenuSelect);
 
         this.menu.addMenuItem(this._enableItem);
         this.menu.addMenuItem(this._disableItem);
-        if (METHOD == MethodToDisable.SYNCLIENT) {
+        if (SYNCLIENT_EXISTS) {
             this.menu.addMenuItem(this._lockItem);
         }
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        button_definition = this;
+        button = this;
+    },
+
+    _onChangeIcon: function(actor, event) {
+        if (!button._touchpad_enabled()) {
+            PanelMenu.SystemStatusButton.prototype.setIcon.call(button, 'touchpad-disabled');
+        } else {
+            PanelMenu.SystemStatusButton.prototype.setIcon.call(button, 'input-touchpad');
+        }
     },
 
     _onMenuSelect: function(actor, event) {
         if (actor.tag == 1) {	
-            if (touchpad._disable_all_touchpads() == true) {	        
-                PanelMenu.SystemStatusButton.prototype.setIcon.call(button_definition, 'touchpad-disabled');
-            }
+            button._disable_touchpad(button)
         } else if (actor.tag == 2) {
-            if (touchpad._lock_tab_and_scroll() == true) {
-                PanelMenu.SystemStatusButton.prototype.setIcon.call(button_definition, 'input-touchpad');
-            }
+            button._lock_tab_and_scroll()
         } else {
-            if (touchpad._enable_all_touchpads() == true) {
-	            PanelMenu.SystemStatusButton.prototype.setIcon.call(button_definition, 'input-touchpad');
-            }
+            button._enable_touchpad(button)
         }
-    }, 
-   
-    _chooseMethod: function() {
-        let tp;
-        switch (METHOD) {
-            case MethodToDisable.XINPUT:
-                tp = new TouchpadSynClient();
-                tp._enable_all_touchpads();
-                return new TouchpadXInput();
-                break;
-            case MethodToDisable.SYNCLIENT:
-                tp = new TouchpadXInput();
-                tp._enable_all_touchpads()
-                return new TouchpadSynClient();
-                break;
-        }
+    },
+
+    _disable_touchpad: function(self) {
+        if (self._is_lock_tab_and_scroll_enabled())
+            execute_async('synclient TouchpadOff=0');
+        return touchpad.set_boolean('touchpad-enabled', false);
+    },
+
+    _enable_touchpad: function(self) {
+        if (self._is_lock_tab_and_scroll_enabled())
+            execute_async('synclient TouchpadOff=0');
+        return touchpad.set_boolean('touchpad-enabled', true);
+    },
+
+    _touchpad_enabled: function() {
+        return touchpad.get_boolean('touchpad-enabled');
+    },
+
+    _lock_tab_and_scroll: function() {
+        if (button._enable_touchpad(button))
+            return execute_async('synclient TouchpadOff=2');
+    },
+
+    _is_lock_tab_and_scroll_enabled: function() {
+	    var tp = execute_sync('synclient -l');
+	    tp = tp[1].toString().split('\n');
+	    for (let i = 0; i < tp.length; i++) {
+	        if (tp[i].indexOf('TouchpadOff') != -1) {
+	            tp = tp[i];
+	            break;
+	        }
+	    }
+        if (tp.indexOf('2') != -1) {
+	        return true;
+	    }
+        return false;
     }
 }
 
