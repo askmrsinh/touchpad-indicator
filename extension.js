@@ -213,21 +213,21 @@ TouchpadSynClient.prototype = {
     },
 
     _disable_all_touchpads: function() {
-        if (execute_async('synclient TouchpadOff=1') == true) {
+        if (execute_async('synclient TouchpadOff=1 LEDStatus=1') == true) {
             return true;
         }
         return false;
     },
 
     _enable_all_touchpads: function() {
-        if (execute_async('synclient TouchpadOff=0') == true) {
+        if (execute_async('synclient TouchpadOff=0 LEDStatus=0') == true) {
             return true;
         }
         return false;
     },
 
     _lock_tab_and_scroll: function() {
-        if (execute_async('synclient TouchpadOff=2') == true) {
+        if (execute_async('synclient TouchpadOff=2 LEDStatus=0') == true) {
             return true;
         }
         return false;
