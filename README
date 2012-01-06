@@ -1,12 +1,24 @@
 touchpad-indicator is a minimalist Touchpad management extension for the Gnome Shell.
 
-It allows you to switch your Touchpad On or Off.
-If the program "synclient" installed on your pc. It is possible to disable only Tap and Scroll and not the whole touchpad.
+touchpad-indicator allows you to switch your Touchpad On or Off.
+
+If the program "synclient" installed on your pc and you've got a Synaptics Touchpad which use synclient it's possible to disable only Tap and Scroll and not the whole touchpad.
 You have to set 'SYNCLIENT_EXISTS' on line 38 to 'true' to enable synclient.
+Attention! Set only to 'true' if you have a Synaptics touchpad which use 'synclient' exits on your PC, otherwise gnome-shell will crash while start. You could test this before change this setting by typing 'synclient -l' in a terminal. If the output looks like:
+'Couldn't find synaptics properties. No synaptics driver loaded?'
+You haven't a synaptics touchpad and you never should set SYNCLIENT_EXISTS to 'true'.
+If the output looks similar to:
+Parameter settings:
+    LeftEdge                = 1752
+    RightEdge               = 5192
+    TopEdge                 = 1620
+...
+You could turn 'SYNCLIENT_EXISTS' to 'true' and there shouldn't be problems. 
+
 
 Also it is possible to automatically switch off the touchpad at startup of gnome-shell, if a mouse is detected. Default is that the touchpad is disabled if a mouse is detected.
 
-To choose your preferred option you could modify the extension.js file and change the values at line 37.
+To choose your preferred option you could modify the extension.js file and change the values at line 37 and 38.
 
 
 To install, extract the archive or copy the folder to

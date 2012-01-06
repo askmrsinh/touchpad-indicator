@@ -34,8 +34,8 @@ const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad','bcm5974'
 const MOUSE = new Array('mouse');
 
 // Set your default behaviour here (read README for extended explanations):
-var DISABLE_TOUCHPAD_AT_STARTUP = true; //possible values: 'true' or 'false'
-var SYNCLIENT_EXISTS = false; //possible values: 'true' or 'false', set only to 'true' if 'synclient' exits on your PC
+var DISABLE_TOUCHPAD_AT_STARTUP = false; //possible values: 'true' or 'false'
+var SYNCLIENT_EXISTS = false; //possible values: 'true' or 'false'. Attention! Set only to 'true' if you have a Synaptics touchpad which use 'synclient' exits on your PC, otherwise gnome-shell will crash while start.
 
 
 // Settings
@@ -156,14 +156,18 @@ touchpadButton.prototype = {
     },
 
     _disable_touchpad: function(self) {
-        if (self._is_lock_tab_and_scroll_enabled())
-            execute_async('synclient TouchpadOff=0');
+        if (SYNCLIENT_EXISTS) {
+            if (self._is_lock_tab_and_scroll_enabled())
+                execute_async('synclient TouchpadOff=0');
+        }
         return touchpad.set_boolean('touchpad-enabled', false);
     },
 
     _enable_touchpad: function(self) {
-        if (self._is_lock_tab_and_scroll_enabled())
-            execute_async('synclient TouchpadOff=0');
+        if (SYNCLIENT_EXISTS) {        
+            if (self._is_lock_tab_and_scroll_enabled())
+                execute_async('synclient TouchpadOff=0');
+        }
         return touchpad.set_boolean('touchpad-enabled', true);
     },
 
