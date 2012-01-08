@@ -30,16 +30,16 @@ const PopupMenu = imports.ui.popupMenu;
 const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
 
-const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad','bcm5974');
+const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad',
+                            'bcm5974');
 const MOUSE = new Array('mouse');
 
 // Set your default behaviour here (read README for extended explanations):
 var DISABLE_TOUCHPAD_AT_STARTUP = false; //possible values: 'true' or 'false'
-var SYNCLIENT_EXISTS = false; //possible values: 'true' or 'false'. Attention! Set only to 'true' if you have a Synaptics touchpad which use 'synclient' exits on your PC, otherwise gnome-shell will crash while start.
-
 
 // Settings
-const TOUCHPAD_SETTINGS_SCHEMA = 'org.gnome.settings-daemon.peripherals.touchpad'; 
+const TOUCHPAD_SETTINGS_SCHEMA = 
+    'org.gnome.settings-daemon.peripherals.touchpad';
 
 
 function getSettings(schema) {
@@ -70,22 +70,41 @@ function search_mouse(where) {
 };
 
 
-function PopupMenuItem(label, tag, icon, callback) {
-    this._init(label, tag, icon, callback);
+function PopupMenuItem(label, tag, icon, callback, dot, span) {
+    this._init(label, tag, icon, callback, dot, span);
 };
 
 PopupMenuItem.prototype = {
     __proto__: PopupMenu.PopupBaseMenuItem.prototype,
 
-    _init: function(text, tag, icon, callback) {
+    _init: function(text, tag, icon, callback, dot, span) {
         PopupMenu.PopupBaseMenuItem.prototype._init.call(this);
-        this.icon = new St.Icon({ icon_name: icon,
-                                  icon_type: St.IconType.SYMBOLIC,
-                                  style_class: 'popup-menu-icon' });
-        this.addActor(this.icon);
+        this.label = new St.Label({ text: text,
+                                    style_class: 'touchpad-menu-label' });
+        this.addActor(this.label, { span: span, expand: true });
+        if (icon != false) {
+            this.icon = new St.Icon({ icon_name: icon,
+                                      icon_type: St.IconType.SYMBOLIC,
+                                      style_class: 'popup-menu-icon' });
+            this.addActor(this.icon, { span: 1});
+        }
 	    this.tag = tag;
-        this.label = new St.Label({ text: text });
-        this.addActor(this.label);
+        this.setShowDot(dot);
+        this.connect('activate', callback);
+    }
+};
+
+
+function PopupSwitchMenuItem(label, tag, state, callback) {
+    this._init(label, tag, state, callback);
+};
+
+PopupSwitchMenuItem.prototype = {
+    __proto__: PopupMenu.PopupSwitchMenuItem.prototype,
+
+    _init: function(label, tag, state, callback) {
+        PopupMenu.PopupSwitchMenuItem.prototype._init.call(this, label, state);
+	    this.tag = tag;
         this.connect('activate', callback);
     }
 };
@@ -94,11 +113,11 @@ PopupMenuItem.prototype = {
 let button;
 let touchpad;
 
-function touchpadButton() {
+function touchpadIndicatorButton() {
    this._init();
 }
 
-touchpadButton.prototype = {
+touchpadIndicatorButton.prototype = {
     __proto__: PanelMenu.SystemStatusButton.prototype,
 
     _init: function() {
@@ -118,56 +137,119 @@ touchpadButton.prototype = {
             button_icon = 'touchpad-disabled';
         }
 
-        PanelMenu.SystemStatusButton.prototype._init.call(this, button_icon, 'Turn Touchpad On/Off');
+        PanelMenu.SystemStatusButton.prototype._init.call(this, button_icon, 
+            'Turn Touchpad On/Off');
 
         touchpad.connect('changed::touchpad-enabled', this._onChangeIcon);
+        touchpad.connect('changed::tap-to-click', this._onSwitchTapToClick);
+        touchpad.connect('changed::scroll-method', this._onSwitchScrollMethod);
 
-        this._enableItem = new PopupMenuItem('Enable touchpad', 0, 'input-touchpad', this._onMenuSelect);
-        this._disableItem = new PopupMenuItem('Disable touchpad', 1, 'touchpad-disabled', this._onMenuSelect);
-        this._lockItem = new PopupMenuItem('Lock tap & scroll', 2, 'input-touchpad', this._onMenuSelect);
+        this._dot_disable = false;
+        this._dot_edge = false;
+        this._dot_tow_finger = false;
+        if (this._get_scroll_method() == 0) {
+            this._dot_disable = true;
+        } else if (this._get_scroll_method() == 1) {
+            this._dot_edge = true;
+        } else if (this._get_scroll_method() == 2) {
+            this._dot_two_finger = true;
+        }
+
+        this._enableItem = new PopupMenuItem('Enable touchpad', 0,
+            'input-touchpad', this._onMenuSelect, false, 1);
+        this._disableItem = new PopupMenuItem('Disable touchpad', 1,
+            'touchpad-disabled', this._onMenuSelect, false, 1);
+        this._ClickToTapItem = new PopupSwitchMenuItem('Click to Tap', 2,
+            this._is_tap_to_click_enabled(), this._onMenuSelect);
+        this._ScrollItem = new PopupMenu.PopupSubMenuMenuItem(
+            'Scroll behaviour', { span: -1 });
+        this._ScrollItemDisable = new PopupMenuItem('Disable scrolling', 3,
+            false, this._onMenuSelect, this._dot_disable, -1);
+        this._ScrollItemEdge = new PopupMenuItem('Edge scrolling', 4, 
+            false, this._onMenuSelect, this._dot_edge, -1);
+        this._ScrollItemTwoFinger = new PopupMenuItem('Two Finger scrolling',
+            5, false, this._onMenuSelect, this._dot_two_finger, -1);
 
         this.menu.addMenuItem(this._enableItem);
         this.menu.addMenuItem(this._disableItem);
-        if (SYNCLIENT_EXISTS) {
-            this.menu.addMenuItem(this._lockItem);
-        }
-
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        this.menu.addMenuItem(this._ClickToTapItem);
+        this.menu.addMenuItem(this._ScrollItem);
+        this._ScrollItem.menu.addMenuItem(this._ScrollItemDisable);
+        this._ScrollItem.menu.addMenuItem(this._ScrollItemEdge);
+        this._ScrollItem.menu.addMenuItem(this._ScrollItemTwoFinger);
+
+        this._onSwitchScrollMethod;
 
         button = this;
     },
 
     _onChangeIcon: function(actor, event) {
         if (!button._touchpad_enabled()) {
-            PanelMenu.SystemStatusButton.prototype.setIcon.call(button, 'touchpad-disabled');
+            PanelMenu.SystemStatusButton.prototype.setIcon.call(button,
+                'touchpad-disabled');
         } else {
-            PanelMenu.SystemStatusButton.prototype.setIcon.call(button, 'input-touchpad');
+            PanelMenu.SystemStatusButton.prototype.setIcon.call(button,
+                'input-touchpad');
+        }
+    },
+
+    _onSwitchTapToClick: function(actor, event) {
+        if (button._is_tap_to_click_enabled()) {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
+                button._ClickToTapItem, true);
+        } else {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
+                button._ClickToTapItem, false);
+        }
+    },
+
+    _onSwitchScrollMethod: function(actor, event) {
+        if (button._get_scroll_method() == 0) {
+            PopupMenu.PopupBaseMenuItem.prototype.setShowDot.call(
+                button._ScrollItemDisable, true);
+            PopupMenu.PopupBaseMenuItem.prototype.setShowDot.call(
+                button._ScrollItemEdge, false);
+            PopupMenu.PopupBaseMenuItem.prototype.setShowDot.call(
+                button._ScrollItemTwoFinger, false);
+        } else if (button._get_scroll_method() == 1) {
+            PopupMenu.PopupBaseMenuItem.prototype.setShowDot.call(
+                button._ScrollItemDisable, false);
+            PopupMenu.PopupBaseMenuItem.prototype.setShowDot.call(
+                button._ScrollItemEdge, true);
+            PopupMenu.PopupBaseMenuItem.prototype.setShowDot.call(
+                button._ScrollItemTwoFinger, false);
+        } else if (button._get_scroll_method() == 2) {
+            PopupMenu.PopupBaseMenuItem.prototype.setShowDot.call(
+                button._ScrollItemDisable, false);
+            PopupMenu.PopupBaseMenuItem.prototype.setShowDot.call(
+                button._ScrollItemEdge, false);
+            PopupMenu.PopupBaseMenuItem.prototype.setShowDot.call(
+                button._ScrollItemTwoFinger, true);
         }
     },
 
     _onMenuSelect: function(actor, event) {
-        if (actor.tag == 1) {	
-            button._disable_touchpad(button)
-        } else if (actor.tag == 2) {
-            button._lock_tab_and_scroll()
-        } else {
-            button._enable_touchpad(button)
+        if (actor.tag == 0) {	
+            button._enable_touchpad();
+        } else if (actor.tag == 1) {
+            button._disable_touchpad();
+        } else if (actor.tag == 2) {   
+            button._switch_tap_to_click();
+        } else if (actor.tag == 3) {
+            button._set_scroll_method(0);
+        } else if (actor.tag == 4) {
+            button._set_scroll_method(1);
+        } else if (actor.tag == 5) {
+            button._set_scroll_method(2);
         }
     },
 
-    _disable_touchpad: function(self) {
-        if (SYNCLIENT_EXISTS) {
-            if (self._is_lock_tab_and_scroll_enabled())
-                execute_async('synclient TouchpadOff=0');
-        }
+    _disable_touchpad: function() {
         return touchpad.set_boolean('touchpad-enabled', false);
     },
 
-    _enable_touchpad: function(self) {
-        if (SYNCLIENT_EXISTS) {        
-            if (self._is_lock_tab_and_scroll_enabled())
-                execute_async('synclient TouchpadOff=0');
-        }
+    _enable_touchpad: function() {
         return touchpad.set_boolean('touchpad-enabled', true);
     },
 
@@ -175,39 +257,39 @@ touchpadButton.prototype = {
         return touchpad.get_boolean('touchpad-enabled');
     },
 
-    _lock_tab_and_scroll: function() {
-        if (button._enable_touchpad(button))
-            return execute_async('synclient TouchpadOff=2');
+    _switch_tap_to_click: function() {
+        if (button._is_tap_to_click_enabled()) {
+            return touchpad.set_boolean('tap-to-click', false);
+        } else {
+            return touchpad.set_boolean('tap-to-click', true);
+        }
     },
 
-    _is_lock_tab_and_scroll_enabled: function() {
-	    var tp = execute_sync('synclient -l');
-	    tp = tp[1].toString().split('\n');
-	    for (let i = 0; i < tp.length; i++) {
-	        if (tp[i].indexOf('TouchpadOff') != -1) {
-	            tp = tp[i];
-	            break;
-	        }
-	    }
-        if (tp.indexOf('2') != -1) {
-	        return true;
-	    }
-        return false;
+    _is_tap_to_click_enabled: function() {
+        return touchpad.get_boolean('tap-to-click');
+    },
+
+    _set_scroll_method: function(id) {
+        return touchpad.set_enum('scroll-method', id);
+    },
+
+    _get_scroll_method: function() {
+        return touchpad.get_enum('scroll-method');
     }
 }
 
 
 // Put your extension initialization code here
-let touchpadButton;
+let touchpadIndicator;
 
 function init() {
 }
 
 function enable() {
-    touchpadButton = new touchpadButton();
-    Main.panel.addToStatusArea('touchpad_button', touchpadButton);
+    touchpadIndicator = new touchpadIndicatorButton();
+    Main.panel.addToStatusArea('touchpad_button', touchpadIndicator);
 }
 
 function disable() {
-    touchpadButton.destroy();
+    touchpadIndicator.destroy();
 }
