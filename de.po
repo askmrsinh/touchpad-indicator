@@ -2,7 +2,7 @@
 # German messages for PACKAGE.
 # Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Köhler <orangeshirt@web.de>, 2012.
+# Köhler <orangeshirt at web.de>, 2012.
 #
 msgid ""
 msgstr ""
@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-14 14:11+0100\n"
 "PO-Revision-Date: 2012-01-14 13:13+0100\n"
-"Last-Translator: Köhler <orangeshirt@web.de>\n"
+"Last-Translator: Köhler <orangeshirt at web.de>\n"
 "Language-Team: German\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
