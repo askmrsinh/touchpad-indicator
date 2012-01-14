@@ -2,9 +2,10 @@ touchpad-indicator is a minimalist Touchpad management extension for the Gnome S
 
 touchpad-indicator allows you to switch your Touchpad On or Off.
 
-It is possible to automatically switch off the touchpad at startup of gnome-shell, if a mouse is detected. Default is that the touchpad is disabled if a mouse is detected.
+It is possible to automatically switch off the touchpad at startup of gnome-shell, if a mouse is detected. 
+Default is that the automatc switch off is disabled.
 
-To choose your preferred option you could modify the extension.js file and change the values at line 38.
+To choose your preferred option you could modify the extension.js file and change the values at line 47.
 
 
 To install, extract the archive or copy the folder to

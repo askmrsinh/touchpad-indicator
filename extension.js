@@ -25,10 +25,19 @@
 
 const St = imports.gi.St;
 const Gio = imports.gi.Gio;
+const Lang = imports.lang;
+const ExtensionSystem = imports.ui.extensionSystem
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
+const Gettext = imports.gettext;
+
+Gettext.textdomain("touchpad-indicator@orangeshirt");
+Gettext.bindtextdomain("touchpad-indicator@orangeshirt",
+    ExtensionSystem.extensionMeta["touchpad-indicator@orangeshirt"].path + "/locale");
+
+const _ = Gettext.gettext;
 
 const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad',
                             'bcm5974');
@@ -138,7 +147,7 @@ touchpadIndicatorButton.prototype = {
         }
 
         PanelMenu.SystemStatusButton.prototype._init.call(this, button_icon, 
-            'Turn Touchpad On/Off');
+            _("Turn Touchpad On/Off"));
 
         touchpad.connect('changed::touchpad-enabled', this._onChangeIcon);
         touchpad.connect('changed::tap-to-click', this._onSwitchTapToClick);
@@ -155,29 +164,33 @@ touchpadIndicatorButton.prototype = {
             this._dot_two_finger = true;
         }
 
-        this._enableItem = new PopupMenuItem('Enable touchpad', 0,
+        this._enableItem = new PopupMenuItem(_("Enable touchpad"), 0,
             'input-touchpad', this._onMenuSelect, false, 1);
-        this._disableItem = new PopupMenuItem('Disable touchpad', 1,
+        this._disableItem = new PopupMenuItem(_("Disable touchpad"), 1,
             'touchpad-disabled', this._onMenuSelect, false, 1);
-        this._ClickToTapItem = new PopupSwitchMenuItem('Click to Tap', 2,
+        this._ClickToTapItem = new PopupSwitchMenuItem(_("Click to Tap"), 2,
             this._is_tap_to_click_enabled(), this._onMenuSelect);
+        this._SettingsItem = new PopupMenu.PopupSubMenuMenuItem(
+            _("Touchpadsettings"), { span: -1 });
         this._ScrollItem = new PopupMenu.PopupSubMenuMenuItem(
-            'Scroll behaviour', { span: -1 });
-        this._ScrollItemDisable = new PopupMenuItem('Disable scrolling', 3,
+            _("Scroll behaviour"), { span: -1 });
+        this._ScrollItemDisable = new PopupMenuItem(_("Disable scrolling"), 3,
             false, this._onMenuSelect, this._dot_disable, -1);
-        this._ScrollItemEdge = new PopupMenuItem('Edge scrolling', 4, 
+        this._ScrollItemEdge = new PopupMenuItem(_("Edge scrolling"), 4, 
             false, this._onMenuSelect, this._dot_edge, -1);
-        this._ScrollItemTwoFinger = new PopupMenuItem('Two Finger scrolling',
+        this._ScrollItemTwoFinger = new PopupMenuItem(_("Two Finger scrolling"),
             5, false, this._onMenuSelect, this._dot_two_finger, -1);
 
         this.menu.addMenuItem(this._enableItem);
         this.menu.addMenuItem(this._disableItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-        this.menu.addMenuItem(this._ClickToTapItem);
-        this.menu.addMenuItem(this._ScrollItem);
+        this.menu.addMenuItem(this._SettingsItem);
+        this._SettingsItem.menu.addMenuItem(this._ClickToTapItem);
+        this._SettingsItem.menu.addMenuItem(this._ScrollItem);
         this._ScrollItem.menu.addMenuItem(this._ScrollItemDisable);
         this._ScrollItem.menu.addMenuItem(this._ScrollItemEdge);
         this._ScrollItem.menu.addMenuItem(this._ScrollItemTwoFinger);
+        this._SettingsItem.menu.addSettingsAction(_("Additional Settings ..."), 'gnome-mouse-panel.desktop');
 
         this._onSwitchScrollMethod;
 
