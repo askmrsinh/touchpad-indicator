@@ -1,0 +1,62 @@
+# German translations for PACKAGE package
+# German messages for PACKAGE.
+# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Köhler <orangeshirt@web.de>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-01-14 14:11+0100\n"
+"PO-Revision-Date: 2012-01-14 13:13+0100\n"
+"Last-Translator: Köhler <orangeshirt@web.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: extension.js:150
+msgid "Turn Touchpad On/Off"
+msgstr "Touchpad ein- bzw. ausschalten"
+
+#: extension.js:167
+msgid "Enable touchpad"
+msgstr "Touchpad einschalten"
+
+#: extension.js:169
+msgid "Disable touchpad"
+msgstr "Touchpad ausschalten"
+
+#: extension.js:171
+msgid "Click to Tap"
+msgstr "Tippen als Mausklick"
+
+#: extension.js:174
+msgid "Touchpadsettings"
+msgstr "Touchpadeinstellungen"
+
+#: extension.js:176
+msgid "Scroll behaviour"
+msgstr "Bildlaufverhalten"
+
+#: extension.js:177
+msgid "Disable scrolling"
+msgstr "Deaktiviert"
+
+#: extension.js:179
+msgid "Edge scrolling"
+msgstr "Bildlauf am Rand"
+
+#: extension.js:181
+msgid "Two Finger scrolling"
+msgstr "Bildlauf mit zwei Fingern"
+
+#: extension.js:193
+msgid "Additional Settings ..."
+msgstr "weitere Einstellmöglichkeiten ..."
+
+#~ msgid "Settings"
+#~ msgstr "Einstellungen"
