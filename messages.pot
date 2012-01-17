@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-14 14:11+0100\n"
+"POT-Creation-Date: 2012-01-17 21:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,42 +17,38 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:150
+#: extension.js:131
 msgid "Turn Touchpad On/Off"
 msgstr ""
 
-#: extension.js:167
-msgid "Enable touchpad"
+#: extension.js:133
+msgid "Touchpad"
 msgstr ""
 
-#: extension.js:169
-msgid "Disable touchpad"
-msgstr ""
-
-#: extension.js:171
+#: extension.js:135
 msgid "Click to Tap"
 msgstr ""
 
-#: extension.js:174
+#: extension.js:138
 msgid "Touchpadsettings"
 msgstr ""
 
-#: extension.js:176
+#: extension.js:140
 msgid "Scroll behaviour"
 msgstr ""
 
-#: extension.js:177
+#: extension.js:141
 msgid "Disable scrolling"
 msgstr ""
 
-#: extension.js:179
+#: extension.js:143
 msgid "Edge scrolling"
 msgstr ""
 
-#: extension.js:181
+#: extension.js:145
 msgid "Two Finger scrolling"
 msgstr ""
 
-#: extension.js:193
+#: extension.js:156
 msgid "Additional Settings ..."
 msgstr ""

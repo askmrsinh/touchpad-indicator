@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-14 14:11+0100\n"
+"POT-Creation-Date: 2012-01-17 21:15+0100\n"
 "PO-Revision-Date: 2012-01-14 13:13+0100\n"
 "Last-Translator: Köhler <orangeshirt at web.de>\n"
 "Language-Team: German\n"
@@ -18,45 +18,48 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: extension.js:150
+#: extension.js:131
 msgid "Turn Touchpad On/Off"
 msgstr "Touchpad ein- bzw. ausschalten"
 
-#: extension.js:167
-msgid "Enable touchpad"
-msgstr "Touchpad einschalten"
+#: extension.js:133
+#, fuzzy
+msgid "Touchpad"
+msgstr "Touchpad"
 
-#: extension.js:169
-msgid "Disable touchpad"
-msgstr "Touchpad ausschalten"
-
-#: extension.js:171
+#: extension.js:135
 msgid "Click to Tap"
 msgstr "Tippen als Mausklick"
 
-#: extension.js:174
+#: extension.js:138
 msgid "Touchpadsettings"
 msgstr "Touchpadeinstellungen"
 
-#: extension.js:176
+#: extension.js:140
 msgid "Scroll behaviour"
 msgstr "Bildlaufverhalten"
 
-#: extension.js:177
+#: extension.js:141
 msgid "Disable scrolling"
 msgstr "Deaktiviert"
 
-#: extension.js:179
+#: extension.js:143
 msgid "Edge scrolling"
 msgstr "Bildlauf am Rand"
 
-#: extension.js:181
+#: extension.js:145
 msgid "Two Finger scrolling"
 msgstr "Bildlauf mit zwei Fingern"
 
-#: extension.js:193
+#: extension.js:156
 msgid "Additional Settings ..."
 msgstr "weitere Einstellmöglichkeiten ..."
+
+#~ msgid "Enable touchpad"
+#~ msgstr "Touchpad einschalten"
+
+#~ msgid "Disable touchpad"
+#~ msgstr "Touchpad ausschalten"
 
 #~ msgid "Settings"
 #~ msgstr "Einstellungen"

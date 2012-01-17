@@ -5,7 +5,7 @@ touchpad-indicator allows you to switch your Touchpad On or Off.
 It is possible to automatically switch off the touchpad at startup of gnome-shell, if a mouse is detected. 
 Default is that the automatc switch off is disabled.
 
-To choose your preferred option you could modify the extension.js file and change the values at line 47.
+To choose your preferred option you could modify the extension.js file and change the values at line 42.
 
 
 To install, extract the archive or copy the folder to
