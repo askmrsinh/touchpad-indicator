@@ -39,7 +39,7 @@ const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad',
 const MOUSE = new Array('mouse');
 
 // Set your default behaviour here (read README for extended explanations):
-var DISABLE_TOUCHPAD_AT_STARTUP = false; //possible values: 'true' or 'false'   
+var DISABLE_TOUCHPAD_AT_STARTUP = false; //possible values: 'true' or 'false'
 
 // Settings
 const TOUCHPAD_SETTINGS_SCHEMA = 
@@ -74,14 +74,14 @@ function search_mouse(where) {
 };
 
 
-function PopupMenuItem(label, tag, callback, span) {
-    this._init(label, tag, callback, span);
+function PopupMenuItem(label, tag, callback) {
+    this._init(label, tag, callback);
 };
 
 PopupMenuItem.prototype = {
     __proto__: PopupMenu.PopupBaseMenuItem.prototype,
 
-    _init: function(text, tag, callback, span) {
+    _init: function(text, tag, callback) {
         PopupMenu.PopupBaseMenuItem.prototype._init.call(this);
         this.label = new St.Label({ text: text,
                                     style_class: 'touchpad-menu-label' });
@@ -139,11 +139,11 @@ touchpadIndicatorButton.prototype = {
         this._ScrollItem = new PopupMenu.PopupSubMenuMenuItem(
             _("Scroll behaviour"));
         this._ScrollItemDisable = new PopupMenuItem(_("Disable scrolling"), 3,
-            this._onMenuSelect, -1);
+            this._onMenuSelect);
         this._ScrollItemEdge = new PopupMenuItem(_("Edge scrolling"), 4, 
-            this._onMenuSelect, -1);
+            this._onMenuSelect);
         this._ScrollItemTwoFinger = new PopupMenuItem(_("Two Finger scrolling"),
-            5, this._onMenuSelect, -1);
+            5, this._onMenuSelect);
 
         this.menu.addMenuItem(this._touchpadItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
