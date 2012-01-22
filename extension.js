@@ -51,40 +51,6 @@ var CONFIG = {TOUCHPAD_ENABLED : 'true',
               AUTO_SWITCH_TOUCHPAD : 'false',
               AUTO_SWITCH_TRACKPOINT : 'false'}
 
-// eingefügt zum testen
-const Tweener = imports.ui.tweener;
-
-let text;
-
-function _hideHello() {
-    Main.uiGroup.remove_actor(text);
-    text = null;
-}
-function _showHello(testtext) {
-    if (!testtext) {
-        testtext = "Hallo Welt!";
-    }
-
-    if (!text) {
-        text = new St.Label({ style_class: 'helloworld-label', text: testtext });
-        Main.uiGroup.add_actor(text);
-    }
-
-    text.opacity = 255;
-
-    let monitor = Main.layoutManager.primaryMonitor;
-
-    text.set_position(Math.floor(monitor.width / 2 - text.width / 2),
-                      Math.floor(monitor.height / 2 - text.height / 2));
-
-    Tweener.addTween(text,
-                     { opacity: 0,
-                       time: 3,
-                       transition: 'easeOutQuad',
-                       onComplete: _hideHello });
-}
-// bis hierher
-
 
 function getSettings(schema) {
     return new Gio.Settings({ schema: schema });
@@ -97,31 +63,6 @@ function execute_sync(command) {
 function execute_async(command) {
     return GLib.spawn_command_line_async(command);
 };
-/*
-function is_there_mouse() {
-    let comp = execute_sync('lsusb');
-    return search_mouse(comp[1]);
-};
-
-function search_mouse(where) {
-    where = where.toString().split("\n");
-    let detail, deviceid;
-    for (let x = 0; x < where.length; x++) {
-        if (where[x].indexOf('root hub') == -1 &&
-                !(where[x].indexOf('Bus') == -1)) {
-            deviceid = where[x].split(" ");
-            detail = execute_sync('lsusb -v -s '+deviceid[1]+':'+deviceid[3]);
-            detail = detail[1].toString().split("\n");
-            for (let y = 0; y < detail.length; y++) {
-                if (!(detail[y].indexOf('bInterfaceProtocol') == -1)) {
-                    if (!(detail[y].indexOf('Mouse') == -1))
-                        return true;
-                }
-            }
-        }
-    }
-    return false;
-};*/
 
 function is_there_mouse() {
     let comp = execute_sync('xinput --list');
@@ -155,7 +96,6 @@ function search_mouse(where) {
     }
     return false;
 };
-
 
 function watch_mouse() {
     this.file = Gio.file_new_for_path("/dev/input/by-path")
