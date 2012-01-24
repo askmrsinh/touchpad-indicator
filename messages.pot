@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-17 21:15+0100\n"
+"POT-Creation-Date: 2012-01-24 21:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,38 +17,94 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:131
+#: extension.js:123 extension.js:153
+msgid "Touchpad Indicator"
+msgstr ""
+
+#: extension.js:370
 msgid "Turn Touchpad On/Off"
 msgstr ""
 
-#: extension.js:133
+#: extension.js:372
 msgid "Touchpad"
 msgstr ""
 
-#: extension.js:135
-msgid "Click to Tap"
+#: extension.js:374
+msgid "Trackpoint"
 msgstr ""
 
-#: extension.js:138
+#: extension.js:377
+msgid "Indicatorsettings"
+msgstr ""
+
+#: extension.js:383
+msgid "Behaviour if a mouse is (un)plugged:"
+msgstr ""
+
+#: extension.js:385
+msgid "Automatically switch Touchpad On/Off"
+msgstr ""
+
+#: extension.js:388
+msgid "Automatically switch Trackpoint On/Off"
+msgstr ""
+
+#: extension.js:391
 msgid "Touchpadsettings"
 msgstr ""
 
-#: extension.js:140
+#: extension.js:392
+msgid "Click to Tap"
+msgstr ""
+
+#: extension.js:395
 msgid "Scroll behaviour"
 msgstr ""
 
-#: extension.js:141
+#: extension.js:396
 msgid "Disable scrolling"
 msgstr ""
 
-#: extension.js:143
+#: extension.js:398
 msgid "Edge scrolling"
 msgstr ""
 
-#: extension.js:145
+#: extension.js:400
 msgid "Two Finger scrolling"
 msgstr ""
 
-#: extension.js:156
+#: extension.js:421
 msgid "Additional Settings ..."
+msgstr ""
+
+#: extension.js:568
+msgid "Mouse plugged\n"
+msgstr ""
+
+#: extension.js:570
+msgid "Mouse unplugged\n"
+msgstr ""
+
+#: extension.js:574
+msgid "Touchpad & Trackpoint enabled"
+msgstr ""
+
+#: extension.js:576
+msgid "Touchpad & Trackpoint disabled"
+msgstr ""
+
+#: extension.js:580
+msgid "Touchpad enabled"
+msgstr ""
+
+#: extension.js:582
+msgid "Touchpad disabled"
+msgstr ""
+
+#: extension.js:586
+msgid "Trackpoint enabled"
+msgstr ""
+
+#: extension.js:588
+msgid "Trackpoint disabled"
 msgstr ""

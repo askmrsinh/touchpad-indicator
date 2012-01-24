@@ -4,7 +4,7 @@
  * Thanks to Lorenzo Carbonell Cerezo and Miguel Angel Santamaría Rogado
  * which has written touchpad-indicator 
  * (https://launchpad.net/touchpad-indicator) as python app and inspired 
- * myself to write these extension for gnome-shell.
+ * myself to write this extension for gnome-shell.
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -29,6 +29,9 @@ const Lang = imports.lang;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const ExtensionSystem = imports.ui.extensionSystem;
+const ExtensionMeta = ExtensionSystem.extensionMeta[
+                                            "touchpad-indicator@orangeshirt"];
+const MessageTray = imports.ui.messageTray;
 const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
 
@@ -45,11 +48,11 @@ const TOUCHPAD_SETTINGS_SCHEMA =
     'org.gnome.settings-daemon.peripherals.touchpad';
 
 // Configsettings - overwritten by the values of touchpad-indicator.conf
-var CONFIG = {TOUCHPAD_ENABLED : 'true',
-              TRACKPOINT_ENABLED : 'true',
-              SWITCH_IF_MOUSE : 'false',
-              AUTO_SWITCH_TOUCHPAD : 'false',
-              AUTO_SWITCH_TRACKPOINT : 'false'}
+var CONFIG = {TOUCHPAD_ENABLED : true,
+              TRACKPOINT_ENABLED : true,
+              SWITCH_IF_MOUSE : false,
+              AUTO_SWITCH_TOUCHPAD : false,
+              AUTO_SWITCH_TRACKPOINT : false };
 
 
 function getSettings(schema) {
@@ -62,6 +65,12 @@ function execute_sync(command) {
 
 function execute_async(command) {
     return GLib.spawn_command_line_async(command);
+};
+
+function to_boolean(string) {
+    if (string == 'true' || string == '1')
+        return true;
+    return false;
 };
 
 function is_there_mouse() {
@@ -103,55 +112,93 @@ function watch_mouse() {
 };
 
 
+function TouchpadNotificationSource() {
+    this._init();
+};
+
+TouchpadNotificationSource.prototype = {
+     __proto__:  MessageTray.Source.prototype,
+
+    _init: function() {
+        MessageTray.Source.prototype._init.call(this, _("Touchpad Indicator"));
+
+        let icon = new St.Icon({ icon_name: 'input-touchpad',
+                                 icon_type: St.IconType.SYMBOLIC,
+                                 icon_size: this.ICON_SIZE
+                               });
+        this._setSummaryIcon(icon);
+    }
+};
+
+let msg_source;
+
+function ensureMessageSource() {
+    if (!msg_source) {
+        msg_source = new TouchpadNotificationSource();
+        msg_source.connect('destroy', Lang.bind(this, function() {
+            msg_source = null;
+        }));
+        Main.messageTray.add(msg_source);
+    }
+};
+
+function notify(device, title, text) {
+    if (device._notification)
+        device._notification.destroy();
+    
+    // must call after destroying previous notification,
+    // or msg_source will be cleared 
+    ensureMessageSource();
+    if (!title)
+        title = _("Touchpad Indicator");
+    let icon = new St.Icon({ icon_name: 'input-touchpad',
+                             icon_type: St.IconType.SYMBOLIC,
+                             icon_size: msg_source.ICON_SIZE
+                           });
+    device._notification = new MessageTray.Notification(msg_source, title,
+                                                        text, { icon: icon });
+    device._notification.setUrgency(MessageTray.Urgency.HIGH);
+    device._notification.setTransient(true);
+    device._notification.connect('destroy', function() {
+        device._notification = null;
+    });
+    msg_source.notify(device._notification);
+};
+
+
 function Config() {
     this._init();
 };
 
 Config.prototype = {
     _init: function() {
-        this.path = ExtensionSystem.extensionMeta[
-           "touchpad-indicator@orangeshirt"].path + '/touchpad-indicator.conf';
+        this.path = GLib.build_filenamev([ExtensionMeta.path,
+                                         'touchpad-indicator.conf']);
     },
 
     readConfig: function() {
-        let [success, config_content, len] = GLib.file_get_contents(this.path);
-        config_content = config_content.toString().split("\n");
-        let line, parts;
-        for (let x = 0; x < config_content.length; x++) {
-            line = config_content[x].toString();
-            if (line.indexOf('#') == -1 && line.indexOf('=') != -1 ) {
-                parts = line.split("=");
-                switch (parts[0]) {
-                    case 'TOUCHPAD_ENABLED':
-                        CONFIG.TOUCHPAD_ENABLED = parts[1];
-                        break;
-                    case 'TRACKPOINT_ENABLED':
-                        CONFIG.TRACKPOINT_ENABLED = parts[1];
-                        break;
-                    case 'SWITCH_IF_MOUSE':
-                        CONFIG.SWITCH_IF_MOUSE = parts[1];
-                        break;
-                    case 'AUTO_SWITCH_TOUCHPAD':
-                        CONFIG.AUTO_SWITCH_TOUCHPAD = parts[1];
-                        break;
-                    case 'AUTO_SWITCH_TRACKPOINT':
-                        CONFIG.AUTO_SWITCH_TRACKPOINT = parts[1];
-                        break;
+        if (GLib.file_test(this.path, GLib.FileTest.EXISTS)) {
+            let [success, content, len] = GLib.file_get_contents(this.path);
+            content = content.toString().split("\n");
+            let line, parts;
+            for (let x = 0; x < content.length; x++) {
+                line = content[x].toString();
+                if (line.indexOf('#') == -1 && line.indexOf('=') != -1 ) {
+                    parts = line.split("=");
+                    CONFIG[parts[0]] = to_boolean(parts[1]);
                 }
             }
+        } else {
+            this.writeConfig();
         }
     },
 
     writeConfig: function() {
         let content = '# Config File for gnome-shell extension '+
-            'touchpad-indicator\n\n'+
-            'TOUCHPAD_ENABLED='+CONFIG.TOUCHPAD_ENABLED.toString()+'\n'+
-            'TRACKPOINT_ENABLED='+CONFIG.TRACKPOINT_ENABLED.toString()+'\n'+
-            'SWITCH_IF_MOUSE='+CONFIG.SWITCH_IF_MOUSE.toString()+'\n'+
-            'AUTO_SWITCH_TOUCHPAD='+
-                CONFIG.AUTO_SWITCH_TOUCHPAD.toString()+'\n'+
-            'AUTO_SWITCH_TRACKPOINT='+
-                CONFIG.AUTO_SWITCH_TRACKPOINT.toString();
+            'touchpad-indicator\n';
+        for (var i in CONFIG) {
+            content = content +'\n'+ i.toString() +'='+ CONFIG[i].toString();
+        }
         return GLib.file_set_contents(this.path, content);
     }
 };
@@ -278,8 +325,10 @@ PopupMenuItem.prototype = {
         this.label = new St.Label({ text: text,
                                     style_class: 'touchpad-menu-label' });
         this.addActor(this.label);
-	    this.tag = tag;
-        this.connect('activate', callback);
+        if (tag)
+	        this.tag = tag;
+        if (callback)
+            this.connect('activate', callback);
     }
 };
 
@@ -314,7 +363,7 @@ touchpadIndicatorButton.prototype = {
         config_settings = new Config();
         config_settings.readConfig();
 
-        if (CONFIG.TRACKPOINT_ENABLED == 'false')
+        if (!CONFIG.TRACKPOINT_ENABLED)
             trackpoint._disable_all_trackpoints();
 
         PanelMenu.SystemStatusButton.prototype._init.call(this,
@@ -324,20 +373,20 @@ touchpadIndicatorButton.prototype = {
             this._touchpad_enabled(), this._onMenuSelect);
         this._trackpointItem = new PopupSwitchMenuItem(_("Trackpoint"), 1,
             trackpoint._all_trackpoints_enabled(), this._onMenuSelect);
-        this._GeneralSettingsItem = new PopupMenu.PopupSubMenuMenuItem(
-            _("General Settings"));
-        this.auto_switch_touchpad = false;
-        if (CONFIG.AUTO_SWITCH_TOUCHPAD == 'true')
-            this.auto_switch_touchpad = true;
+        this._ExtensionSettingsItem = new PopupMenu.PopupSubMenuMenuItem(
+            _("Indicatorsettings"));
+        this._SubMenuExtSettings = new St.BoxLayout({
+            vertical: true,
+            style_class: 'sub-menu-extension-settings'
+        });
+        this._LabelItem = new St.Label({ 
+            text: _("Behaviour if a mouse is (un)plugged:") });
         this._AutoSwitchTouchpadItem = new PopupSwitchMenuItem(
-            _("Auto Switch Touchpad"), 6, this.auto_switch_touchpad,
-            this._onMenuSelect);
-        this.auto_switch_trackpoint = false;
-        if (CONFIG.AUTO_SWITCH_TRACKPOINT == 'true')
-            this.auto_switch_trackpoint = true;
+            _("Automatically switch Touchpad On/Off"), 6,
+            CONFIG.AUTO_SWITCH_TOUCHPAD, this._onMenuSelect);
         this._AutoSwitchTrackpointItem = new PopupSwitchMenuItem(
-            _("Auto Switch Trackpoint"), 7, this.auto_switch_trackpoint,
-            this._onMenuSelect);
+            _("Automatically switch Trackpoint On/Off"), 7,
+            CONFIG.AUTO_SWITCH_TRACKPOINT, this._onMenuSelect);
         this._SettingsItem = new PopupMenu.PopupSubMenuMenuItem(
             _("Touchpadsettings"));
         this._ClickToTapItem = new PopupSwitchMenuItem(_("Click to Tap"), 2,
@@ -355,11 +404,13 @@ touchpadIndicatorButton.prototype = {
         if (trackpoint._is_there_trackpoint())
             this.menu.addMenuItem(this._trackpointItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-        this.menu.addMenuItem(this._GeneralSettingsItem);
-        this._GeneralSettingsItem.menu.addMenuItem(
+        this.menu.addMenuItem(this._ExtensionSettingsItem);
+        this._SubMenuExtSettings.add_actor(this._LabelItem);
+        this._ExtensionSettingsItem.menu.addActor(this._SubMenuExtSettings);
+        this._ExtensionSettingsItem.menu.addMenuItem(
             this._AutoSwitchTouchpadItem);
         if (trackpoint._is_there_trackpoint())
-            this._GeneralSettingsItem.menu.addMenuItem(
+            this._ExtensionSettingsItem.menu.addMenuItem(
                 this._AutoSwitchTrackpointItem);
         this.menu.addMenuItem(this._SettingsItem);
         this._SettingsItem.menu.addMenuItem(this._ClickToTapItem);
@@ -383,14 +434,14 @@ touchpadIndicatorButton.prototype = {
                 'touchpad-disabled');
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
                 button._touchpadItem, false);
-            CONFIG.TOUCHPAD_ENABLED = 'false';
+            CONFIG.TOUCHPAD_ENABLED = false;
             config_settings.writeConfig();
         } else {
             PanelMenu.SystemStatusButton.prototype.setIcon.call(button,
                 'input-touchpad');
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
                 button._touchpadItem, true);
-            CONFIG.TOUCHPAD_ENABLED = 'true';
+            CONFIG.TOUCHPAD_ENABLED = true;
             config_settings.writeConfig();
         }
     },
@@ -460,25 +511,25 @@ touchpadIndicatorButton.prototype = {
                 break;
             case 6:
                 if (actor.state) {
-                    CONFIG.AUTO_SWITCH_TOUCHPAD = 'true';
-                    CONFIG.SWITCH_IF_MOUSE = 'true';
+                    CONFIG.AUTO_SWITCH_TOUCHPAD = true;
+                    CONFIG.SWITCH_IF_MOUSE = true;
                     config_settings.writeConfig();
                 } else {
-                    CONFIG.AUTO_SWITCH_TOUCHPAD = 'false';
-                    if (CONFIG.AUTO_SWITCH_TRACKPOINT == 'false')
-                        CONFIG.SWITCH_IF_MOUSE = 'false';
+                    CONFIG.AUTO_SWITCH_TOUCHPAD = false;
+                    if (!CONFIG.AUTO_SWITCH_TRACKPOINT)
+                        CONFIG.SWITCH_IF_MOUSE = false;
                     config_settings.writeConfig();
                 }
                 break;
             case 7:
                 if (actor.state) {
-                    CONFIG.AUTO_SWITCH_TRACKPOINT = 'true';
-                    CONFIG.SWITCH_IF_MOUSE = 'true';
+                    CONFIG.AUTO_SWITCH_TRACKPOINT = true;
+                    CONFIG.SWITCH_IF_MOUSE = true;
                     config_settings.writeConfig();
                 } else {
-                    CONFIG.AUTO_SWITCH_TRACKPOINT = 'false';
-                    if (CONFIG.AUTO_SWITCH_TOUCHPAD == 'false')
-                        CONFIG.SWITCH_IF_MOUSE = 'false'
+                    CONFIG.AUTO_SWITCH_TRACKPOINT = false;
+                    if (!CONFIG.AUTO_SWITCH_TOUCHPAD)
+                        CONFIG.SWITCH_IF_MOUSE = false
                     config_settings.writeConfig();
                 }
                 break;
@@ -486,24 +537,63 @@ touchpadIndicatorButton.prototype = {
     },
 
     _onMousePlugged: function() {
-	    if (CONFIG.SWITCH_IF_MOUSE == 'true') {
+	    if (CONFIG.SWITCH_IF_MOUSE) {
             let is_mouse = is_there_mouse();
-            if (CONFIG.AUTO_SWITCH_TOUCHPAD == 'true') {
+            let note_tpd = false, tpd = !is_mouse;
+            let note_tpt = false, tpt = !is_mouse;
+            if (CONFIG.AUTO_SWITCH_TOUCHPAD) {
+                note_tpd = true;
                 if (is_mouse && button._touchpad_enabled()) {
                     button._disable_touchpad(button);
+                    tpd = false;
                 } else if (!is_mouse && !button._touchpad_enabled()) {
                     button._enable_touchpad(button);
+                    tpd = true;
                 }
             }
-            if (CONFIG.AUTO_SWITCH_TRACKPOINT == 'true' && 
+            if (CONFIG.AUTO_SWITCH_TRACKPOINT && 
                     trackpoint._is_there_trackpoint()) {
+                note_tpt = true;
                 if (is_mouse && trackpoint._all_trackpoints_enabled()) {
                     button._disable_trackpoint();
-                } else if (!is_mouse && !trackpoint._all_trackpoints_enabled()) {
+                    tpt = false;
+                } else if (!is_mouse && 
+                        !trackpoint._all_trackpoints_enabled()) {
                     button._enable_trackpoint();
+                    tpt = true;
                 }
             }
+            let content;
+            if ((note_tpd && !tpd) || (note_tpt && !tpt)) {
+                content = _("Mouse plugged\n");
+            } else {
+                content = _("Mouse unplugged\n");
+            }
+            if (note_tpd && note_tpt) {
+                if (tpd && tpt) {
+                    content = content + _("Touchpad & Trackpoint enabled");
+                } else {
+                    content = content + _("Touchpad & Trackpoint disabled");
+                }
+            } else if (note_tpd && !note_tpt) {
+                if (tpd) {
+                    content = content + _("Touchpad enabled");
+                } else {
+                    content = content + _("Touchpad disabled");
+                }
+            } else if (!note_tpd && note_tpt) {
+                if (tpt) {
+                    content = content + _("Trackpoint enabled");
+                } else {
+                    content = content + _("Trackpoint disabled");
+                }
+            }
+            button._notify(false, content);
 	    }
+    },
+
+    _notify: function(title, content) {
+        notify(this, title, content);
     },
 
     _disable_touchpad: function() {
@@ -542,7 +632,7 @@ touchpadIndicatorButton.prototype = {
         if (trackpoint._disable_all_trackpoints()) {
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
                 call(button._trackpointItem, false);
-            CONFIG.TRACKPOINT_ENABLED = 'false';
+            CONFIG.TRACKPOINT_ENABLED = false;
             config_settings.writeConfig();
             return true;
         } else {
@@ -556,7 +646,7 @@ touchpadIndicatorButton.prototype = {
         if (trackpoint._enable_all_trackpoints()) {
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
                 call(button._trackpointItem, true);
-            CONFIG.TRACKPOINT_ENABLED = 'true';
+            CONFIG.TRACKPOINT_ENABLED = true;
             config_settings.writeConfig();
             return true;
         } else {

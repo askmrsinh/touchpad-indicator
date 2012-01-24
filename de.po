@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-17 21:15+0100\n"
+"POT-Creation-Date: 2012-01-24 21:28+0100\n"
 "PO-Revision-Date: 2012-01-14 13:13+0100\n"
 "Last-Translator: Köhler <orangeshirt at web.de>\n"
 "Language-Team: German\n"
@@ -18,48 +18,94 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: extension.js:131
+#: extension.js:123 extension.js:153
+msgid "Touchpad Indicator"
+msgstr "Touchpad Indicator"
+
+#: extension.js:370
 msgid "Turn Touchpad On/Off"
 msgstr "Touchpad ein- bzw. ausschalten"
 
-#: extension.js:133
-#, fuzzy
+#: extension.js:372
 msgid "Touchpad"
 msgstr "Touchpad"
 
-#: extension.js:135
-msgid "Click to Tap"
-msgstr "Tippen als Mausklick"
+#: extension.js:374
+msgid "Trackpoint"
+msgstr "Trackpoint"
 
-#: extension.js:138
+#: extension.js:377
+msgid "Indicatorsettings"
+msgstr "Indicatoreinstellungen"
+
+#: extension.js:383
+msgid "Behaviour if a mouse is (un)plugged:"
+msgstr "Verhalten wenn eine Maus an- bzw abgesteckt wird:"
+
+#: extension.js:385
+msgid "Automatically switch Touchpad On/Off"
+msgstr "Touchpad automatisch ein- bzw. ausschalten"
+
+#: extension.js:388
+msgid "Automatically switch Trackpoint On/Off"
+msgstr "Trackpoint automatisch ein- bzw. ausschalten"
+
+#: extension.js:391
 msgid "Touchpadsettings"
 msgstr "Touchpadeinstellungen"
 
-#: extension.js:140
+#: extension.js:392
+msgid "Click to Tap"
+msgstr "Tippen als Mausklick"
+
+#: extension.js:395
 msgid "Scroll behaviour"
 msgstr "Bildlaufverhalten"
 
-#: extension.js:141
+#: extension.js:396
 msgid "Disable scrolling"
 msgstr "Deaktiviert"
 
-#: extension.js:143
+#: extension.js:398
 msgid "Edge scrolling"
 msgstr "Bildlauf am Rand"
 
-#: extension.js:145
+#: extension.js:400
 msgid "Two Finger scrolling"
 msgstr "Bildlauf mit zwei Fingern"
 
-#: extension.js:156
+#: extension.js:421
 msgid "Additional Settings ..."
 msgstr "weitere Einstellmöglichkeiten ..."
 
-#~ msgid "Enable touchpad"
-#~ msgstr "Touchpad einschalten"
+#: extension.js:568
+msgid "Mouse plugged\n"
+msgstr "Maus gefunden\n"
 
-#~ msgid "Disable touchpad"
-#~ msgstr "Touchpad ausschalten"
+#: extension.js:570
+msgid "Mouse unplugged\n"
+msgstr "Maus entfernt\n"
 
-#~ msgid "Settings"
-#~ msgstr "Einstellungen"
+#: extension.js:574
+msgid "Touchpad & Trackpoint enabled"
+msgstr "Touchpad & Trackpoint aktiviert"
+
+#: extension.js:576
+msgid "Touchpad & Trackpoint disabled"
+msgstr "Touchpad & Trackpoint deaktiviert"
+
+#: extension.js:580
+msgid "Touchpad enabled"
+msgstr "Touchpad aktiviert"
+
+#: extension.js:582
+msgid "Touchpad disabled"
+msgstr "Touchpad deaktiviert"
+
+#: extension.js:586
+msgid "Trackpoint enabled"
+msgstr "Trackpoint aktiviert"
+
+#: extension.js:588
+msgid "Trackpoint disabled"
+msgstr "Trackpoint deaktiviert"
