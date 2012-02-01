@@ -673,6 +673,7 @@ touchpadIndicatorButton.prototype = {
         touchpad.disconnect(button.signal_tapToClick);
         touchpad.disconnect(button.signal_scrollMethod);
         button.watch_mouse.disconnect(button.signal_watchMouse);
+        button.watch_mouse.cancel();
     }
 };
 
