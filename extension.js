@@ -64,6 +64,8 @@ function execute_sync(command) {
     try {
         return GLib.spawn_command_line_sync(command);
     } catch (IOException) {
+        global.log('Extension '+ ExtensionMeta.name.toString() +': '+
+            IOException.toString());
         return false;
     }
 };
@@ -72,6 +74,7 @@ function execute_async(command) {
     try {
         return GLib.spawn_command_line_async(command);
     } catch (IOException) {
+        global.log(ExtensionMeta.name.toString() +' '+ IOException.toString());
         return false;
     }
 };
@@ -84,7 +87,8 @@ function to_boolean(string) {
 
 function is_there_mouse() {
     let comp = execute_sync('xinput --list');
-    return search_mouse(comp[1]);
+    if (comp)
+        return search_mouse(comp[1]);
 };
 
 function search_mouse(where) {
@@ -226,7 +230,8 @@ Synclient.prototype = {
 
     _is_synclient_in_use: function() {
         this.output = execute_sync('synclient -l');
-        if (!(this.output.indexOf("Couldn't find synaptics properties") == -1))
+        if (!this.output || !(this.output.indexOf(
+                "Couldn't find synaptics properties") == -1))
             return false;
         return true;
     },
@@ -299,14 +304,16 @@ TrackpointXInput.prototype = {
     _get_all_ids: function() {
         var devids = new Array();
         let lines = execute_sync('xinput --list');
-        lines = lines[1].toString().split('\n');
-	    let y = 0;
-        for (let line = 0; line < lines.length; line++) {
-            if (lines[line].indexOf('id=')!=-1) {
-                 devids[y] = lines[line].toString().split('=')[1].split('[')[0]
-                                .split('\t')[0];
-                 y++;
-            }  
+        if (lines) {
+            lines = lines[1].toString().split('\n');
+	        let y = 0;
+            for (let line = 0; line < lines.length; line++) {
+                if (lines[line].indexOf('id=')!=-1) {
+                     devids[y] = lines[line].toString().split('=')[1].
+                            split('[')[0].split('\t')[0];
+                     y++;
+                }  
+            }
         }
         return devids;
     },
@@ -322,10 +329,12 @@ TrackpointXInput.prototype = {
     },
 
     _search_trackpoint: function(where) {
-        where = where.toString().toLowerCase();
-        for (let tpid = 0; tpid < TRACKPOINTS.length; tpid++) {
-            if (!(where.indexOf(TRACKPOINTS[tpid].toString()) == -1)) {
-                return true;
+        if (where) {
+            where = where.toString().toLowerCase();
+            for (let tpid = 0; tpid < TRACKPOINTS.length; tpid++) {
+                if (!(where.indexOf(TRACKPOINTS[tpid].toString()) == -1)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -357,12 +366,15 @@ TrackpointXInput.prototype = {
 
     _is_trackpoint_enabled: function(id) {
         var lines = execute_sync('xinput --list-props ' + id.toString());
-        lines = lines[1].toString().split('\n');
-        for (let line = 0; line < lines.length; line++) {
-            if (lines[line].toString().toLowerCase().indexOf('device enabled')
-                     != -1) {
-                if (lines[line].toString().split(':')[1].indexOf('1') != -1) {
-                    return true;
+        if (lines) {
+            lines = lines[1].toString().split('\n');
+            for (let line = 0; line < lines.length; line++) {
+                if (lines[line].toString().toLowerCase().indexOf(
+                        'device enabled') != -1) {
+                    if (lines[line].toString().split(':')[1].indexOf('1')
+                            != -1) {
+                        return true;
+                    }
                 }
             }
         }
@@ -629,7 +641,7 @@ touchpadIndicatorButton.prototype = {
                 return false;
             }
         } else {
-            if (touchpad.set_boolean('touchpad-enabled', false)) {
+            if (this.touchpad.set_boolean('touchpad-enabled', false)) {
                 CONFIG.TOUCHPAD_ENABLED = false;
                 return true;
             } else {
@@ -647,7 +659,7 @@ touchpadIndicatorButton.prototype = {
                 return false;
             }
         } else {
-            if (touchpad.set_boolean('touchpad-enabled', true)) {
+            if (this.touchpad.set_boolean('touchpad-enabled', true)) {
                 CONFIG.TOUCHPAD_ENABLED = true;
                 return true;
             } else {
