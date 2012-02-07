@@ -42,7 +42,7 @@ const _ = Gettext.gettext;
 const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad',
                             'bcm5974');
 const TRACKPOINTS = new Array('trackpoint','accu point','trackstick',
-                              'touchstyk','pointing stick');
+                              'touchstyk','pointing stick','dualpoint stick');
 
 // Settings
 const TOUCHPAD_SETTINGS_SCHEMA = 
