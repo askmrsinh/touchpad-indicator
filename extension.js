@@ -55,6 +55,10 @@ var CONFIG = {TOUCHPAD_ENABLED : true,
               AUTO_SWITCH_TOUCHPAD : false,
               AUTO_SWITCH_TRACKPOINT : false };
 
+// Debug Mode
+const DEBUG = false;
+var DEBUG_INFO = 'Extension '+ ExtensionMeta.name.toString() +': ';
+
 
 function getSettings(schema) {
     return new Gio.Settings({ schema: schema });
@@ -63,9 +67,9 @@ function getSettings(schema) {
 function execute_sync(command) {
     try {
         return GLib.spawn_command_line_sync(command);
-    } catch (IOException) {
-        global.log('Extension '+ ExtensionMeta.name.toString() +': '+
-            IOException.toString());
+    } catch (err) {
+        if (DEBUG)
+            global.log(DEBUG_INFO + err.message.toString());
         return false;
     }
 };
@@ -73,8 +77,9 @@ function execute_sync(command) {
 function execute_async(command) {
     try {
         return GLib.spawn_command_line_async(command);
-    } catch (IOException) {
-        global.log(ExtensionMeta.name.toString() +' '+ IOException.toString());
+    } catch (err) {
+        if (DEBUG)
+            global.log(DEBUG_INFO + err.message.toString());
         return false;
     }
 };
@@ -230,13 +235,26 @@ Synclient.prototype = {
 
     _is_synclient_in_use: function() {
         this.output = execute_sync('synclient -l');
-        if (!this.output || !(this.output.indexOf(
-                "Couldn't find synaptics properties") == -1))
+        if (!this.output) {
+            if (DEBUG) {
+                global.log(DEBUG_INFO + 'synclient not found');
+            }
             return false;
+        }
+        if (!(this.output.indexOf(
+                "Couldn't find synaptics properties") == -1)) {
+            if (DEBUG) {
+                global.log(DEBUG_INFO + 'synclient - no properties found');
+            }
+            return false;
+            }
+        if (DEBUG) {
+            global.log(DEBUG_INFO + 'synclient found and in use');
+        }
         return true;
     },
 
-    _watch: function(parent) {
+    _watch: function() {
         if (!this.stop) {
             this.output = execute_sync('synclient -l');
             if (this.output) {
@@ -252,6 +270,8 @@ Synclient.prototype = {
                 if (this.synclient_status == this.touchpad_off) {
                     this._wait();
                 } else {
+                    parts = this.touchpad_off.split("= ");
+                    CONFIG.TOUCHPAD_ENABLED = !to_boolean(parts[1]);
                     onChangeIcon();                    
                     this.synclient_status = this.touchpad_off;
                     this._wait();
@@ -286,6 +306,9 @@ TrackpointXInput.prototype = {
     _init: function() {
         this.ids = this._get_ids();
         this.is_there_trackpoint = this._is_there_trackpoint();
+        if (DEBUG)
+            global.log(DEBUG_INFO + 'Found Trackpoint - ' +
+                this.is_there_trackpoint.toString());
     },
 
     _get_ids: function() {
@@ -324,8 +347,9 @@ TrackpointXInput.prototype = {
     },
 
     _is_there_trackpoint: function() {
-        let comp = execute_sync('xinput --list');
-        return this._search_trackpoint(comp[1]);
+        if (this.ids.length > 0)
+            return true;
+        return false;
     },
 
     _search_trackpoint: function(where) {

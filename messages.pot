@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-24 21:28+0100\n"
+"POT-Creation-Date: 2012-02-08 20:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,94 +17,94 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:123 extension.js:153
+#: extension.js:141 extension.js:171
 msgid "Touchpad Indicator"
 msgstr ""
 
-#: extension.js:370
+#: extension.js:486
 msgid "Turn Touchpad On/Off"
 msgstr ""
 
-#: extension.js:372
+#: extension.js:488
 msgid "Touchpad"
 msgstr ""
 
-#: extension.js:374
+#: extension.js:490
 msgid "Trackpoint"
 msgstr ""
 
-#: extension.js:377
+#: extension.js:493
 msgid "Indicatorsettings"
 msgstr ""
 
-#: extension.js:383
+#: extension.js:499
 msgid "Behaviour if a mouse is (un)plugged:"
 msgstr ""
 
-#: extension.js:385
+#: extension.js:501
 msgid "Automatically switch Touchpad On/Off"
 msgstr ""
 
-#: extension.js:388
+#: extension.js:504
 msgid "Automatically switch Trackpoint On/Off"
 msgstr ""
 
-#: extension.js:391
+#: extension.js:507
 msgid "Touchpadsettings"
 msgstr ""
 
-#: extension.js:392
+#: extension.js:508
 msgid "Click to Tap"
 msgstr ""
 
-#: extension.js:395
+#: extension.js:511
 msgid "Scroll behaviour"
 msgstr ""
 
-#: extension.js:396
+#: extension.js:512
 msgid "Disable scrolling"
 msgstr ""
 
-#: extension.js:398
+#: extension.js:514
 msgid "Edge scrolling"
 msgstr ""
 
-#: extension.js:400
+#: extension.js:517
 msgid "Two Finger scrolling"
 msgstr ""
 
-#: extension.js:421
+#: extension.js:537
 msgid "Additional Settings ..."
 msgstr ""
 
-#: extension.js:568
+#: extension.js:628
 msgid "Mouse plugged\n"
 msgstr ""
 
-#: extension.js:570
+#: extension.js:630
 msgid "Mouse unplugged\n"
 msgstr ""
 
-#: extension.js:574
+#: extension.js:634
 msgid "Touchpad & Trackpoint enabled"
 msgstr ""
 
-#: extension.js:576
+#: extension.js:636
 msgid "Touchpad & Trackpoint disabled"
 msgstr ""
 
-#: extension.js:580
+#: extension.js:640
 msgid "Touchpad enabled"
 msgstr ""
 
-#: extension.js:582
+#: extension.js:642
 msgid "Touchpad disabled"
 msgstr ""
 
-#: extension.js:586
+#: extension.js:646
 msgid "Trackpoint enabled"
 msgstr ""
 
-#: extension.js:588
+#: extension.js:648
 msgid "Trackpoint disabled"
 msgstr ""
