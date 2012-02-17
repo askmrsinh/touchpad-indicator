@@ -53,7 +53,8 @@ var CONFIG = {TOUCHPAD_ENABLED : true,
               TRACKPOINT_ENABLED : true,
               SWITCH_IF_MOUSE : false,
               AUTO_SWITCH_TOUCHPAD : false,
-              AUTO_SWITCH_TRACKPOINT : false };
+              AUTO_SWITCH_TRACKPOINT : false,
+              SHOW_NOTIFICATIONS : true };
 
 // Debug Mode
 const DEBUG = false;
@@ -175,7 +176,7 @@ function notify(device, title, text) {
                            });
     device._notification = new MessageTray.Notification(msg_source, title,
                                                         text, { icon: icon });
-    device._notification.setUrgency(MessageTray.Urgency.HIGH);
+    device._notification.setUrgency(MessageTray.Urgency.LOW);
     device._notification.setTransient(true);
     device._notification.connect('destroy', function() {
         device._notification = null;
@@ -503,6 +504,9 @@ touchpadIndicatorButton.prototype = {
         this._AutoSwitchTrackpointItem = new PopupSwitchMenuItem(
             _("Automatically switch Trackpoint On/Off"), 7,
             CONFIG.AUTO_SWITCH_TRACKPOINT, onMenuSelect);
+        this._ShowNotifications = new PopupSwitchMenuItem(
+            _("Show notification if switched"), 8,
+            CONFIG.SHOW_NOTIFICATIONS, onMenuSelect);
         this._SettingsItem = new PopupMenu.PopupSubMenuMenuItem(
             _("Touchpadsettings"));
         this._ClickToTapItem = new PopupSwitchMenuItem(_("Click to Tap"), 2,
@@ -528,6 +532,8 @@ touchpadIndicatorButton.prototype = {
         if (this.trackpoint.is_there_trackpoint)
             this._ExtensionSettingsItem.menu.addMenuItem(
                 this._AutoSwitchTrackpointItem);
+        this._ExtensionSettingsItem.menu.addMenuItem(
+            this._ShowNotifications);
         this.menu.addMenuItem(this._SettingsItem);
         this._SettingsItem.menu.addMenuItem(this._ClickToTapItem);
         this._SettingsItem.menu.addMenuItem(this._ScrollItem);
@@ -653,7 +659,8 @@ touchpadIndicatorButton.prototype = {
     },
 
     _notify: function(title, content) {
-        notify(this, title, content);
+        if (CONFIG.SHOW_NOTIFICATIONS)
+            notify(this, title, content);
     },
 
     _disable_touchpad: function() {
@@ -774,6 +781,13 @@ touchpadIndicatorButton.prototype = {
         this.config_settings.writeConfig();
     },
 
+    _switch_notification: function() {
+        CONFIG.SHOW_NOTIFICATIONS = !CONFIG.SHOW_NOTIFICATIONS;
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+            call(this._ShowNotifications, CONFIG.SHOW_NOTIFICATIONS);
+        this.config_settings.writeConfig();
+    },
+
     _connect_signals: function() {
         this.signal_touchpadEnabled = this.touchpad.connect(
             'changed::touchpad-enabled', onChangeIcon);
@@ -843,6 +857,9 @@ function onMenuSelect(actor, event) {
             } else {
                 touchpadIndicator._disable_auto_switch_trackpoint();
             }
+            break;
+        case 8:
+            touchpadIndicator._switch_notification();
             break;
     }
 };
