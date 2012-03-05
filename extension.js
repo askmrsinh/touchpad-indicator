@@ -231,6 +231,7 @@ Synclient.prototype = {
     _init: function() {
         this.synclient_status = false;
         this.stop = false;
+        this.timeout = false;
         this.synclient_in_use = this._is_synclient_in_use();
     },
 
@@ -282,11 +283,16 @@ Synclient.prototype = {
     },
     
     _wait: function() {
-        Mainloop.timeout_add(1000, Lang.bind(this, this._watch));
+        this.timeout = Mainloop.timeout_add(1000, Lang.bind(
+            this, this._watch));
     },
 
     _cancel: function() {
         this.stop = true;
+        if (this.timeout) {
+            Mainloop.source_remove(this.timeout);
+            this.timeout = false;
+        }
     },
 
     _disable: function() {
