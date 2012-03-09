@@ -95,9 +95,12 @@ function is_there_mouse() {
     let comp = execute_sync('xinput --list');
     if (comp)
         return search_mouse(comp[1]);
+    return false;
 };
 
 function search_mouse(where) {
+    if (DEBUG)
+        global.log(DEBUG_INFO +'search mouse');
     where = where.toString().toLowerCase().split("\n");
     let hits = 0;
     for (let x = 0; x < where.length; x++) {
@@ -106,22 +109,31 @@ function search_mouse(where) {
             for (let tpd = 0; tpd < TOUCHPADS.length; tpd++) {
                 if (!(where[x].indexOf(TOUCHPADS[tpd].toString()) == -1)) {
                     hits++;
+                    if (DEBUG)
+                        global.log(DEBUG_INFO +'Touchpad found: '+ where[x]);
                     break;
                 }
             }
             for (let tpt = 0; tpt < TRACKPOINTS.length; tpt++) {
                 if (!(where[x].indexOf(TRACKPOINTS[tpt].toString()) == -1)) {
                     hits++;
+                    if (DEBUG)
+                        global.log(DEBUG_INFO +'Trackpoint found: '+ where[x]);
                     break;
                 }
             }
             if (hits == 0) {
+                if (DEBUG)
+                    global.log(DEBUG_INFO +'search mouse - Mouse found: '+
+                        where[x]);
                 return true;
             } else {
                 hits = 0;
             }
         }
     }
+    if (DEBUG)
+        global.log(DEBUG_INFO + 'search mouse - Could not detect a mouse ');
     return false;
 };
 
@@ -231,6 +243,7 @@ Synclient.prototype = {
     _init: function() {
         this.synclient_status = false;
         this.stop = false;
+        this.watch = false;
         this.timeout = false;
         this.synclient_in_use = this._is_synclient_in_use();
     },
@@ -256,8 +269,13 @@ Synclient.prototype = {
         return true;
     },
 
+    _is_synclient_still_in_use: function() {
+        this.synclient_in_use = this._is_synclient_in_use();
+        return this.synclient_in_use;
+    },
+
     _watch: function() {
-        if (!this.stop) {
+        if (!this.stop && !this.wait) {
             this.output = execute_sync('synclient -l');
             if (this.output) {
                 lines = this.output[1].toString().split("\n");
@@ -281,14 +299,21 @@ Synclient.prototype = {
             }
         }
     },
-    
+
+    _call_watch: function() {
+        this.wait = false;
+        this._watch();
+    },
+
     _wait: function() {
+        this.wait = true;
         this.timeout = Mainloop.timeout_add(1000, Lang.bind(
-            this, this._watch));
+            this, this._call_watch));
     },
 
     _cancel: function() {
         this.stop = true;
+        this.wait = false;
         if (this.timeout) {
             Mainloop.source_remove(this.timeout);
             this.timeout = false;
@@ -610,6 +635,27 @@ touchpadIndicatorButton.prototype = {
 
     _onMousePlugged: function() {
 	    if (CONFIG.SWITCH_IF_MOUSE) {
+            synclient_in_use = this.synclient.synclient_in_use;
+            this.synclient._is_synclient_still_in_use();
+            if (synclient_in_use != this.synclient.synclient_in_use) {
+                if (this.synclient.synclient_in_use) {
+                    if (!this.touchpad.get_boolean('touchpad-enabled'))
+                        this.touchpad.set_boolean('touchpad-enabled', true);
+                    this.synclient._watch();
+                    if (CONFIG.TOUCHPAD_ENABLED) {
+                        this.synclient._enable();
+                    } else {
+                        this.synclient._disable();
+                    }
+                } else {
+                    this.synclient._cancel();
+                    if (CONFIG.TOUCHPAD_ENABLED) {
+                        this.touchpad.set_boolean('touchpad-enabled', true);
+                    } else {
+                        this.touchpad.set_boolean('touchpad-enabled', false);
+                    }
+                }
+            }
             let is_mouse = is_there_mouse();
             let note_tpd = false, tpd = !is_mouse;
             let note_tpt = false, tpt = !is_mouse;
@@ -814,8 +860,7 @@ touchpadIndicatorButton.prototype = {
         this.touchpad.disconnect(this.signal_scrollMethod);
         this.watch_mouse.disconnect(this.signal_watchMouse);
         this.watch_mouse.cancel();
-        if (this.synclient.synclient_in_use)
-            this.synclient._cancel();
+        this.synclient._cancel();
     }
 };
 
