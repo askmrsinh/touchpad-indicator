@@ -60,6 +60,8 @@ var CONFIG = {TOUCHPAD_ENABLED : true,
 const DEBUG = false;
 var DEBUG_INFO = 'Extension '+ ExtensionMeta.name.toString() +': ';
 
+// Disable Synclient manually to prevent errors
+const DISABLE_SYNCLIENT = false;
 
 function getSettings(schema) {
     return new Gio.Settings({ schema: schema });
@@ -249,6 +251,12 @@ Synclient.prototype = {
     },
 
     _is_synclient_in_use: function() {
+        if (DISABLE_SYNCLIENT) {
+            if (DEBUG) {
+                global.log(DEBUG_INFO + 'synclient disabled');
+            }
+            return false;
+        }
         this.output = execute_sync('synclient -l');
         if (!this.output) {
             if (DEBUG) {
