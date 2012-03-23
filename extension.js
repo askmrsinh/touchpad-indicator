@@ -256,17 +256,33 @@ Synclient.prototype = {
             }
             return false;
         }
-        if (!(this.output.indexOf(
+        if (!this.output[0]) {
+            if (DEBUG) {
+                global.log(DEBUG_INFO + 'synclient not found');
+            }
+            return false;
+        }
+        if (!(this.output[1].toString().indexOf(
                 "Couldn't find synaptics properties") == -1)) {
             if (DEBUG) {
                 global.log(DEBUG_INFO + 'synclient - no properties found');
             }
             return false;
             }
-        if (DEBUG) {
-            global.log(DEBUG_INFO + 'synclient found and in use');
+        lines = this.output[1].toString().split("\n");
+        for (let x = 0; x < lines.length; x++) {
+            if (!(lines[x].indexOf("TouchpadOff") == -1)) {
+                if (DEBUG)
+                    global.log(DEBUG_INFO + 'synclient found and in use');
+                return true;
+                break;
+            }
         }
-        return true;
+        if (DEBUG) {
+            global.log(DEBUG_INFO + 
+                'Synclient unknown situation - Return false');
+        }
+        return false;
     },
 
     _is_synclient_still_in_use: function() {
@@ -634,7 +650,9 @@ touchpadIndicatorButton.prototype = {
     },
 
     _onMousePlugged: function() {
-	    if (CONFIG.SWITCH_IF_MOUSE) {
+        if (DEBUG)
+            global.log(DEBUG_INFO + '_onMousePlugged()');
+        if (CONFIG.SWITCH_IF_MOUSE) {
             synclient_in_use = this.synclient.synclient_in_use;
             this.synclient._is_synclient_still_in_use();
             if (synclient_in_use != this.synclient.synclient_in_use) {
@@ -706,6 +724,8 @@ touchpadIndicatorButton.prototype = {
                     content = content + _("Trackpoint disabled");
                 }
             }
+            if (DEBUG)
+                global.log(DEBUG_INFO + content);
             this._notify(false, content);
 	    }
     },
