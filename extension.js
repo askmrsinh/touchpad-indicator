@@ -57,7 +57,7 @@ var CONFIG = {TOUCHPAD_ENABLED : true,
               SHOW_NOTIFICATIONS : true };
 
 // Debug Mode
-const DEBUG = false;
+const DEBUG = true;
 var DEBUG_INFO = 'Extension '+ ExtensionMeta.name.toString() +': ';
 
 // Disable Synclient manually to prevent errors
@@ -253,7 +253,7 @@ Synclient.prototype = {
     _is_synclient_in_use: function() {
         if (DISABLE_SYNCLIENT) {
             if (DEBUG) {
-                global.log(DEBUG_INFO + 'synclient disabled');
+                global.log(DEBUG_INFO + 'synclient manually disabled');
             }
             return false;
         }
@@ -270,20 +270,23 @@ Synclient.prototype = {
             }
             return false;
         }
-        if (!(this.output[1].toString().indexOf(
-                "Couldn't find synaptics properties") == -1)) {
-            if (DEBUG) {
-                global.log(DEBUG_INFO + 'synclient - no properties found');
-            }
-            return false;
-            }
-        lines = this.output[1].toString().split("\n");
-        for (let x = 0; x < lines.length; x++) {
-            if (!(lines[x].indexOf("TouchpadOff") == -1)) {
-                if (DEBUG)
-                    global.log(DEBUG_INFO + 'synclient found and in use');
-                return true;
-                break;
+        for (let x = 0; x < this.output.length; x++) {
+            if (typeof(this.output[x]) == "object" && 
+                    this.output[x].length > 0) {
+                 if (!(this.output[x].toString().indexOf(
+                        "Couldn't find synaptics properties") == -1)) {
+                    if (DEBUG) {
+                        global.log(DEBUG_INFO + 
+                            'synclient - no properties found');
+                    }
+                    return false;
+                }
+                if (!(this.output[x].toString().indexOf(
+                        "TouchpadOff") == -1)) {
+                    if (DEBUG)
+                        global.log(DEBUG_INFO + 'synclient found and in use');
+                    return true;
+                }
             }
         }
         if (DEBUG) {
