@@ -57,7 +57,7 @@ var CONFIG = {TOUCHPAD_ENABLED : true,
               SHOW_NOTIFICATIONS : true };
 
 // Debug Mode
-const DEBUG = true;
+const DEBUG = false;
 var DEBUG_INFO = 'Extension '+ ExtensionMeta.name.toString() +': ';
 
 // Disable Synclient manually to prevent errors
