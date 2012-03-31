@@ -1,0 +1,119 @@
+# German translations for PACKAGE package
+# German messages for PACKAGE.
+# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Köhler <orangeshirt at web.de>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-17 21:14+0100\n"
+"PO-Revision-Date: 2012-03-31 18:25+0200\n"
+"Last-Translator: Adrian Niţescu <adrian.n@itcblog.net>\n"
+"Language-Team: - <->\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Romanian\n"
+"X-Poedit-Country: ROMANIA\n"
+
+#: extension.js:142
+#: extension.js:172
+msgid "Touchpad Indicator"
+msgstr "Indicator Touchpad"
+
+#: extension.js:487
+msgid "Turn Touchpad On/Off"
+msgstr "Porneşte/Opreşte Touchpad"
+
+#: extension.js:489
+msgid "Touchpad"
+msgstr "Touchpad"
+
+#: extension.js:491
+msgid "Trackpoint"
+msgstr "Trackpoint"
+
+#: extension.js:494
+msgid "Indicatorsettings"
+msgstr "Setări indicator"
+
+#: extension.js:500
+msgid "Behaviour if a mouse is (un)plugged:"
+msgstr "Comportament dacă maus-ul este (de)ataşat"
+
+#: extension.js:502
+msgid "Automatically switch Touchpad On/Off"
+msgstr "Comută Pornit/Oprit automat Touchpad-ul"
+
+#: extension.js:505
+msgid "Automatically switch Trackpoint On/Off"
+msgstr "Comută Pornit/Oprit automat Trackpad-ul"
+
+#: extension.js:508
+msgid "Show notification if switched"
+msgstr "Arată notificare daca s-a comutat"
+
+#: extension.js:511
+msgid "Touchpadsettings"
+msgstr "Setări Touchpad"
+
+#: extension.js:512
+msgid "Click to Tap"
+msgstr "Atinge pentru a face click"
+
+#: extension.js:515
+msgid "Scroll behaviour"
+msgstr "Comportament derulare."
+
+#: extension.js:516
+msgid "Disable scrolling"
+msgstr "Dezactivează derularea"
+
+#: extension.js:518
+msgid "Edge scrolling"
+msgstr "Derulare pe margini"
+
+#: extension.js:521
+msgid "Two Finger scrolling"
+msgstr "Derulare cu două degete"
+
+#: extension.js:543
+msgid "Additional Settings ..."
+msgstr "Setări adiţionale"
+
+#: extension.js:634
+msgid "Mouse plugged\n"
+msgstr "Maus ataşat\n"
+
+#: extension.js:636
+msgid "Mouse unplugged\n"
+msgstr "Maus deataşat\n"
+
+#: extension.js:640
+msgid "Touchpad & Trackpoint enabled"
+msgstr "Touchpad şi Trackpoint activat"
+
+#: extension.js:642
+msgid "Touchpad & Trackpoint disabled"
+msgstr "Touchpad şi Trackpoint dezactivat"
+
+#: extension.js:646
+msgid "Touchpad enabled"
+msgstr "Touchpad activat"
+
+#: extension.js:648
+msgid "Touchpad disabled"
+msgstr "Touchpad dezactivat"
+
+#: extension.js:652
+msgid "Trackpoint enabled"
+msgstr "Trackpoint activat"
+
+#: extension.js:654
+msgid "Trackpoint disabled"
+msgstr "Trackpoint dezactivat"
+

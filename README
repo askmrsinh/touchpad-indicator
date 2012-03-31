@@ -12,3 +12,24 @@ To choose your preferred option you could change the values below "Indicatorsett
 
 To install, extract the archive or copy the folder to
 ~/.local/share/gnome-shell/extensions/ and restart the shell.
+
+
+If you want to contribute you could translate this extension:
+
+You have to open a terminal and change your directory:
+
+cd ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt/
+
+Now you have to start a new translation file with:
+
+msginit
+
+After that you'll find a new file like de.po (where de is the language abbreviation of your language) in the directory above. Open this file with your prefered texteditor and change the strings to your language. That's it. Please push this file in github or send it to my email address (You could find them in the code of extension.js) If you would test your language file before you send it to me you have to do the following things:
+
+mkdir -p locale/de/LC_MESSAGES
+
+msgfmt de.po -o locale/de/LC_MESSAGES/touchpad-indicator@orangeshirt.mo
+
+where 'de' is the language abbreviation of your translation. It is the same as for the .po file.
+
+Now you could restart gnome-shell with Alt+F2 and 'r' or logout and in. Touchpad-indicator now should be shown in your language.
