@@ -29,9 +29,21 @@ const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+const Conf = imports.misc.config;
+
 const ExtensionSystem = imports.ui.extensionSystem;
-const ExtensionMeta = ExtensionSystem.extensionMeta[
+
+let currentArray = Conf.PACKAGE_VERSION.split('.');
+if (currentArray[0] == 3 && currentArray[1] < 3) {
+    var ExtensionMeta = ExtensionSystem.extensionMeta[
                                             "touchpad-indicator@orangeshirt"];
+    var ExtensionPath = ExtensionMeta.path
+} else {
+    const Extension = imports.misc.extensionUtils.getCurrentExtension();
+    var ExtensionMeta = Extension.metadata
+    var ExtensionPath = Extension.path
+}
+
 const MessageTray = imports.ui.messageTray;
 const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
@@ -205,8 +217,10 @@ function Config() {
 
 Config.prototype = {
     _init: function() {
-        this.path = GLib.build_filenamev([ExtensionMeta.path,
+        this.path = GLib.build_filenamev([ExtensionPath,
                                          'touchpad-indicator.conf']);
+        if (DEBUG)
+            global.log(DEBUG_INFO +'Config file: '+ this.path);
     },
 
     readConfig: function() {
