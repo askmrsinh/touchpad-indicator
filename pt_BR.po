@@ -1,0 +1,116 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-17 21:14+0100\n"
+"PO-Revision-Date: 2012-04-04 16:46-0300\n"
+"Last-Translator: Lucas de Biaggi Januário <lucas.debiaggi@dashhx.net>\n"
+"Language-Team: Português Brasil <lyu>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: extension.js:142
+#: extension.js:172
+msgid "Touchpad Indicator"
+msgstr "Indicador Touchpad"
+
+#: extension.js:487
+msgid "Turn Touchpad On/Off"
+msgstr "Ligar/Desligar o Touchpad"
+
+#: extension.js:489
+msgid "Touchpad"
+msgstr "Touchpad"
+
+#: extension.js:491
+msgid "Trackpoint"
+msgstr "Trackpoint"
+
+#: extension.js:494
+msgid "Indicatorsettings"
+msgstr "Configurações do Indicador"
+
+#: extension.js:500
+msgid "Behaviour if a mouse is (un)plugged:"
+msgstr "Comportamento se um mouse é (des)plugado:"
+
+#: extension.js:502
+msgid "Automatically switch Touchpad On/Off"
+msgstr "Ligar/Desligar Automaticamente o Touchpad"
+
+#: extension.js:505
+msgid "Automatically switch Trackpoint On/Off"
+msgstr "Ligar/Desligar Automaticamente o Touchpad"
+
+#: extension.js:508
+msgid "Show notification if switched"
+msgstr "Exibir notificações de estado"
+
+#: extension.js:511
+msgid "Touchpadsettings"
+msgstr "Configurações do Touchpad"
+
+#: extension.js:512
+msgid "Click to Tap"
+msgstr "Habilitar cliques com o Touch"
+
+#: extension.js:515
+msgid "Scroll behaviour"
+msgstr "Comportamento de Rolagem"
+
+#: extension.js:516
+msgid "Disable scrolling"
+msgstr "Desabilitar Rolagem"
+
+#: extension.js:518
+msgid "Edge scrolling"
+msgstr "Rolagem na Borda"
+
+#: extension.js:521
+msgid "Two Finger scrolling"
+msgstr "Rolagem com Dois Dedos"
+
+#: extension.js:543
+msgid "Additional Settings ..."
+msgstr "Configurações Adicionais..."
+
+#: extension.js:634
+msgid "Mouse plugged\n"
+msgstr "Mouse Conectado\n"
+
+#: extension.js:636
+msgid "Mouse unplugged\n"
+msgstr "Mouse Desconectado\n"
+
+#: extension.js:640
+msgid "Touchpad & Trackpoint enabled"
+msgstr "Touchpad & Trackpoint habilitados"
+
+#: extension.js:642
+msgid "Touchpad & Trackpoint disabled"
+msgstr "Touchpad & Trackpoint desabilitados"
+
+#: extension.js:646
+msgid "Touchpad enabled"
+msgstr "Touchpad habilitado"
+
+#: extension.js:648
+msgid "Touchpad disabled"
+msgstr "Touchpad desahabilitado"
+
+#: extension.js:652
+msgid "Trackpoint enabled"
+msgstr "Trackpoint habilitado"
+
+#: extension.js:654
+msgid "Trackpoint disabled"
+msgstr "Trackpoint habilitado"
+
