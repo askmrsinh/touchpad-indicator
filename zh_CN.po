@@ -1,0 +1,114 @@
+# Chinese translations for PACKAGE package
+# PACKAGE 软件包的简体中文翻译.
+# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# namiheike <namiheike@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-17 21:14+0100\n"
+"PO-Revision-Date: 2012-04-20 18:24+0800\n"
+"Last-Translator: namiheike <namiheike@gmail.com>\n"
+"Language-Team: Chinese (simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: extension.js:142 extension.js:172
+msgid "Touchpad Indicator"
+msgstr "触摸板指示器"
+
+#: extension.js:487
+msgid "Turn Touchpad On/Off"
+msgstr "打开/关闭触摸板"
+
+#: extension.js:489
+msgid "Touchpad"
+msgstr "触摸板"
+
+#: extension.js:491
+msgid "Trackpoint"
+msgstr "指点杆"
+
+#: extension.js:494
+msgid "Indicatorsettings"
+msgstr "指示器设定"
+
+#: extension.js:500
+msgid "Behaviour if a mouse is (un)plugged:"
+msgstr "当有鼠标插入/拔除时:"
+
+#: extension.js:502
+msgid "Automatically switch Touchpad On/Off"
+msgstr "自动关闭/打开触摸板"
+
+#: extension.js:505
+msgid "Automatically switch Trackpoint On/Off"
+msgstr "自动关闭/打开指点杆"
+
+#: extension.js:508
+msgid "Show notification if switched"
+msgstr "切换时显示提示"
+
+#: extension.js:511
+msgid "Touchpadsettings"
+msgstr "触摸板设定"
+
+#: extension.js:512
+msgid "Click to Tap"
+msgstr "启用触摸点击"
+
+#: extension.js:515
+msgid "Scroll behaviour"
+msgstr "滚动选项"
+
+#: extension.js:516
+msgid "Disable scrolling"
+msgstr "关闭滚动"
+
+#: extension.js:518
+msgid "Edge scrolling"
+msgstr "边缘滚动"
+
+#: extension.js:521
+msgid "Two Finger scrolling"
+msgstr "双指滚动"
+
+#: extension.js:543
+msgid "Additional Settings ..."
+msgstr "更多设定..."
+
+#: extension.js:634
+msgid "Mouse plugged\n"
+msgstr "鼠标插入\n"
+
+#: extension.js:636
+msgid "Mouse unplugged\n"
+msgstr "鼠标拔除\n"
+
+#: extension.js:640
+msgid "Touchpad & Trackpoint enabled"
+msgstr "触摸板 & 指点杆 已启用"
+
+#: extension.js:642
+msgid "Touchpad & Trackpoint disabled"
+msgstr "触摸板 & 指点杆 已禁用"
+
+#: extension.js:646
+msgid "Touchpad enabled"
+msgstr "触摸板 已启用"
+
+#: extension.js:648
+msgid "Touchpad disabled"
+msgstr "触摸板 已禁用"
+
+#: extension.js:652
+msgid "Trackpoint enabled"
+msgstr "指点杆 已启用"
+
+#: extension.js:654
+msgid "Trackpoint disabled"
+msgstr "指点杆 已禁用"
