@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-17 21:14+0100\n"
+"POT-Creation-Date: 2012-05-04 20:49+0200\n"
 "PO-Revision-Date: 2012-01-14 13:13+0100\n"
 "Last-Translator: Köhler <orangeshirt at web.de>\n"
 "Language-Team: German\n"
@@ -18,98 +18,102 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: extension.js:142 extension.js:172
+#: extension.js:168 extension.js:198
 msgid "Touchpad Indicator"
 msgstr "Touchpad Indicator"
 
-#: extension.js:487
+#: extension.js:567
 msgid "Turn Touchpad On/Off"
 msgstr "Touchpad ein- bzw. ausschalten"
 
-#: extension.js:489
+#: extension.js:569
 msgid "Touchpad"
 msgstr "Touchpad"
 
-#: extension.js:491
+#: extension.js:571
 msgid "Trackpoint"
 msgstr "Trackpoint"
 
-#: extension.js:494
+#: extension.js:574
 msgid "Indicatorsettings"
 msgstr "Indicatoreinstellungen"
 
-#: extension.js:500
+#: extension.js:581
+msgid "No Settings available.\nIf you want to use the Auto Switch function while a mouse is (un)plugged,\nyou have to install 'xinput' and reload the extension."
+msgstr "Keine Einstellungen verfügbar.\nWenn Sie die Auto Switch Funktion beim an- bzw. abstecken einer Maus nutzen wollen,\nmüssen Sie 'xinput' installieren und die Extension neu laden."
+
+#: extension.js:586
 msgid "Behaviour if a mouse is (un)plugged:"
 msgstr "Verhalten wenn eine Maus an- bzw abgesteckt wird:"
 
-#: extension.js:502
+#: extension.js:589
 msgid "Automatically switch Touchpad On/Off"
 msgstr "Touchpad automatisch ein- bzw. ausschalten"
 
-#: extension.js:505
+#: extension.js:592
 msgid "Automatically switch Trackpoint On/Off"
 msgstr "Trackpoint automatisch ein- bzw. ausschalten"
 
-#: extension.js:508
+#: extension.js:595
 msgid "Show notification if switched"
 msgstr "Benachrichtigung anzeigen beim Umschalten"
 
-#: extension.js:511
+#: extension.js:598
 msgid "Touchpadsettings"
 msgstr "Touchpadeinstellungen"
 
-#: extension.js:512
+#: extension.js:599
 msgid "Click to Tap"
 msgstr "Tippen als Mausklick"
 
-#: extension.js:515
+#: extension.js:602
 msgid "Scroll behaviour"
 msgstr "Bildlaufverhalten"
 
-#: extension.js:516
+#: extension.js:603
 msgid "Disable scrolling"
 msgstr "Deaktiviert"
 
-#: extension.js:518
+#: extension.js:605
 msgid "Edge scrolling"
 msgstr "Bildlauf am Rand"
 
-#: extension.js:521
+#: extension.js:608
 msgid "Two Finger scrolling"
 msgstr "Bildlauf mit zwei Fingern"
 
-#: extension.js:543
+#: extension.js:632
 msgid "Additional Settings ..."
 msgstr "weitere Einstellmöglichkeiten ..."
 
-#: extension.js:634
+#: extension.js:746
 msgid "Mouse plugged\n"
 msgstr "Maus gefunden\n"
 
-#: extension.js:636
+#: extension.js:748
 msgid "Mouse unplugged\n"
 msgstr "Maus entfernt\n"
 
-#: extension.js:640
+#: extension.js:752
 msgid "Touchpad & Trackpoint enabled"
 msgstr "Touchpad & Trackpoint aktiviert"
 
-#: extension.js:642
+#: extension.js:754
 msgid "Touchpad & Trackpoint disabled"
 msgstr "Touchpad & Trackpoint deaktiviert"
 
-#: extension.js:646
+#: extension.js:758
 msgid "Touchpad enabled"
 msgstr "Touchpad aktiviert"
 
-#: extension.js:648
+#: extension.js:760
 msgid "Touchpad disabled"
 msgstr "Touchpad deaktiviert"
 
-#: extension.js:652
+#: extension.js:764
 msgid "Trackpoint enabled"
 msgstr "Trackpoint aktiviert"
 
-#: extension.js:654
+#: extension.js:766
 msgid "Trackpoint disabled"
 msgstr "Trackpoint deaktiviert"

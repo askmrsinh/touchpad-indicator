@@ -538,9 +538,17 @@ touchpadIndicatorButton.prototype = {
         this.touchpad = getSettings(TOUCHPAD_SETTINGS_SCHEMA);
         this.trackpoint = new TrackpointXInput();
         this.synclient = new Synclient();
+        this.xinput_is_installed = execute_sync('xinput --list');
 
         this.config_settings = new Config();
         this.config_settings.readConfig();
+
+        if (!this.xinput_is_installed) {
+            CONFIG.SWITCH_IF_MOUSE = false;
+            CONFIG.AUTO_SWITCH_TOUCHPAD = false;
+            CONFIG.AUTO_SWITCH_TRACKPOINT = false;
+            this.config_settings.writeConfig();
+        }
 
         if (this.synclient.synclient_in_use) {
             if (!this.touchpad.get_boolean('touchpad-enabled'))
@@ -568,8 +576,15 @@ touchpadIndicatorButton.prototype = {
             vertical: true,
             style_class: 'sub-menu-extension-settings'
         });
-        this._LabelItem = new St.Label({ 
-            text: _("Behaviour if a mouse is (un)plugged:") });
+        if (!this.xinput_is_installed) {
+            this._LabelItem = new St.Label({ 
+                text: _("No Settings available.\n\
+If you want to use the Auto Switch function while a mouse is (un)plugged,\n\
+you have to install 'xinput' and reload the extension.") });
+        } else {
+            this._LabelItem = new St.Label({ 
+                text: _("Behaviour if a mouse is (un)plugged:") });
+        }
         this._AutoSwitchTouchpadItem = new PopupSwitchMenuItem(
             _("Automatically switch Touchpad On/Off"), 6,
             CONFIG.AUTO_SWITCH_TOUCHPAD, onMenuSelect);
@@ -599,13 +614,15 @@ touchpadIndicatorButton.prototype = {
         this.menu.addMenuItem(this._ExtensionSettingsItem);
         this._SubMenuExtSettings.add_actor(this._LabelItem);
         this._ExtensionSettingsItem.menu.addActor(this._SubMenuExtSettings);
-        this._ExtensionSettingsItem.menu.addMenuItem(
-            this._AutoSwitchTouchpadItem);
-        if (this.trackpoint.is_there_trackpoint)
+        if (this.xinput_is_installed) {
             this._ExtensionSettingsItem.menu.addMenuItem(
-                this._AutoSwitchTrackpointItem);
-        this._ExtensionSettingsItem.menu.addMenuItem(
-            this._ShowNotifications);
+                this._AutoSwitchTouchpadItem);
+            if (this.trackpoint.is_there_trackpoint)
+                this._ExtensionSettingsItem.menu.addMenuItem(
+                    this._AutoSwitchTrackpointItem);
+            this._ExtensionSettingsItem.menu.addMenuItem(
+                this._ShowNotifications);
+        }
         this.menu.addMenuItem(this._SettingsItem);
         this._SettingsItem.menu.addMenuItem(this._ClickToTapItem);
         this._SettingsItem.menu.addMenuItem(this._ScrollItem);
