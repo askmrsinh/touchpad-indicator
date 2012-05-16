@@ -1,0 +1,11 @@
+{
+"first-time": true,
+
+"touchpad-enabled": true,
+"trackpoint-enabled": false,
+"switch-if-mouse": false,
+"auto-switch-touchpad": false,
+"auto-switch-trackpoint": false,
+"show-notifications": true,
+"debug": false
+}

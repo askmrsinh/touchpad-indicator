@@ -1,35 +1,57 @@
-touchpad-indicator is a minimalistic Touchpad management extension for the Gnome Shell.
+1. What is Touchpad Indicator?
 
-touchpad-indicator allows you to switch your Touchpad On or Off, if a Trackpoint exists it is also possible to switch it On or Off through the extension (Needs 'xinput' to detect and switch the trackpoint).
+Touchpad Indicator is a minimalistic Touchpad management extension for the Gnome Shell.
 
-There's further the possibility to automatically switch On or Off the touchpad and/or trackpoint if a mouse is detected at startup or if a mouse is plugged or 
-The automatc switch off is disabled by default.
 
-If your touchpad use synclient the extension also use synclient to switch the touchpad On or OFf and not the standard gsettings values of gnome-shell.
+2. What does it?
+
+Touchpad Indicator allows you to switch your Touchpad On or Off, if a Trackpoint exists it is also possible to switch it On or Off through the extension (Needs 'xinput' to detect and switch the trackpoint).
+There's further the possibility to automatically switch On or Off the touchpad and/or trackpoint if a mouse is detected at startup or if a mouse is plugged or the automatc switch off is disabled by default. (Needs 'xinput' to detect a mouse)
+If your touchpad use synclient the extension also use synclient to switch the touchpad On or Off and not the standard gsettings values of gnome-shell.
+
+
+3. Where can I change settings?
 
 To choose your preferred option you could change the values below "Indicatorsettings".
 
 
-To install, extract the archive or copy the folder to
-~/.local/share/gnome-shell/extensions/ and restart the shell.
+4. How can I install the extension
+
+The easiest way is to install the extension from https://extensions.gnome.org
+You can use this link: https://extensions.gnome.org/extension/131/touchpad-indicator/
+If you want the newest code you should pull the code from github. Pull the code from repository and move it to ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt
+Finally restart the shell with Alt+F2 and 'r' or logout and in.
 
 
-If you want to contribute you could translate this extension:
+5. How can I translate the extension?
+
+5.1 Start a new translation
 
 You have to open a terminal and change your directory:
-
 cd ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt/
-
 Now you have to start a new translation file with:
-
 msginit
-
 After that you'll find a new file like de.po (where de is the language abbreviation of your language) in the directory above. Open this file with your prefered texteditor and change the strings to your language. That's it. Please push this file in github or send it to my email address (You could find them in the code of extension.js) If you would test your language file before you send it to me you have to do the following things:
-
 mkdir -p locale/de/LC_MESSAGES
-
 msgfmt de.po -o locale/de/LC_MESSAGES/touchpad-indicator@orangeshirt.mo
-
 where 'de' is the language abbreviation of your translation. It is the same as for the .po file.
-
 Now you could restart gnome-shell with Alt+F2 and 'r' or logout and in. Touchpad-indicator now should be shown in your language.
+
+
+5.2 Update an existing translation
+
+You have to open a terminal and change to the directory where your *.po file still exists:
+cd ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt/
+Now update the existing translation:
+msgmerge -U de.po messages.pot
+After that you'll find the updated *.po file in the directory above. Open this file with your prefered texteditor and change the missing strings to your language. That's it. Please push this file in github or send it to my email address (You could find them in the code of extension.js) If you would test your language file before you send it to me you have to do the following things:
+msgfmt de.po -o locale/de/LC_MESSAGES/touchpad-indicator@orangeshirt.mo
+where 'de' is the language abbreviation of your translation. It is the same as for the .po file.
+Now you could restart gnome-shell with Alt+F2 and 'r' or logout and in. Touchpad-indicator now should be shown in your language.
+
+
+6 FAQ
+
+6.1 Auto Switch function always disable the touchpad
+
+Please test in a terminal if 'xinput' is installed on your pc. The auto switch function need xinput to detect a plugged mouse. On Fedora xinput is not installed by default. You have to install the package 'xorg-x11-apps'. If xinput is installed and you have this error, please report it.

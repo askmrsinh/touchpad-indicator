@@ -60,20 +60,19 @@ const TRACKPOINTS = new Array('trackpoint','accu point','trackstick',
 const TOUCHPAD_SETTINGS_SCHEMA = 
     'org.gnome.settings-daemon.peripherals.touchpad';
 
-// Configsettings - overwritten by the values of touchpad-indicator.conf
-var CONFIG = {TOUCHPAD_ENABLED : true,
-              TRACKPOINT_ENABLED : true,
-              SWITCH_IF_MOUSE : false,
-              AUTO_SWITCH_TOUCHPAD : false,
-              AUTO_SWITCH_TRACKPOINT : false,
-              SHOW_NOTIFICATIONS : true };
-
 // Debug Mode
-const DEBUG = false;
+var DEBUG = false;
+const FORCE_DEBUG = false;
 var DEBUG_INFO = 'Extension '+ ExtensionMeta.name.toString() +': ';
 
 // Disable Synclient manually to prevent errors
 const DISABLE_SYNCLIENT = false;
+
+
+function logging(message) {
+    if (DEBUG || FORCE_DEBUG)
+        global.log(DEBUG_INFO + message);
+};
 
 function getSettings(schema) {
     return new Gio.Settings({ schema: schema });
@@ -83,8 +82,7 @@ function execute_sync(command) {
     try {
         return GLib.spawn_command_line_sync(command);
     } catch (err) {
-        if (DEBUG)
-            global.log(DEBUG_INFO + err.message.toString());
+        logging(err.message.toString());
         return false;
     }
 };
@@ -93,8 +91,7 @@ function execute_async(command) {
     try {
         return GLib.spawn_command_line_async(command);
     } catch (err) {
-        if (DEBUG)
-            global.log(DEBUG_INFO + err.message.toString());
+        logging(err.message.toString());
         return false;
     }
 };
@@ -113,8 +110,7 @@ function is_there_mouse() {
 };
 
 function search_mouse(where) {
-    if (DEBUG)
-        global.log(DEBUG_INFO +'search mouse');
+    logging('search_mouse()');
     where = where.toString().toLowerCase().split("\n");
     let hits = 0;
     for (let x = 0; x < where.length; x++) {
@@ -123,31 +119,26 @@ function search_mouse(where) {
             for (let tpd = 0; tpd < TOUCHPADS.length; tpd++) {
                 if (!(where[x].indexOf(TOUCHPADS[tpd].toString()) == -1)) {
                     hits++;
-                    if (DEBUG)
-                        global.log(DEBUG_INFO +'Touchpad found: '+ where[x]);
+                    logging('search_mouse(): Touchpad found: '+ where[x]);
                     break;
                 }
             }
             for (let tpt = 0; tpt < TRACKPOINTS.length; tpt++) {
                 if (!(where[x].indexOf(TRACKPOINTS[tpt].toString()) == -1)) {
                     hits++;
-                    if (DEBUG)
-                        global.log(DEBUG_INFO +'Trackpoint found: '+ where[x]);
+                    logging('search_mouse(): Trackpoint found: '+ where[x]);
                     break;
                 }
             }
             if (hits == 0) {
-                if (DEBUG)
-                    global.log(DEBUG_INFO +'search mouse - Mouse found: '+
-                        where[x]);
+                logging('search_mouse(): Mouse found: '+ where[x]);
                 return true;
             } else {
                 hits = 0;
             }
         }
     }
-    if (DEBUG)
-        global.log(DEBUG_INFO + 'search mouse - Could not detect a mouse ');
+    logging( 'search_mouse(): Could not detect a mouse ');
     return false;
 };
 
@@ -211,52 +202,142 @@ function notify(device, title, text) {
 };
 
 
-function Config() {
-    this._init();
+function SettingsContainer() {
+	this._init();
 };
 
-Config.prototype = {
-    _init: function() {
-        this.path = GLib.build_filenamev([ExtensionPath,
-                                         'touchpad-indicator.conf']);
-        if (DEBUG)
-            global.log(DEBUG_INFO +'Config file: '+ this.path);
-    },
+SettingsContainer.prototype = {
+	_init: function() {
+        logging('SettingsContainer._init()');
+		this._connector = {};
+		
+		this._conf = {};
+		this.set_boolean = this._take_data;
+		this.set_double = this._take_data;
+		this.set_int = this._take_data;
+		this.set_enum = this._take_data;
 
-    readConfig: function() {
-        if (GLib.file_test(this.path, GLib.FileTest.EXISTS)) {
-            let [success, content, len] = GLib.file_get_contents(this.path);
-            content = content.toString().split("\n");
-            let line, parts;
-            for (let x = 0; x < content.length; x++) {
-                line = content[x].toString();
-                if (line.indexOf('#') == -1 && line.indexOf('=') != -1 ) {
-                    parts = line.split("=");
-                    CONFIG[parts[0]] = to_boolean(parts[1]);
-                }
-            }
-        } else {
-            this.writeConfig();
+		this._file = Gio.file_new_for_path(ExtensionPath + '/settings.json');
+		
+		if(this._file.query_exists(null)) {
+			[flag, data] = this._file.load_contents(null);
+			
+			if(flag)
+				this._conf = JSON.parse(data);
+			else {
+                logging('SettingsContainer._init(): Something is wrong... I '+
+                    'was not able to load the settings... I will ignore that '+
+                    'and get you the default-settings instead.');
+				this.restoreDefault();
+			}
+			//no error: I want to be able to save it anyway
+			this._error = false;
+		}
+		else {
+			logging('SettingsContainer._init(): Uh, there are no settings '+
+                'saved for that Box. I will get you the default settings '+
+                'instead.');
+			this.restoreDefault();
+		}
+	},
+	
+	get_boolean: function(k) {
+		return this._conf[k] || false;
+	},
+	get_double: function(k) {
+		return this._conf[k] || 0;
+	},
+	get_int: function(k) {
+		return parseInt(this._conf[k]);
+	},
+	get_enum: function(k) {
+		return this._conf[k] || 0;
+	},
+	
+	_take_data: function(k, v, noEmit) {
+        logging('SettingsContainer._take_data():  "'+ k.toString() +
+            '" value "'+ v.toString() +'"');
+		this._conf[k] = v;
+		if(!noEmit) {
+			this.save_data();
+			this.emit(k);
+		}
+	},
+	
+	restoreDefault: function() {
+		this._conf = {};
+		
+		let file = Gio.file_new_for_path(ExtensionPath + '/default.json');
+		if(file.query_exists(null)) {
+			[flag, data] = file.load_contents(null);
+			if(flag) {
+				this._conf = JSON.parse(data);
+				this._error = false;
+			}
+			else {
+				logging('SettingsContainer.restoreDefault(): Something is '+
+                    'terribly wrong! I was not able to load the default '+
+                    'settings... I won`t save anything in this session. And '+
+                    'don`t blame me, if touchpad-indicator is acting '+
+                    'strangely...');
+				this._error = true;
+			}
+		}
+		else {
+			logging('SettingsContainer.restoreDefault(): Something is '+
+                'terribly wrong! Neither your settings nor the default '+
+                'settings seem to exist... I won´t save anything in this '+
+                'session. And don´t blame me, if touchpad-indicator is '+
+                'acting strangely...');
+			this._error = true;
+		}
+		this.save_data();
+	},
+	_restore_backup: function(b) {
+		this._conf = b;
+		this.save_data();
+	},
+	save_data: function() {
+		if(!this._error) {
+			this._file.replace_contents(JSON.stringify(this._conf), null,
+                false, 0, null);
+            logging('SettingsContainer._save_data(): Done');
+		} else {
+            test = "bla";
+			logging('SettingsContainer._save_data(): I really want to save '+
+                'that. But there was an error before...');
         }
-    },
-
-    writeConfig: function() {
-        let content = '# Config File for gnome-shell extension '+
-            'touchpad-indicator\n';
-        for (var i in CONFIG) {
-            content = content +'\n'+ i.toString() +'='+ CONFIG[i].toString();
-        }
-        return GLib.file_set_contents(this.path, content);
-    }
+	},
+	_get_backup: function() {
+		let copy={};
+		for(let k in this._conf) {
+			copy[k] = this._conf[k];
+		};
+		return copy;
+	},
+	
+	
+	connect: function(k, f) {
+		this._connector[k] = f;
+	},
+	disconnect: function(k) {
+		delete this._connector[k];
+	},
+	emit: function(k) {
+		if(this._connector[k])
+			this._connector[k](k, this._conf[k]);
+	}
 };
 
 
-function Synclient() {
-    this._init();
+function Synclient(settings) {
+    this._init(settings);
 };
 
 Synclient.prototype = {
-    _init: function() {
+    _init: function(settings) {
+        logging('Synclient._init()');
+        this.settings = settings
         this.synclient_status = false;
         this.stop = false;
         this.watch = false;
@@ -266,22 +347,17 @@ Synclient.prototype = {
 
     _is_synclient_in_use: function() {
         if (DISABLE_SYNCLIENT) {
-            if (DEBUG) {
-                global.log(DEBUG_INFO + 'synclient manually disabled');
-            }
+            logging('Synclient._is_synclient_in_use(): synclient manually '+
+                'disabled');
             return false;
         }
         this.output = execute_sync('synclient -l');
         if (!this.output) {
-            if (DEBUG) {
-                global.log(DEBUG_INFO + 'synclient not found');
-            }
+            logging('Synclient._is_synclient_in_use(): synclient not found');
             return false;
         }
         if (!this.output[0]) {
-            if (DEBUG) {
-                global.log(DEBUG_INFO + 'synclient not found');
-            }
+            logging('Synclient._is_synclient_in_use(): synclient not found');
             return false;
         }
         for (let x = 0; x < this.output.length; x++) {
@@ -289,24 +365,20 @@ Synclient.prototype = {
                     this.output[x].length > 0) {
                  if (!(this.output[x].toString().indexOf(
                         "Couldn't find synaptics properties") == -1)) {
-                    if (DEBUG) {
-                        global.log(DEBUG_INFO + 
-                            'synclient - no properties found');
-                    }
+                    logging('Synclient._is_synclient_in_use(): no properties '+
+                        'found');
                     return false;
                 }
                 if (!(this.output[x].toString().indexOf(
                         "TouchpadOff") == -1)) {
-                    if (DEBUG)
-                        global.log(DEBUG_INFO + 'synclient found and in use');
+                    logging('Synclient._is_synclient_in_use(): synclient '+
+                        'found and in use');
                     return true;
                 }
             }
         }
-        if (DEBUG) {
-            global.log(DEBUG_INFO + 
-                'Synclient unknown situation - Return false');
-        }
+        logging('Synclient.__is_synclient_in_use(): unknown situation - '+
+            'Return false');
         return false;
     },
 
@@ -332,8 +404,11 @@ Synclient.prototype = {
                     this._wait();
                 } else {
                     parts = this.touchpad_off.split("= ");
-                    CONFIG.TOUCHPAD_ENABLED = !to_boolean(parts[1]);
-                    onChangeIcon();                    
+                    state = !to_boolean(parts[1]);
+                    logging('Synclient._watch: Touchpad state changed to '+
+                        state.toString());
+                    this.settings.set_boolean('touchpad-enabled', state);
+                    onChangeIcon(false);                    
                     this.synclient_status = this.touchpad_off;
                     this._wait();
                 }
@@ -353,8 +428,10 @@ Synclient.prototype = {
     },
 
     _cancel: function() {
+        logging('Synclient._cancel()');
         this.stop = true;
         this.wait = false;
+        this.synclient_status = false;
         if (this.timeout) {
             Mainloop.source_remove(this.timeout);
             this.timeout = false;
@@ -362,11 +439,25 @@ Synclient.prototype = {
     },
 
     _disable: function() {
-        return execute_async('synclient TouchpadOff=1');
+        logging('Synclient._disable()');
+        this._cancel();
+        if (execute_async('synclient TouchpadOff=1')) {
+            this.stop = false;
+            this._watch();
+            return true;
+        } else
+            return false;
     },
 
     _enable: function() {
-        return execute_async('synclient TouchpadOff=0');
+        logging('Synclient._enable()');
+        this._cancel();
+        if (execute_async('synclient TouchpadOff=0')) {
+            this.stop = false;
+            this._watch();
+            return true;
+        } else
+            return false;
     }
 };
 
@@ -377,11 +468,10 @@ function TrackpointXInput() {
 
 TrackpointXInput.prototype = {
     _init: function() {
+        logging('TrackpointXInput._init()');
         this.ids = this._get_ids();
         this.is_there_trackpoint = this._is_there_trackpoint();
-        if (DEBUG)
-            global.log(DEBUG_INFO + 'Found Trackpoint - ' +
-                this.is_there_trackpoint.toString());
+        logging('Found Trackpoint - ' + this.is_there_trackpoint.toString());
     },
 
     _get_ids: function() {
@@ -438,13 +528,15 @@ TrackpointXInput.prototype = {
     },
 
     _set_trackpoint_enabled: function(id) {
+        logging('TrackpointXInput_set_trackpoint_enabled()');
         return execute_async('xinput set-prop ' + id.toString() +
             ' "Device Enabled" 1');
     },
 
     _set_trackpoint_disabled: function(id) {
+        logging('TrackpointXInput._set_trackpoint_disabled()');
         return execute_async('xinput set-prop ' + id.toString() +
-            ' "Device Enabled" 0')
+            ' "Device Enabled" 0');
     },
 
     _disable_all_trackpoints: function() {
@@ -462,6 +554,7 @@ TrackpointXInput.prototype = {
     },
 
     _is_trackpoint_enabled: function(id) {
+        logging('TrackpointXInput._is_trackpoint_enabled()');
         var lines = execute_sync('xinput --list-props ' + id.toString());
         if (lines) {
             lines = lines[1].toString().split('\n');
@@ -535,32 +628,35 @@ touchpadIndicatorButton.prototype = {
     __proto__: PanelMenu.SystemStatusButton.prototype,
 
     _init: function() {
+        logging('touchpadIndicatorButton._init()');
+        this.settings =	new SettingsContainer();
+        this._loadConfig();
+
         this.touchpad = getSettings(TOUCHPAD_SETTINGS_SCHEMA);
         this.trackpoint = new TrackpointXInput();
-        this.synclient = new Synclient();
+        this.synclient = new Synclient(this.settings);
         this.xinput_is_installed = execute_sync('xinput --list');
 
-        this.config_settings = new Config();
-        this.config_settings.readConfig();
-
         if (!this.xinput_is_installed) {
-            CONFIG.SWITCH_IF_MOUSE = false;
-            CONFIG.AUTO_SWITCH_TOUCHPAD = false;
-            CONFIG.AUTO_SWITCH_TRACKPOINT = false;
-            this.config_settings.writeConfig();
+            logging('touchpadIndicatorButton._init(): Can`t find Xinput');
+            this.settings.set_boolean('switch-if-mouse', false);
+            this.settings.set_boolean('auto-switch-touchpad', false);
+            this.settings.set_boolean('auto-switch-trackpoint', false);
+        } else {
+            logging('touchpadIndicatorButton._init(): Xinput is installed');
         }
 
         if (this.synclient.synclient_in_use) {
             if (!this.touchpad.get_boolean('touchpad-enabled'))
                 this.touchpad.set_boolean('touchpad-enabled', true);
-            if (CONFIG.TOUCHPAD_ENABLED) {
+            if (this._CONF_tochpadEnabled) {
                 this.synclient._enable();
             } else {
                 this.synclient._disable();
             }
         }
 
-        if (!CONFIG.TRACKPOINT_ENABLED)
+        if (!this._CONF_trackpointEnabled)
             this.trackpoint._disable_all_trackpoints();
 
         PanelMenu.SystemStatusButton.prototype._init.call(this,
@@ -587,13 +683,13 @@ you have to install 'xinput' and reload the extension.") });
         }
         this._AutoSwitchTouchpadItem = new PopupSwitchMenuItem(
             _("Automatically switch Touchpad On/Off"), 6,
-            CONFIG.AUTO_SWITCH_TOUCHPAD, onMenuSelect);
+            this._CONF_autoSwitchTouchpad, onMenuSelect);
         this._AutoSwitchTrackpointItem = new PopupSwitchMenuItem(
             _("Automatically switch Trackpoint On/Off"), 7,
-            CONFIG.AUTO_SWITCH_TRACKPOINT, onMenuSelect);
+            this._CONF_autoSwitchTrackpoint, onMenuSelect);
         this._ShowNotifications = new PopupSwitchMenuItem(
             _("Show notification if switched"), 8,
-            CONFIG.SHOW_NOTIFICATIONS, onMenuSelect);
+            this._CONF_showNotifications, onMenuSelect);
         this._SettingsItem = new PopupMenu.PopupSubMenuMenuItem(
             _("Touchpadsettings"));
         this._ClickToTapItem = new PopupSwitchMenuItem(_("Click to Tap"), 2,
@@ -633,26 +729,62 @@ you have to install 'xinput' and reload the extension.") });
             'gnome-mouse-panel.desktop');
 
         this._onMousePlugged();
-        this._onChangeIcon();
+        this._onChangeIcon(false);
         this._onSwitchScrollMethod();
         this._connect_signals();
+        this._connectConfig();
     },
 
-    _onChangeIcon: function() {
+    _loadConfig: function() {
+        this._CONF_firstTime = this.settings.get_boolean('first-time');
+		this._CONF_tochpadEnabled = this.settings.get_boolean(
+            'touchpad-enabled');
+		this._CONF_trackpointEnabled = this.settings.get_boolean(
+            'trackpoint-enabled');
+		this._CONF_switchIfMouse = this.settings.get_boolean(
+            'switch-if-mouse');
+		this._CONF_autoSwitchTouchpad = this.settings.get_boolean(
+            'auto-switch-touchpad');
+		this._CONF_autoSwitchTrackpoint = this.settings.get_boolean(
+            'auto-switch-trackpoint');
+        this._CONF_showNotifications = this.settings.get_boolean(
+            'show-notifications');
+        DEBUG = this._CONF_debug = this.settings.get_boolean('debug');
+	},
+
+    _connectConfig: function() {
+        //this are not real connections
+        this.settings.connect('touchpad-enabled', Lang.bind(this,
+            this._loadConfig));
+		this.settings.connect('trackpoint-enabled', Lang.bind(this,
+            this._loadConfig));
+		this.settings.connect('switch-if-mouse', Lang.bind(this,
+            this._loadConfig));
+        this.settings.connect('auto-switch-touchpad', Lang.bind(this,
+            this._loadConfig));
+        this.settings.connect('auto-switch-trackpoint', Lang.bind(this,
+            this._loadConfig));
+        this.settings.connect('show-notifications', Lang.bind(this,
+            this._loadConfig));
+        this.settings.connect('debug', Lang.bind(this, this._loadConfig));
+    },
+
+    _onChangeIcon: function(write_setting) {
+        logging('touchpadIndicatorButton._onChangeIcon()');
         if (!this._touchpad_enabled()) {
             PanelMenu.SystemStatusButton.prototype.setIcon.call(this,
                 'touchpad-disabled');
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
                 this._touchpadItem, false);
-            CONFIG.TOUCHPAD_ENABLED = false;
-            this.config_settings.writeConfig();
+            if (write_setting !== undefined && write_setting)
+                this.settings.set_boolean('touchpad-enabled', false);
         } else {
             PanelMenu.SystemStatusButton.prototype.setIcon.call(this,
                 'input-touchpad');
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
                 this._touchpadItem, true);
-            CONFIG.TOUCHPAD_ENABLED = true;
-            this.config_settings.writeConfig();
+            if (write_setting !== undefined && write_setting)
+                this.settings.set_boolean('touchpad-enabled', true);
         }
     },
 
@@ -692,9 +824,8 @@ you have to install 'xinput' and reload the extension.") });
     },
 
     _onMousePlugged: function() {
-        if (DEBUG)
-            global.log(DEBUG_INFO + '_onMousePlugged()');
-        if (CONFIG.SWITCH_IF_MOUSE) {
+        logging('touchpadIndicatorButton._onMousePlugged()');
+        if (this._CONF_switchIfMouse) {
             synclient_in_use = this.synclient.synclient_in_use;
             this.synclient._is_synclient_still_in_use();
             if (synclient_in_use != this.synclient.synclient_in_use) {
@@ -702,14 +833,14 @@ you have to install 'xinput' and reload the extension.") });
                     if (!this.touchpad.get_boolean('touchpad-enabled'))
                         this.touchpad.set_boolean('touchpad-enabled', true);
                     this.synclient._watch();
-                    if (CONFIG.TOUCHPAD_ENABLED) {
+                    if (this._CONF_tochpadEnabled) {
                         this.synclient._enable();
                     } else {
                         this.synclient._disable();
                     }
                 } else {
                     this.synclient._cancel();
-                    if (CONFIG.TOUCHPAD_ENABLED) {
+                    if (this._CONF_tochpadEnabled) {
                         this.touchpad.set_boolean('touchpad-enabled', true);
                     } else {
                         this.touchpad.set_boolean('touchpad-enabled', false);
@@ -719,17 +850,17 @@ you have to install 'xinput' and reload the extension.") });
             let is_mouse = is_there_mouse();
             let note_tpd = false, tpd = !is_mouse;
             let note_tpt = false, tpt = !is_mouse;
-            if (CONFIG.AUTO_SWITCH_TOUCHPAD) {
+            if (this._CONF_autoSwitchTouchpad) {
                 note_tpd = true;
                 if (is_mouse && this._touchpad_enabled()) {
-                    this._disable_touchpad(this);
+                    this._disable_touchpad();
                     tpd = false;
                 } else if (!is_mouse && !this._touchpad_enabled()) {
-                    this._enable_touchpad(this);
+                    this._enable_touchpad();
                     tpd = true;
                 }
             }
-            if (CONFIG.AUTO_SWITCH_TRACKPOINT && 
+            if (this._CONF_autoSwitchTrackpoint && 
                     this.trackpoint.is_there_trackpoint) {
                 note_tpt = true;
                 if (is_mouse && this.trackpoint._all_trackpoints_enabled()) {
@@ -766,28 +897,29 @@ you have to install 'xinput' and reload the extension.") });
                     content = content + _("Trackpoint disabled");
                 }
             }
-            if (DEBUG)
-                global.log(DEBUG_INFO + content);
+            logging(content);
             this._notify(false, content);
 	    }
     },
 
     _notify: function(title, content) {
-        if (CONFIG.SHOW_NOTIFICATIONS)
+        if (this._CONF_showNotifications)
             notify(this, title, content);
     },
 
     _disable_touchpad: function() {
+        logging('touchpadIndicatorButton._disable_touchpad()');
         if (this.synclient.synclient_in_use) {
             if (this.synclient._disable()) {
-                CONFIG.TOUCHPAD_ENABLED = false;
+                this.settings.set_boolean('touchpad-enabled', false);
+                this._onChangeIcon(false);
                 return true;
             } else {
                 return false;
             }
         } else {
             if (this.touchpad.set_boolean('touchpad-enabled', false)) {
-                CONFIG.TOUCHPAD_ENABLED = false;
+                //this.settings.set_boolean('touchpad-enabled', false);
                 return true;
             } else {
                 return false;
@@ -796,16 +928,18 @@ you have to install 'xinput' and reload the extension.") });
     },
 
     _enable_touchpad: function() {
+        logging('touchpadIndicatorButton._enable_touchpad()');
         if (this.synclient.synclient_in_use) {
             if (this.synclient._enable()) {
-                CONFIG.TOUCHPAD_ENABLED = true;
+                this.settings.set_boolean('touchpad-enabled', true);
+                this._onChangeIcon(false);
                 return true;
             } else {
                 return false;
             }
         } else {
             if (this.touchpad.set_boolean('touchpad-enabled', true)) {
-                CONFIG.TOUCHPAD_ENABLED = true;
+                //this.settings.set_boolean('touchpad-enabled', true);
                 return true;
             } else {
                 return false;
@@ -814,21 +948,19 @@ you have to install 'xinput' and reload the extension.") });
     },
 
     _disable_auto_switch_touchpad: function() {
-        CONFIG.AUTO_SWITCH_TOUCHPAD = false;
-        if (!CONFIG.AUTO_SWITCH_TRACKPOINT)
-            CONFIG.SWITCH_IF_MOUSE = false;
-        this.config_settings.writeConfig();
+        this.settings.set_boolean('auto-switch-touchpad', false);
+        if (!this._CONF_autoSwitchTrackpoint)
+            this.settings.set_boolean('switch-if-mouse', false);
     },
 
     _enable_auto_switch_touchpad: function() {
-        CONFIG.AUTO_SWITCH_TOUCHPAD = true;
-        CONFIG.SWITCH_IF_MOUSE = true;
-        this.config_settings.writeConfig();
+        this.settings.set_boolean('auto-switch-touchpad', true);
+        this.settings.set_boolean('switch-if-mouse', true);
     },
 
     _touchpad_enabled: function() {
         if (this.synclient.synclient_in_use) {
-            return CONFIG.TOUCHPAD_ENABLED;
+            return this._CONF_tochpadEnabled;
         } else {
             return this.touchpad.get_boolean('touchpad-enabled');
         }
@@ -858,8 +990,7 @@ you have to install 'xinput' and reload the extension.") });
         if (this.trackpoint._disable_all_trackpoints()) {
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
                 call(this._trackpointItem, false);
-            CONFIG.TRACKPOINT_ENABLED = false;
-            this.config_settings.writeConfig();
+            this.settings.set_boolean('trackpoint-enabled', false);
             return true;
         } else {
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
@@ -872,8 +1003,7 @@ you have to install 'xinput' and reload the extension.") });
         if (this.trackpoint._enable_all_trackpoints()) {
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
                 call(this._trackpointItem, true);
-            CONFIG.TRACKPOINT_ENABLED = true;
-            this.config_settings.writeConfig();
+            this.settings.set_boolean('trackpoint-enabled', true);
             return true;
         } else {
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
@@ -883,23 +1013,21 @@ you have to install 'xinput' and reload the extension.") });
     },
 
     _disable_auto_switch_trackpoint: function() {
-        CONFIG.AUTO_SWITCH_TRACKPOINT = false;
-        if (!CONFIG.AUTO_SWITCH_TOUCHPAD)
-            CONFIG.SWITCH_IF_MOUSE = false
-        this.config_settings.writeConfig();
+        this.settings.set_boolean('auto-switch-trackpoint', false);
+        if (!this._CONF_autoSwitchTouchpad)
+            this.settings.set_boolean('switch-if-mouse', false);
     },
 
     _enable_auto_switch_trackpoint: function() {
-        CONFIG.AUTO_SWITCH_TRACKPOINT = true;
-        CONFIG.SWITCH_IF_MOUSE = true;
-        this.config_settings.writeConfig();
+        this.settings.set_boolean('auto-switch-trackpoint', true);
+        this.settings.set_boolean('switch-if-mouse', true);
     },
 
     _switch_notification: function() {
-        CONFIG.SHOW_NOTIFICATIONS = !CONFIG.SHOW_NOTIFICATIONS;
+        this.settings.set_boolean('show-notifications',
+            !this._CONF_showNotifications);
         PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
-            call(this._ShowNotifications, CONFIG.SHOW_NOTIFICATIONS);
-        this.config_settings.writeConfig();
+            call(this._ShowNotifications, this._CONF_showNotifications);
     },
 
     _connect_signals: function() {
@@ -930,6 +1058,7 @@ you have to install 'xinput' and reload the extension.") });
 let touchpadIndicator;
 
 function onMenuSelect(actor, event) {
+    global.log(DEBUG_INFO + 'onMenuSelect: actor - "'+actor.toString()+'"');
     switch (actor.tag) {
         case 0:
             if (actor.state) {
@@ -977,8 +1106,8 @@ function onMenuSelect(actor, event) {
     }
 };
 
-function onChangeIcon() {
-    touchpadIndicator._onChangeIcon();
+function onChangeIcon(write_setting) {
+    touchpadIndicator._onChangeIcon(write_setting);
 };
 
 function onSwitchTapToClick() {
