@@ -244,12 +244,15 @@ SettingsContainer.prototype = {
 	get_boolean: function(k) {
 		return this._conf[k] || false;
 	},
+
 	get_double: function(k) {
 		return this._conf[k] || 0;
 	},
+
 	get_int: function(k) {
 		return parseInt(this._conf[k]);
 	},
+
 	get_enum: function(k) {
 		return this._conf[k] || 0;
 	},
@@ -293,10 +296,12 @@ SettingsContainer.prototype = {
 		}
 		this.save_data();
 	},
+
 	_restore_backup: function(b) {
 		this._conf = b;
 		this.save_data();
 	},
+
 	save_data: function() {
 		if(!this._error) {
 			this._file.replace_contents(JSON.stringify(this._conf), null,
@@ -308,6 +313,7 @@ SettingsContainer.prototype = {
                 'that. But there was an error before...');
         }
 	},
+
 	_get_backup: function() {
 		let copy={};
 		for(let k in this._conf) {
@@ -320,9 +326,11 @@ SettingsContainer.prototype = {
 	connect: function(k, f) {
 		this._connector[k] = f;
 	},
+
 	disconnect: function(k) {
 		delete this._connector[k];
 	},
+
 	emit: function(k) {
 		if(this._connector[k])
 			this._connector[k](k, this._conf[k]);
@@ -919,7 +927,6 @@ you have to install 'xinput' and reload the extension.") });
             }
         } else {
             if (this.touchpad.set_boolean('touchpad-enabled', false)) {
-                //this.settings.set_boolean('touchpad-enabled', false);
                 return true;
             } else {
                 return false;
@@ -939,7 +946,6 @@ you have to install 'xinput' and reload the extension.") });
             }
         } else {
             if (this.touchpad.set_boolean('touchpad-enabled', true)) {
-                //this.settings.set_boolean('touchpad-enabled', true);
                 return true;
             } else {
                 return false;
