@@ -536,7 +536,7 @@ SettingsDialog.prototype = {
 		mainBox.add(closeButton);
 		
 		this._undoButton = new St.Button({ style_class: "dialog_button", 
-            x: padding + boxWidth - 160,
+            x: padding + boxWidth - 180,
             y: padding, reactive: true,
             can_focus: true, label: _("Undo")});
 		this._undoButton.connect("button-release-event", Lang.bind(this,
@@ -562,7 +562,7 @@ Armin"));
 
 		this._addChapter(_("General"), this._global, "");
 		this._addChapter(_("Auto Switch"), this._auto_switch,
-            _("Behaviour if a mouse is (un)plugged:"));
+            _("Define the behaviour if a mouse is (un)plugged."));
         this._addChapter(_("Debug"), this._debug,
             _("This site should help to debug the extension if it does not run as expected."));
         this._addChapter(_("Debug Log"), this._debug_log,
