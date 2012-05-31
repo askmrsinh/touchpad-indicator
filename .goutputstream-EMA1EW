@@ -173,6 +173,7 @@ function list_mouse_devices() {
     return [false, _("    - No mouse device detected.") + "\n"];
 };
 
+
 function search_touchpads() {
     logging('search_touchpads()');
     where = list_mouse_devices();
@@ -548,15 +549,15 @@ SettingsDialog.prototype = {
 		Main.uiGroup.add_actor(mainBox);
 
 		this._chapters = [];
-		this._addChapter(_("Welcome"),
+		this._addChapter(_("Welcome!"),
             this._welcome, _("There are some settings, which can help you to costumize this extension to your needs.\n\
 \n\
-You can open this dialog again by clicking with a Mouse-Button on the icon and then click on Indicatorsettings.\n\
+You can open this dialog again by clicking with a Mouse-Button on the icon and then click on the settings-Button\n\
 \n\
 Please feel free to contact me, if you find bugs, have suggestions, critics or feedback.\n\
 I am allways happy about input - what kind ever. :-)\n\
 \n\
-To contact me you could use github (https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator) or gnome-shell extension bug tracker (https://extensions.gnome.org/extension/131/touchpad-indicator/).\n\
+You could use github (https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator) or gnome-shell extension bug tracker (https://extensions.gnome.org/extension/131/touchpad-indicator/) to contact me.\n\
 \n\
 Armin"));
 
@@ -766,11 +767,6 @@ Armin"));
         logging('SettingsDialog._welcome()');
 		this._createSwitch(this._indicator._CONF_firstTime, 'first-time',
 			_("First time startup"));
-        if (!this._touchpad[0]) {
-            this._createSeparator();
-            this._createLabel(_("Attention! - No Touchpad detected"),
-                _("The extension could not detect a touchpad at the moment.\nYou'll find further informations in Debug section."));
-        }
 	},
 
 	_global: function() {
@@ -860,18 +856,10 @@ Armin"));
         let indicator = this._indicator;
 
 		this._createSwitch(indicator._CONF_debug, 'debug',
-		    _("Debug log"), _("Turns debug log on or off."),
-            Lang.bind(this, function(s) {
-				if(s)
-					this._debug_to_file._mySection.show();
-				else
-					this._debug_to_file._mySection.hide();
-			}));
-        this._debug_to_file = this._createSwitch(indicator._CONF_debugToFile,
-            'debug-to-file', _("Log Debug Information additional to file"),
-            _("All debug logs are additional written to the file 'touchpad-indicator.log' in the extension directory.\nAttention!\nThis feature will slow down the startup of gnome-shell and the usage of the extension."));
-        if (!indicator._CONF_debug)
-            this._debug_to_file._mySection.hide();
+		    _("Debug log"), _("Turns debug log on or off."));
+        this._createSwitch(indicator._CONF_debugToFile, 'debug-to-file',
+		    _("Log Debug Information additional to file"),
+            _("All debug logs are additional written in the file 'touchpad-indicator.log' in the extension directory.\nAttention! This feature will slow down the startup of gnome-shell and the usage of the extension."));
         this._createSeparator();
         if (!this._touchpad[0]) {
             let mouses = list_mouse_devices();
@@ -887,12 +875,12 @@ Armin"));
             } else {
                 mouse = mouses[1].toString(); 
             }
-            this._createLabel(_("Warning - No Touchpad detected"),
+            this._createLabel(_("Warning - No Touchpad found"),
                 _("The extension could not detect a touchpad at the moment.\nPerhaps your touchpad is not detected correct by the kernel.\nThe following devices are detected as mouse:\n") + mouse);
 
             if (mouses[0] && indicator.xinput_is_installed) {
                 this._createLabel(_("Try to find the touchpad"),
-                    _("You could try to find a possible touchpad.\nBelow you could choose the possible touchpad from the list of the detected mouses. In most cases you should choose the entry 'PS/2 Generic Mouse' if available.\nThe Switch Method is automatically switched to Xinput, only with Xinput it is possible to switch a not correct detected touchpad.\n"));
+                    _("You could try to find a possible touchpad.\nBelow you could choose the possible touchpad from the list with the detected mouses. In most cases you should choose the entry 'PS/2 Generic Mouse'.\nThe Switch Method is automatically switched to Xinput, only with Xinput it is possible to switch a not correct detected touchpad.\n"));
                 let items = new Array(), number = 1, choosen = 0;
                 items[0] = ["-", 0];
                 mouses[1].forEach(function(o) {
@@ -1318,7 +1306,7 @@ touchpadIndicatorButton.prototype = {
             this.trackpoint._disable_all_devices();
 
         PanelMenu.SystemStatusButton.prototype._init.call(this,
-            'input-touchpad', _("Switch Touchpad On/Off"));
+            'input-touchpad', _("Turn Touchpad On/Off"));
 
         this._touchpadItem = new PopupSwitchMenuItem(_("Touchpad"), 0,
             this._touchpad_enabled(), onMenuSelect);

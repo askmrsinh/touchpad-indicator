@@ -1,11 +1,13 @@
 {
 "first-time": true,
-
 "touchpad-enabled": true,
-"trackpoint-enabled": false,
-"switch-if-mouse": false,
+"trackpoint-enabled": true,
 "auto-switch-touchpad": false,
 "auto-switch-trackpoint": false,
 "show-notifications": true,
-"debug": false
+"debug": false,
+"debug-to-file":false,
+"switch-method": 1,
+"possible-touchpad":"-",
+"excluded-mouses":{}
 }
