@@ -341,8 +341,8 @@ SettingsContainer.prototype = {
 				this._conf = JSON.parse(data);
 			else {
                 logging('SettingsContainer._init(): Something is wrong... I '
-                    + 'was not able to load the settings... I will ignore '
-                    + 'that and get you the default-settings instead.');
+                    + 'was not able to load the settings... I will restore '
+                    + 'the default settings instead.');
 				this.restoreDefault();
 			}
 			//no error: I want to be able to save it anyway
@@ -350,7 +350,7 @@ SettingsContainer.prototype = {
 		}
 		else {
 			logging('SettingsContainer._init(): Uh, there are no settings '
-                + 'saved for that Box. I will get you the default settings '
+                + 'saved for that Box. I will use the default settings '
                 + 'instead.');
 			this.restoreDefault();
 		}
@@ -406,8 +406,8 @@ SettingsContainer.prototype = {
 			else {
 				logging('SettingsContainer.restoreDefault(): Something is '
                     + 'terribly wrong! I was not able to load the default '
-                    + 'settings... I won`t save anything in this session. And '
-                    + 'don`t blame me, if touchpad-indicator is acting '
+                    + 'settings... I won\'t save anything in this session. And '
+                    + 'don\'t blame me, if touchpad-indicator is acting '
                     + 'strangely...');
 				this._error = true;
 			}
@@ -415,8 +415,8 @@ SettingsContainer.prototype = {
 		else {
 			logging('SettingsContainer.restoreDefault(): Something is '
                 + 'terribly wrong! Neither your settings nor the default '
-                + 'settings seem to exist... I won´t save anything in this '
-                + 'session. And don´t blame me, if touchpad-indicator is '
+                + 'settings seem to exist... I won\'t save anything in this '
+                + 'session. And don\'t blame me, if touchpad-indicator is '
                 + 'acting strangely...');
 			this._error = true;
 		}
@@ -549,22 +549,17 @@ SettingsDialog.prototype = {
 
 		this._chapters = [];
 		this._addChapter(_("Welcome"),
-            this._welcome, _("There are some settings, which can help you to costumize this extension to your needs.\n\
+            this._welcome, _("These settings allow you to customize this extension to your needs. You can open this dialog again by clicking on the extension's icon and selecting Indicator Settings.\n\
 \n\
-You can open this dialog again by clicking with a Mouse-Button on the icon and then click on Indicatorsettings.\n\
+Please feel free to contact me if you find bugs or have suggestions, criticisms, or feedback. I am always happy to receive feedback - whatever kind. :-) \n\
 \n\
-Please feel free to contact me, if you find bugs, have suggestions, critics or feedback.\n\
-I am allways happy about input - what kind ever. :-)\n\
-\n\
-To contact me you could use github (https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator) or gnome-shell extension bug tracker (https://extensions.gnome.org/extension/131/touchpad-indicator/).\n\
-\n\
-Armin"));
+Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator) or on my bug tracker (https://extensions.gnome.org/extension/131/touchpad-indicator/)."));
 
 		this._addChapter(_("General"), this._global, "");
 		this._addChapter(_("Auto Switch"), this._auto_switch,
             _("Define the behaviour if a mouse is (un)plugged."));
         this._addChapter(_("Debug"), this._debug,
-            _("This site should help to debug the extension if it does not run as expected."));
+            _("Settings for debugging the extension."));
         this._addChapter(_("Debug Log"), this._debug_log,
             _("The debug log since last restart, if debugging is enabled."));
 		if(!this._settings.get_boolean('first-time'))
@@ -768,8 +763,8 @@ Armin"));
 			_("First time startup"));
         if (!this._touchpad[0]) {
             this._createSeparator();
-            this._createLabel(_("Attention! - No Touchpad detected"),
-                _("The extension could not detect a touchpad at the moment.\nYou'll find further informations in Debug section."));
+            this._createLabel(_("Attention - No Touchpad Detected"),
+                _("The extension could not detect a touchpad at the moment.\nYou'll find further information in the Debug section."));
         }
 	},
 
@@ -798,7 +793,7 @@ Armin"));
                 switch_to = number;
         }
 		this._createCombo(switch_to, 'switch-method', items,
-            _("Switch Method"), _("Method to switch the touchpad"),
+            _("Switch Method"), _("Method by which to switch the touchpad."),
             function(menuItem, id) {
                 this._undoButton.show();
                 let old_method = indicator._CONF_switchMethod;
@@ -823,7 +818,7 @@ Armin"));
 	    this._createSwitch(indicator._CONF_autoSwitchTouchpad,
             'auto-switch-touchpad',
             _("Automatically switch Touchpad On/Off"),
-            _("Turns touchpad automatically on or off if a mouse is (un)plugged."));
+            _("Turns the touchpad on or off automatically if a mouse is (un)plugged."));
         if (indicator.trackpoint.is_there_device) {
 	        this._createSwitch(indicator._CONF_autoSwitchTrackpoint, 
                 'auto-switch-trackpoint', 
@@ -834,10 +829,10 @@ Armin"));
 	    this._createSwitch(indicator._CONF_showNotifications,
             'show-notifications',
 		    _("Show notification"),
-            _("Show notifications if the touchpad or the trackpoint is automatically switched."));
+            _("Show notifications if the touchpad or the trackpoint is automatically switched on or off."));
         this._createSeparator();
         this._createLabel(_("Exclude mouse device from autodetection"),
-                    _("You could choose here some mouse devices which should be excluded from the autodetection. Like your IR Remote Control or something similar.\nAll choosen devices are ignored."));
+                    _("Here you can choose some mouse devices to be excluded from autodetection, like your IR Remote Control or something similar.\nAll chosen devices are ignored."));
 
         if (mouses[0]) {
             for (let x = 0; x < mouses[1].length; x++) {
@@ -860,7 +855,7 @@ Armin"));
         let indicator = this._indicator;
 
 		this._createSwitch(indicator._CONF_debug, 'debug',
-		    _("Debug log"), _("Turns debug log on or off."),
+		    _("Debug log"), _("Turns the debug log on or off."),
             Lang.bind(this, function(s) {
 				if(s)
 					this._debug_to_file._mySection.show();
@@ -868,8 +863,8 @@ Armin"));
 					this._debug_to_file._mySection.hide();
 			}));
         this._debug_to_file = this._createSwitch(indicator._CONF_debugToFile,
-            'debug-to-file', _("Log Debug Information additional to file"),
-            _("All debug logs are additional written to the file 'touchpad-indicator.log' in the extension directory.\nAttention!\nThis feature will slow down the startup of gnome-shell and the usage of the extension."));
+            'debug-to-file', _("Write debug information to file."),
+            _("All debug logs are additionally written to the file 'touchpad-indicator.log' in the extension directory.\nAttention!\nThis feature will slow down the startup of gnome-shell and the usage of the extension."));
         if (!indicator._CONF_debug)
             this._debug_to_file._mySection.hide();
         this._createSeparator();
@@ -887,12 +882,12 @@ Armin"));
             } else {
                 mouse = mouses[1].toString(); 
             }
-            this._createLabel(_("Warning - No Touchpad detected"),
-                _("The extension could not detect a touchpad at the moment.\nPerhaps your touchpad is not detected correct by the kernel.\nThe following devices are detected as mouse:\n") + mouse);
+            this._createLabel(_("Warning - No Touchpad Detected"),
+                _("The extension could not detect a touchpad at the moment.\nPerhaps your touchpad is not detected correctly by the kernel.\nThe following devices are detected as mice:\n") + mouse);
 
             if (mouses[0] && indicator.xinput_is_installed) {
                 this._createLabel(_("Try to find the touchpad"),
-                    _("You could try to find a possible touchpad.\nBelow you could choose the possible touchpad from the list of the detected mouses. In most cases you should choose the entry 'PS/2 Generic Mouse' if available.\nThe Switch Method is automatically switched to Xinput, only with Xinput it is possible to switch a not correct detected touchpad.\n"));
+                    _("You could try to find a possible touchpad.\nBelow you could choose the possible touchpad from the list of the detected mice. In most cases you should choose the entry 'PS/2 Generic Mouse' if available.\nThe switch method will be automatically switched to Xinput, because only with Xinput it is possible to switch an undetected touchpad.\n"));
                 let items = new Array(), number = 1, choosen = 0;
                 items[0] = ["-", 0];
                 mouses[1].forEach(function(o) {
@@ -904,7 +899,7 @@ Armin"));
                 });
         		this._createCombo(choosen, 'possible-touchpad', items,
                     _("Choose possible touchpad"),
-                    _("You could choose the mouse entry which possibly is the touchpad."),
+                    _("You can choose the mouse entry which could be the touchpad."),
                     function(menuItem, id) {
                         this._undoButton.show();
 			            settings.set_text("possible-touchpad", items[id][0]);
@@ -922,7 +917,7 @@ Armin"));
                 }
             } else {
                 this._createLabel(_("No Xinput installed"),
-                    _("If you install 'xinput' on your pc the extension could try to switch a not correct detected touchpad.\nPlease install 'xinput' and reload gnome-shell to enable this feature."));
+                    _("If you install 'xinput' on your pc, the extension could try to switch an undetected touchpad.\nPlease install 'xinput' and reload gnome-shell to enable this feature."));
             }
             this._createSeparator();
         }
@@ -944,7 +939,7 @@ Armin"));
             synclient = synclient + _("Not found or used on your system.\n");
         }
         this._createLabel(_("Debug Informations"),
-            _("Here you find some informations about your System which might be helpful to debug.\n\n")
+            _("Here you find some information about your system which might be helpful in debugging.\n\n")
             + shellversion + indicatorversion + touchpad + synclient + xinput);
 	},
 
@@ -1324,7 +1319,7 @@ touchpadIndicatorButton.prototype = {
             this._touchpad_enabled(), onMenuSelect);
         this._trackpointItem = new PopupSwitchMenuItem(_("Trackpoint"), 1,
             this.trackpoint._all_devices_enabled(), onMenuSelect);
-        this._SettingsItem = new PopupMenuItem(_("Indicatorsettings"), 9, 
+        this._SettingsItem = new PopupMenuItem(_("Indicator Settings"), 9, 
             onMenuSelect);
 
         this.menu.addMenuItem(this._touchpadItem);
@@ -1332,7 +1327,7 @@ touchpadIndicatorButton.prototype = {
             this.menu.addMenuItem(this._trackpointItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        this.menu.addSettingsAction(_("Touchpadsettings"),
+        this.menu.addSettingsAction(_("Touchpad Settings"),
             'gnome-mouse-panel.desktop');
         this.menu.addMenuItem(this._SettingsItem);
 
@@ -1486,27 +1481,27 @@ touchpadIndicatorButton.prototype = {
             }
             let content;
             if ((note_tpd && !tpd) || (note_tpt && !tpt)) {
-                content = _("Mouse plugged\n");
+                content = _("Mouse plugged in - ");
             } else {
-                content = _("Mouse unplugged\n");
+                content = _("Mouse unplugged - ");
             }
             if (note_tpd && note_tpt) {
                 if (tpd && tpt) {
-                    content = content + _("Touchpad & Trackpoint enabled");
+                    content = content + _("touchpad and trackpoint enabled");
                 } else {
-                    content = content + _("Touchpad & Trackpoint disabled");
+                    content = content + _("touchpad and trackpoint disabled");
                 }
             } else if (note_tpd && !note_tpt) {
                 if (tpd) {
-                    content = content + _("Touchpad enabled");
+                    content = content + _("touchpad enabled");
                 } else {
-                    content = content + _("Touchpad disabled");
+                    content = content + _("touchpad disabled");
                 }
             } else if (!note_tpd && note_tpt) {
                 if (tpt) {
-                    content = content + _("Trackpoint enabled");
+                    content = content + _("trackpoint enabled");
                 } else {
-                    content = content + _("Trackpoint disabled");
+                    content = content + _("trackpoint disabled");
                 }
             }
             logging(content);
