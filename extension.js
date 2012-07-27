@@ -89,6 +89,8 @@ var LOGS = "";
 // Disable Synclient manually to prevent errors
 var USE_SYNCLIENT = true;
 
+var TIMEOUT_SETTINGSDIALOG = false;
+
 
 function logging(message) {
     if (DEBUG || FORCE_DEBUG) {
@@ -1730,13 +1732,19 @@ function enable() {
     Main.panel.addToStatusArea('touchpad-indicator', touchpadIndicator);
 
     if(touchpadIndicator.settings.get_boolean("first-time"))
-		Mainloop.timeout_add(3000, Lang.bind(this, function() {
-				new SettingsDialog(touchpadIndicator);
-				touchpadIndicator.settings.set_boolean("first-time", false);
-			}));
+        TIMEOUT_SETTINGSDIALOG = Mainloop.timeout_add(3000,
+            Lang.bind(this, function() {
+                TIMEOUT_SETTINGSDIALOG = false;
+                new SettingsDialog(touchpadIndicator);
+                touchpadIndicator.settings.set_boolean("first-time", false);
+            }));
 };
 
 function disable() {
+    if (TIMEOUT_SETTINGSDIALOG) {
+        Mainloop.source_remove(TIMEOUT_SETTINGSDIALOG);
+        TIMEOUT_SETTINGSDIALOG = false;
+    }
     touchpadIndicator._disconnect_signals();
     touchpadIndicator.destroy();
 };
