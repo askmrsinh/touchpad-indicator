@@ -818,7 +818,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
 	    this._createSwitch(indicator._CONF_autoSwitchTouchpad,
             'auto-switch-touchpad',
             _("Automatically switch Touchpad On/Off"),
-            _("Turns touchpad automatically on or off if a mouse is (un)plugged."));
+            _("Turns the touchpad on or off automatically if a mouse is (un)plugged."));
         if (indicator.trackpoint.is_there_device) {
 	        this._createSwitch(indicator._CONF_autoSwitchTrackpoint, 
                 'auto-switch-trackpoint', 
