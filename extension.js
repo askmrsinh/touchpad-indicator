@@ -59,7 +59,7 @@ const Gettext = imports.gettext.domain('touchpad-indicator@orangeshirt');
 const _ = Gettext.gettext;
 
 const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad',
-                            'bcm5974');
+                            'bcm5974','trackpad');
 var ALL_TOUCHPADS = TOUCHPADS.slice();
 const TRACKPOINTS = new Array('trackpoint','accu point','trackstick',
                               'touchstyk','pointing stick','dualpoint stick');
