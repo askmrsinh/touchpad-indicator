@@ -1313,7 +1313,7 @@ touchpadIndicatorButton.prototype = {
             this.trackpoint._disable_all_devices();
 
         PanelMenu.SystemStatusButton.prototype._init.call(this,
-            'input-touchpad', _("Switch Touchpad On/Off"));
+            'input-touchpad');
 
         this._touchpadItem = new PopupSwitchMenuItem(_("Touchpad"), 0,
             this._touchpad_enabled(), onMenuSelect);
