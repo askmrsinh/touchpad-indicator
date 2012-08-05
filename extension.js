@@ -1337,6 +1337,12 @@ touchpadIndicatorButton.prototype = {
         if (!this._CONF_trackpointEnabled)
             this.trackpoint._disable_all_devices();
 
+        if (!this._CONF_fingertouchEnabled)
+            this.fingertouch._disable_all_devices();
+
+        if (!this._CONF_penEnabled)
+            this.pen._disable_all_devices();
+
         PanelMenu.SystemStatusButton.prototype._init.call(this,
             'input-touchpad');
 
@@ -1379,6 +1385,10 @@ touchpadIndicatorButton.prototype = {
             'touchpad-enabled');
 		this._CONF_trackpointEnabled = this.settings.get_boolean(
             'trackpoint-enabled');
+		this._CONF_fingertouchEnabled = this.settings.get_boolean(
+            'fingertouch-enabled');
+		this._CONF_penEnabled = this.settings.get_boolean(
+            'pen-enabled');
 		this._CONF_autoSwitchTouchpad = this.settings.get_boolean(
             'auto-switch-touchpad');
 		this._CONF_autoSwitchTrackpoint = this.settings.get_boolean(
@@ -1401,6 +1411,10 @@ touchpadIndicatorButton.prototype = {
         this.settings.connect('touchpad-enabled', Lang.bind(this,
             this._loadConfig));
 		this.settings.connect('trackpoint-enabled', Lang.bind(this,
+            this._loadConfig));
+		this.settings.connect('fingertouch-enabled', Lang.bind(this,
+            this._loadConfig));
+		this.settings.connect('pen-enabled', Lang.bind(this,
             this._loadConfig));
         this.settings.connect('auto-switch-touchpad', Lang.bind(this,
             this._loadConfig));
