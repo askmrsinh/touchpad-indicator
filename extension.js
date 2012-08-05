@@ -1121,7 +1121,8 @@ XInput.prototype = {
         this.devices = devices;
         this.ids = this._get_ids();
         this.is_there_device = this._is_there_device();
-        logging('Found Device - ' + this.is_there_device.toString() + ' ' + this.ids);
+        logging('Found Device - ' + this.is_there_device.toString() +
+            ' ' + this.ids);
     },
 
     _get_ids: function() {
