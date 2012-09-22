@@ -66,6 +66,8 @@ const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad',
 var ALL_TOUCHPADS = TOUCHPADS.slice();
 const TRACKPOINTS = new Array('trackpoint','accu point','trackstick',
                               'touchstyk','pointing stick','dualpoint stick');
+const FINGER_TOUCHES = Array('finger touch');
+const PENS = Array('pen stylus', 'pen eraser');
 const OTHERS = new Array();
 var ALL_OTHERS = OTHERS.slice();
 
@@ -230,6 +232,24 @@ function list_mouses(skip_excluded) {
                 if (!(where[x].toLowerCase().indexOf(
                         TRACKPOINTS[tpt].toString()) == -1)) {
                     logging('list_mouses(): Trackpoint found: '
+                        + where[x].toString());
+                    hits++;
+                    break;
+                }
+            }
+            for (let tch = 0; tch < FINGER_TOUCHES.length; tch++) {
+                if (!(where[x].toLowerCase().indexOf(
+                        FINGER_TOUCHES[tch].toString()) == -1)) {
+                    logging('list_mouses(): Fingertouch found: '
+                        + where[x].toString());
+                    hits++;
+                    break;
+                }
+            }
+            for (let pen = 0; pen < PENS.length; pen++) {
+                if (!(where[x].toLowerCase().indexOf(
+                        PENS[pen].toString()) == -1)) {
+                    logging('list_mouses(): Pen found: '
                         + where[x].toString());
                     hits++;
                     break;
@@ -1100,11 +1120,12 @@ function XInput(devices) {
 
 XInput.prototype = {
     _init: function(devices) {
-        logging('XInput._init()');
+        logging('XInput._init(' + devices + ')');
         this.devices = devices;
         this.ids = this._get_ids();
         this.is_there_device = this._is_there_device();
-        logging('Found Device - ' + this.is_there_device.toString());
+        logging('Found Device - ' + this.is_there_device.toString() +
+            ' ' + this.ids);
     },
 
     _get_ids: function() {
@@ -1273,6 +1294,8 @@ touchpadIndicatorButton.prototype = {
         }
         this.touchpadXinput = new XInput(ALL_TOUCHPADS);
         this.trackpoint = new XInput(TRACKPOINTS);
+        this.fingertouch = new XInput(FINGER_TOUCHES);
+        this.pen = new XInput(PENS);
         this.synclient = new Synclient(this.settings);
         this.xinput_is_installed = execute_sync('xinput --list');
 
@@ -1317,6 +1340,12 @@ touchpadIndicatorButton.prototype = {
         if (!this._CONF_trackpointEnabled)
             this.trackpoint._disable_all_devices();
 
+        if (!this._CONF_fingertouchEnabled)
+            this.fingertouch._disable_all_devices();
+
+        if (!this._CONF_penEnabled)
+            this.pen._disable_all_devices();
+
         PanelMenu.SystemStatusButton.prototype._init.call(this,
             'input-touchpad');
 
@@ -1324,12 +1353,20 @@ touchpadIndicatorButton.prototype = {
             this._touchpad_enabled(), onMenuSelect);
         this._trackpointItem = new PopupSwitchMenuItem(_("Trackpoint"), 1,
             this.trackpoint._all_devices_enabled(), onMenuSelect);
+        this._fingertouchItem = new PopupSwitchMenuItem(_("Finger touch"), 2,
+            this.fingertouch._all_devices_enabled(), onMenuSelect);
+        this._penItem = new PopupSwitchMenuItem(_("Pen"), 3,
+            this.pen._all_devices_enabled(), onMenuSelect);
         this._SettingsItem = new PopupMenuItem(_("Indicator Settings"), 9, 
             onMenuSelect);
 
         this.menu.addMenuItem(this._touchpadItem);
         if (this.trackpoint.is_there_device)
             this.menu.addMenuItem(this._trackpointItem);
+        if (this.fingertouch.is_there_device)
+            this.menu.addMenuItem(this._fingertouchItem);
+        if (this.pen.is_there_device)
+            this.menu.addMenuItem(this._penItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         this.menu.addSettingsAction(_("Touchpad Settings"),
@@ -1351,6 +1388,10 @@ touchpadIndicatorButton.prototype = {
             'touchpad-enabled');
 		this._CONF_trackpointEnabled = this.settings.get_boolean(
             'trackpoint-enabled');
+		this._CONF_fingertouchEnabled = this.settings.get_boolean(
+            'fingertouch-enabled');
+		this._CONF_penEnabled = this.settings.get_boolean(
+            'pen-enabled');
 		this._CONF_autoSwitchTouchpad = this.settings.get_boolean(
             'auto-switch-touchpad');
 		this._CONF_autoSwitchTrackpoint = this.settings.get_boolean(
@@ -1373,6 +1414,10 @@ touchpadIndicatorButton.prototype = {
         this.settings.connect('touchpad-enabled', Lang.bind(this,
             this._loadConfig));
 		this.settings.connect('trackpoint-enabled', Lang.bind(this,
+            this._loadConfig));
+		this.settings.connect('fingertouch-enabled', Lang.bind(this,
+            this._loadConfig));
+		this.settings.connect('pen-enabled', Lang.bind(this,
             this._loadConfig));
         this.settings.connect('auto-switch-touchpad', Lang.bind(this,
             this._loadConfig));
@@ -1652,6 +1697,58 @@ touchpadIndicatorButton.prototype = {
         }
     },
 
+    _disable_fingertouch: function() {
+        if (this.fingertouch._disable_all_devices()) {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._fingertouchItem, false);
+            this.settings.set_boolean('fingertouch-enabled', false);
+            return true;
+        } else {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._fingertouchItem, true);
+            return false;
+        }
+    },
+
+    _enable_fingertouch: function() {
+        if (this.fingertouch._enable_all_devices()) {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._fingertouchItem, true);
+            this.settings.set_boolean('fingertouch-enabled', true);
+            return true;
+        } else {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._fingertouchItem, false);
+            return false;
+        }
+    },
+
+    _disable_pen: function() {
+        if (this.pen._disable_all_devices()) {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._penItem, false);
+            this.settings.set_boolean('pen-enabled', false);
+            return true;
+        } else {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._penItem, true);
+            return false;
+        }
+    },
+
+    _enable_pen: function() {
+        if (this.pen._enable_all_devices()) {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._penItem, true);
+            this.settings.set_boolean('pen-enabled', true);
+            return true;
+        } else {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._penItem, false);
+            return false;
+        }
+    },
+
     _settings_menu: function() {
         if(!this.settings._settingsMenu)
 			this.settings._settingsMenu = new SettingsDialog(this);
@@ -1693,6 +1790,20 @@ function onMenuSelect(actor, event) {
                 touchpadIndicator._enable_trackpoint();
             } else {
                 touchpadIndicator._disable_trackpoint();
+            }
+            break;
+        case 2:
+            if (actor.state) {
+                touchpadIndicator._enable_fingertouch();
+            } else {
+                touchpadIndicator._disable_fingertouch();
+            }
+            break;
+        case 3:
+            if (actor.state) {
+                touchpadIndicator._enable_pen();
+            } else {
+                touchpadIndicator._disable_pen();
             }
             break;
         case 9:
