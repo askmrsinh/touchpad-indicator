@@ -55,6 +55,9 @@ if (currentArray[0] == 3 && currentArray[1] < 3) {
     var cleanActor = function(o) {return o.destroy_all_children();};
 }
 
+const StoragePath = '~/.local/share/gnome-shell/extensions/'+
+                        ExtensionMeta.name.toString();
+
 const Gettext = imports.gettext.domain('touchpad-indicator@orangeshirt');
 const _ = Gettext.gettext;
 
@@ -82,7 +85,7 @@ var DEBUG = false; // overwritten by settings
 const FORCE_DEBUG = false;
 var DEBUG_TO_FILE = false; // overwritten by settings
 var DEBUG_INFO = 'Extension '+ ExtensionMeta.name.toString() +': ';
-var DEBUG_LOG_FILE = GLib.build_filenamev([ExtensionPath,
+var DEBUG_LOG_FILE = GLib.build_filenamev([StoragePath,
    'touchpad-indicator.log']);
 var LOGS = "";
 
@@ -318,461 +321,461 @@ function notify(device, title, text) {
 
 
 function SettingsContainer() {
-	this._init();
+    this._init();
 };
 
 SettingsContainer.prototype = {
-	_init: function() {
+    _init: function() {
         logging('SettingsContainer._init()');
-		this._connector = {};
+        this._connector = {};
 		
-		this._conf = {};
-		this.set_boolean = this._take_data;
-		this.set_double = this._take_data;
-		this.set_int = this._take_data;
-		this.set_enum = this._take_data;
+        this._conf = {};
+        this.set_boolean = this._take_data;
+        this.set_double = this._take_data;
+        this.set_int = this._take_data;
+        this.set_enum = this._take_data;
         this.set_text = this._take_data;
         this.set_dict = this._take_data;
 
-		this._file = Gio.file_new_for_path(ExtensionPath + '/settings.json');
+        this._file = Gio.file_new_for_path(StoragePath + '/settings.json');
 		
-		if(this._file.query_exists(null)) {
-			[flag, data] = this._file.load_contents(null);
+        if(this._file.query_exists(null)) {
+            [flag, data] = this._file.load_contents(null);
 			
-			if(flag)
-				this._conf = JSON.parse(data);
-			else {
+            if(flag)
+                this._conf = JSON.parse(data);
+            else {
                 logging('SettingsContainer._init(): Something is wrong... I '
                     + 'was not able to load the settings... I will restore '
                     + 'the default settings instead.');
-				this.restoreDefault();
-			}
-			//no error: I want to be able to save it anyway
-			this._error = false;
-		}
-		else {
-			logging('SettingsContainer._init(): Uh, there are no settings '
+                this.restoreDefault();
+            }
+            //no error: I want to be able to save it anyway
+            this._error = false;
+        }
+        else {
+            logging('SettingsContainer._init(): Uh, there are no settings '
                 + 'saved for that Box. I will use the default settings '
                 + 'instead.');
-			this.restoreDefault();
-		}
-	},
+            this.restoreDefault();
+        }
+    },
 	
-	get_boolean: function(k) {
-		return this._conf[k] || false;
-	},
+    get_boolean: function(k) {
+        return this._conf[k] || false;
+    },
 
-	get_double: function(k) {
-		return this._conf[k] || 0;
-	},
+    get_double: function(k) {
+        return this._conf[k] || 0;
+    },
 
-	get_int: function(k) {
-		return parseInt(this._conf[k]);
-	},
+    get_int: function(k) {
+        return parseInt(this._conf[k]);
+    },
 
-	get_enum: function(k) {
-		return this._conf[k] || 0;
-	},
+    get_enum: function(k) {
+        return this._conf[k] || 0;
+    },
 
-	get_text: function(k) {
-		return this._conf[k].toString();
-	},
+    get_text: function(k) {
+        return this._conf[k].toString();
+    },
 
-	get_dict: function(k) {
+    get_dict: function(k) {
         if (this._conf[k].toString() == "") {
             this._conf[k] = {};
         }
-		return this._conf[k];
-	},
+        return this._conf[k];
+    },
 	
-	_take_data: function(k, v, noEmit) {
+    _take_data: function(k, v, noEmit) {
         logging('SettingsContainer._take_data():  "'+ k.toString()
             + '" value "'+ v.toString() +'"');
-		this._conf[k] = v;
-		if(!noEmit) {
-			this.save_data();
-			this.emit(k);
-		}
-	},
+        this._conf[k] = v;
+        if(!noEmit) {
+            this.save_data();
+            this.emit(k);
+        }
+    },
 	
-	restoreDefault: function() {
-		this._conf = {};
-		
-		let file = Gio.file_new_for_path(ExtensionPath + '/default.json');
-		if(file.query_exists(null)) {
-			[flag, data] = file.load_contents(null);
-			if(flag) {
-				this._conf = JSON.parse(data);
-				this._error = false;
-			}
-			else {
-				logging('SettingsContainer.restoreDefault(): Something is '
+    restoreDefault: function() {
+        this._conf = {};
+
+        let file = Gio.file_new_for_path(ExtensionPath + '/default.json');
+        if(file.query_exists(null)) {
+            [flag, data] = file.load_contents(null);
+            if(flag) {
+                this._conf = JSON.parse(data);
+                this._error = false;
+            }
+            else {
+                logging('SettingsContainer.restoreDefault(): Something is '
                     + 'terribly wrong! I was not able to load the default '
                     + 'settings... I won\'t save anything in this session. And '
                     + 'don\'t blame me, if touchpad-indicator is acting '
                     + 'strangely...');
-				this._error = true;
-			}
-		}
-		else {
-			logging('SettingsContainer.restoreDefault(): Something is '
+                this._error = true;
+            }
+        }
+        else {
+            logging('SettingsContainer.restoreDefault(): Something is '
                 + 'terribly wrong! Neither your settings nor the default '
                 + 'settings seem to exist... I won\'t save anything in this '
                 + 'session. And don\'t blame me, if touchpad-indicator is '
                 + 'acting strangely...');
-			this._error = true;
-		}
-		this.save_data();
-	},
+            this._error = true;
+        }
+        this.save_data();
+    },
 
-	_restore_backup: function(b) {
-		this._conf = b;
-		this.save_data();
+    _restore_backup: function(b) {
+        this._conf = b;
+        this.save_data();
         onLoadConfig();
-	},
+    },
 
-	save_data: function() {
-		if(!this._error) {
-			this._file.replace_contents(JSON.stringify(this._conf), null,
+    save_data: function() {
+        if(!this._error) {
+            this._file.replace_contents(JSON.stringify(this._conf), null,
                 false, 0, null);
             logging('SettingsContainer._save_data(): Done');
-		} else {
-			logging('SettingsContainer._save_data(): I really want to save '
+        } else {
+            logging('SettingsContainer._save_data(): I really want to save '
                 + 'that. But there was an error before...');
         }
-	},
+    },
 
-	_get_backup: function() {
-		let copy={};
-		for(let k in this._conf) {
-			copy[k] = this._conf[k];
-		};
-		return copy;
-	},
+    _get_backup: function() {
+        let copy={};
+        for(let k in this._conf) {
+            copy[k] = this._conf[k];
+        };
+        return copy;
+    },
 	
 	
-	connect: function(k, f) {
-		this._connector[k] = f;
-	},
+    connect: function(k, f) {
+        this._connector[k] = f;
+    },
 
-	disconnect: function(k) {
-		delete this._connector[k];
-	},
+    disconnect: function(k) {
+        delete this._connector[k];
+    },
 
-	emit: function(k) {
-		if(this._connector[k])
-			this._connector[k](k, this._conf[k]);
-	}
+    emit: function(k) {
+        if(this._connector[k])
+            this._connector[k](k, this._conf[k]);
+    }
 };
 
 
 function SettingsDialog(indicator, chapter) {
-	this._init(indicator, chapter);
+    this._init(indicator, chapter);
 };
 
 SettingsDialog.prototype = {
-	//ST.Entry are causing some strange "Fensterverwaltung-Warnung" after 
+    //ST.Entry are causing some strange "Fensterverwaltung-Warnung" after 
     //Dialog has closed and a popup is opened
-	//no idea why or what they exactly mean.
-	
-	_init: function(indicator, chapter) {
+    //no idea why or what they exactly mean.
+
+    _init: function(indicator, chapter) {
         logging('SettingsDialog._init()');
         this._indicator = indicator
-		this._settings = indicator.settings;
+        this._settings = indicator.settings;
         this._touchpad = search_touchpads();
         this.monitorId = LayoutManager.primaryIndex;
-		
-		let monitor = LayoutManager.monitors[this.monitorId],
-			padding = 10,
-			boxWidth = Math.round(monitor.width/2),
-			boxHeight = Math.round(monitor.height/2),
-			naviWidth = 200,
-			headerHeight = 40,
-			descHeight = 50,
-			
-			mainBox = this.actor = new St.BoxLayout({
+
+        let monitor = LayoutManager.monitors[this.monitorId],
+            padding = 10,
+            boxWidth = Math.round(monitor.width/2),
+            boxHeight = Math.round(monitor.height/2),
+            naviWidth = 200,
+            headerHeight = 40,
+            descHeight = 50,
+
+            mainBox = this.actor = new St.BoxLayout({
                 style_class: "touchpadIndicator_dialog",
-				vertical: true,
-				x:Math.round((monitor.width - boxWidth)/2) + monitor.x,
-				y:Math.round((monitor.height - boxHeight)/2) + monitor.y,
-				width: boxWidth + padding*2,
-				height: boxHeight + padding*2,
-			}),
-			navi = this._navi = new St.BoxLayout({style_class: "naviLine",
-				vertical: true,
-				x:padding,
-				y:padding,
-				width: naviWidth,
-				height: boxHeight
-			}),
-			scrollBox = new St.ScrollView({style_class: "contentBox",
-				x:naviWidth + padding,
-				y:headerHeight + padding,
-				width: boxWidth-naviWidth,
-				height: boxHeight-headerHeight
-			}),
-			content = new St.BoxLayout({vertical: true}),
-			closeButton = new St.Button({style_class: "dialog_button",
+                vertical: true,
+                x:Math.round((monitor.width - boxWidth)/2) + monitor.x,
+                y:Math.round((monitor.height - boxHeight)/2) + monitor.y,
+                width: boxWidth + padding*2,
+                height: boxHeight + padding*2,
+            }),
+            navi = this._navi = new St.BoxLayout({style_class: "naviLine",
+                vertical: true,
+                x:padding,
+                y:padding,
+                width: naviWidth,
+                height: boxHeight
+            }),
+            scrollBox = new St.ScrollView({style_class: "contentBox",
+                x:naviWidth + padding,
+                y:headerHeight + padding,
+                width: boxWidth-naviWidth,
+                height: boxHeight-headerHeight
+            }),
+            content = new St.BoxLayout({vertical: true}),
+            closeButton = new St.Button({style_class: "dialog_button",
                 label:"x", x: padding + boxWidth-50, y:padding});
-			
-		mainBox.add(navi);
-		mainBox.add(scrollBox);
-			scrollBox.add_actor(content);
-				this._descline = new St.Label({style_class: "descLine"});
-				this._descline.clutter_text.line_wrap = true;
-				content.add(this._descline);
-				
-				let t = new PopupMenu.PopupMenuSection(content);
-				this._group = new PopupMenu.PopupComboMenu(t);
-				t.addActor(this._group.actor);
-				content.add(t.actor);
-		
-		this._headline = new St.Label({style_class: "headerLine",
-            x: naviWidth + padding, 
-            y: padding, width: boxWidth - naviWidth, 
-            height: headerHeight});
-		mainBox.add(this._headline);
-		
-		closeButton.connect("button-release-event", Lang.bind(this,
+
+        mainBox.add(navi);
+        mainBox.add(scrollBox);
+            scrollBox.add_actor(content);
+                this._descline = new St.Label({style_class: "descLine"});
+                this._descline.clutter_text.line_wrap = true;
+                content.add(this._descline);
+
+                let t = new PopupMenu.PopupMenuSection(content);
+                this._group = new PopupMenu.PopupComboMenu(t);
+                t.addActor(this._group.actor);
+                content.add(t.actor);
+
+        this._headline = new St.Label({style_class: "headerLine",
+                x: naviWidth + padding, 
+                y: padding, width: boxWidth - naviWidth, 
+                height: headerHeight});
+        mainBox.add(this._headline);
+
+        closeButton.connect("button-release-event", Lang.bind(this,
             this.close));
-		mainBox.add(closeButton);
-		
-		this._undoButton = new St.Button({ style_class: "dialog_button", 
+        mainBox.add(closeButton);
+
+        this._undoButton = new St.Button({ style_class: "dialog_button", 
             x: padding + boxWidth - 180,
             y: padding, reactive: true,
             can_focus: true, label: _("Undo")});
-		this._undoButton.connect("button-release-event", Lang.bind(this,
+        this._undoButton.connect("button-release-event", Lang.bind(this,
             this.undoChanges));
-		mainBox.add(this._undoButton);
-		this._undoButton.hide();
+        mainBox.add(this._undoButton);
+        this._undoButton.hide();
 
-		
-		Main.uiGroup.add_actor(mainBox);
 
-		this._chapters = [];
-		this._addChapter(_("Welcome"),
+        Main.uiGroup.add_actor(mainBox);
+
+        this._chapters = [];
+        this._addChapter(_("Welcome"),
             this._welcome, _("These settings allow you to customize this extension to your needs. You can open this dialog again by clicking on the extension's icon and selecting Indicator Settings.\n\
 \n\
 Please feel free to contact me if you find bugs or have suggestions, criticisms, or feedback. I am always happy to receive feedback - whatever kind. :-) \n\
 \n\
 Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator) or on my bug tracker (https://extensions.gnome.org/extension/131/touchpad-indicator/)."));
 
-		this._addChapter(_("General"), this._global, "");
-		this._addChapter(_("Auto Switch"), this._auto_switch,
+        this._addChapter(_("General"), this._global, "");
+        this._addChapter(_("Auto Switch"), this._auto_switch,
             _("Define the behaviour if a mouse is (un)plugged."));
         this._addChapter(_("Debug"), this._debug,
             _("Settings for debugging the extension."));
         this._addChapter(_("Debug Log"), this._debug_log,
             _("The debug log since last restart, if debugging is enabled."));
-		if(!this._settings.get_boolean('first-time'))
+        if(!this._settings.get_boolean('first-time'))
             if (chapter) {
                 this._setChapter(chapter);
             } else {
-    			this._setChapter(1);
+	            this._setChapter(1);
             }
-		else {
-			this._setChapter(0);
-		}
+        else {
+            this._setChapter(0);
+        }
 
-		Main.pushModal(this.actor);
+        Main.pushModal(this.actor);
         this._oldSettings = this._settings._get_backup();
-	},
+    },
 
-	parseDouble: function(v) {
-		return Math.round(v*1000)/1000;
-	},
+    parseDouble: function(v) {
+        return Math.round(v*1000)/1000;
+    },
 
-	undoChanges: function() {
+    undoChanges: function() {
         logging('SettingsDialog.undoChanges()');
         this._settings._restore_backup(this._oldSettings);
-		this.close();
-		new SettingsDialog(this._indicator, this._currentChapterNumber);
-	},
+        this.close();
+        new SettingsDialog(this._indicator, this._currentChapterNumber);
+    },
 
-	_addChapter: function(t, fu, desc) {
-		let b = new St.Button({label: t});
-		
-		b.connect("button-release-event", Lang.bind(this,
+    _addChapter: function(t, fu, desc) {
+        let b = new St.Button({label: t});
+
+        b.connect("button-release-event", Lang.bind(this,
             function(actor, event, c) {
-				this._setChapter(c);
-			}, this._chapters.length));
-		
-		this._navi.add(b, {x_fill: false, x_align: St.Align.START});
-		
-		this._chapters.push([b, t, desc, fu]);
-	},
+                this._setChapter(c);
+            }, this._chapters.length));
 
-	_setChapter: function(i) {
-		cleanActor(this._group.actor);
-		let c = this._chapters[i];
-		if(this._currentChapter)
-			this._currentChapter.remove_style_pseudo_class("chosen");
-		c[0].add_style_pseudo_class("chosen");
-		this._headline.text = c[1];
-		this._descline.text = c[2];
-		this._currentChapter = c[0];
+        this._navi.add(b, {x_fill: false, x_align: St.Align.START});
+
+        this._chapters.push([b, t, desc, fu]);
+    },
+
+    _setChapter: function(i) {
+        cleanActor(this._group.actor);
+        let c = this._chapters[i];
+        if(this._currentChapter)
+            this._currentChapter.remove_style_pseudo_class("chosen");
+        c[0].add_style_pseudo_class("chosen");
+        this._headline.text = c[1];
+        this._descline.text = c[2];
+        this._currentChapter = c[0];
         this._currentChapterNumber = i;
-		c[3].call(this);
-	},
+        c[3].call(this);
+    },
 	
-	_createDesc: function(t) {
-		let l = new St.Label({style_class: "descLine", text: t});
-		this._content.add(l);
-	},
-	
-	_createItemLabel: function(section, title, desc) {
-		let labelGroup = new St.BoxLayout({vertical: true}),
-			label = new St.Label({style_class: "item_title", text: title});
-		
-		labelGroup.add(label);
-		if(desc) {
-			label = new St.Label({style_class: "item_desc", text: desc});
-			label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
-			
-			label.clutter_text.line_wrap = true;
-			labelGroup.add(label);
-		}
-		section.add(labelGroup, {expand:true});
-	},
+    _createDesc: function(t) {
+        let l = new St.Label({style_class: "descLine", text: t});
+        this._content.add(l);
+    },
+    
+    _createItemLabel: function(section, title, desc) {
+        let labelGroup = new St.BoxLayout({vertical: true}),
+            label = new St.Label({style_class: "item_title", text: title});
 
-	_createSeparator: function() {
-		this._group.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-	},
+        labelGroup.add(label);
+        if(desc) {
+            label = new St.Label({style_class: "item_desc", text: desc});
+            label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
+
+            label.clutter_text.line_wrap = true;
+            labelGroup.add(label);
+        }
+        section.add(labelGroup, {expand:true});
+    },
+
+    _createSeparator: function() {
+        this._group.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+    },
 
     _createLabel: function(title, desc) {
-		let section = new St.BoxLayout({vertical: false, style:"padding:5px"});
+        let section = new St.BoxLayout({vertical: false, style:"padding:5px"});
 
-		this._createItemLabel(section, title, desc);
-		this._group.addActor(section);
-		
-		return section;
-	},
+        this._createItemLabel(section, title, desc);
+        this._group.addActor(section);
 
-	_createButton: function(title, desc, label, doIt) {
-		let settings = this._settings,
-			section = new St.BoxLayout({vertical: false, 
+        return section;
+    },
+
+    _createButton: function(title, desc, label, doIt) {
+        let settings = this._settings,
+            section = new St.BoxLayout({vertical: false, 
                 style:"padding: 5px"}),
-			button = new St.Button(
+            button = new St.Button(
                 {style_class: "dialog_button touchpadIndicator_button",
                  reactive: true, can_focus: true, label: label});
 
-		this._createItemLabel(section, title, desc);
-		section.add(button, {y_fill:false});
-		this._group.addActor(section, {x_fill: true});
-		button.connect("button-release-event", Lang.bind(this, function() {
+        this._createItemLabel(section, title, desc);
+        section.add(button, {y_fill:false});
+        this._group.addActor(section, {x_fill: true});
+        button.connect("button-release-event", Lang.bind(this, function() {
                 this._undoButton.show();
                 if(doIt)
-					doIt();
-			}));
-	},
+                    doIt();
+            }));
+    },
 
-	_createCheckBox: function(desc, state, doIt) {
-		let settings = this._settings,
-			section = new St.BoxLayout({vertical: false, 
+    _createCheckBox: function(desc, state, doIt) {
+        let settings = this._settings,
+            section = new St.BoxLayout({vertical: false, 
                 style:"padding: 2px"}),
             space = new St.BoxLayout({vertical: false, 
                 style:"padding-left: 30px"}),
-			button = new St.Button(
+            button = new St.Button(
                 {style_class: "touchpadIndicator_checkBox",
                  reactive: true, can_focus: true, label: "X"}),
             button_empty = new St.Button(
                 {style_class: "touchpadIndicator_checkBox_empty",
                  reactive: true, can_focus: true, label: " "}),
             labelGroup = new St.BoxLayout({vertical: true}),
-			label = new St.Label(
+            label = new St.Label(
                 {style_class: "touchpadIndicator_checkBox_name", text: desc});
-		labelGroup.add(label);
+        labelGroup.add(label);
 
         section.add(space, {y_fill:false});
         section.add(button, {y_fill:false});
         section.add(button_empty, {y_fill:false});
         section.add(labelGroup, {expand:true});
-		this._group.addActor(section, {x_fill: true});
+        this._group.addActor(section, {x_fill: true});
         if (state) {
             button_empty.hide();
         } else {
             button.hide();
         }
-		button.connect("button-release-event", Lang.bind(this, function() {
+        button.connect("button-release-event", Lang.bind(this, function() {
                 this._undoButton.show();
                 button.hide();
                 button_empty.show()
                 if(doIt)
-					doIt(desc, false);
-			}));
+                    doIt(desc, false);
+            }));
         button_empty.connect("button-release-event", Lang.bind(this, function() {
                 this._undoButton.show();
                 button.show();
                 button_empty.hide()
                 if(doIt)
-					doIt(desc, true);
-			}));
-	},
+                    doIt(desc, true);
+            }));
+    },
 
-	_createSwitch: function(switched, settingsUrl, title, desc, doIt) {
-		let settings = this._settings,
-			section = new St.BoxLayout({vertical: false, 
+    _createSwitch: function(switched, settingsUrl, title, desc, doIt) {
+        let settings = this._settings,
+            section = new St.BoxLayout({vertical: false, 
                 style:"padding: 5px"}),
-			button = new St.Button({reactive: true, can_focus: false}),
-			switchObj = new PopupMenu.Switch(switched);
-		
-		this._createItemLabel(section, title, desc);
-		button.set_child(switchObj.actor);
-		section.add(button);
-		this._group.addActor(section, {x_fill: true});
-		
-		button.connect("button-press-event", Lang.bind(this, function() {
-				switchObj.toggle();
-				this._undoButton.show();
-				if(doIt)
-					doIt(switchObj.state);
-				settings.set_boolean(settingsUrl, switchObj.state);
-			}));
-		
-		switchObj._mySection = section;
-		return switchObj;
-	},
+            button = new St.Button({reactive: true, can_focus: false}),
+            switchObj = new PopupMenu.Switch(switched);
 
-	_createCombo: function(value, settingsUrl, items, title, desc, fu) {
-		let settings = this._settings,
-			section = new St.BoxLayout({vertical: false,
+        this._createItemLabel(section, title, desc);
+        button.set_child(switchObj.actor);
+        section.add(button);
+        this._group.addActor(section, {x_fill: true});
+
+        button.connect("button-press-event", Lang.bind(this, function() {
+                switchObj.toggle();
+                this._undoButton.show();
+                if(doIt)
+	                doIt(switchObj.state);
+                settings.set_boolean(settingsUrl, switchObj.state);
+            }));
+
+        switchObj._mySection = section;
+        return switchObj;
+    },
+
+    _createCombo: function(value, settingsUrl, items, title, desc, fu) {
+        let settings = this._settings,
+            section = new St.BoxLayout({vertical: false,
                 style:"padding: 5px"}),
-			combo = new PopupMenu.PopupComboBoxMenuItem({
+            combo = new PopupMenu.PopupComboBoxMenuItem({
                 style_class: "touchpadIndicator_combo"});
-			
-		this._createItemLabel(section, title, desc);
-		section.add(combo.actor, {y_fill:false});
-		this._group.addActor(section, {x_fill: true});
-		
-		items.forEach(function(o) {
-				let item = new PopupMenu.PopupMenuItem(_(o[0]));
-				combo.addMenuItem(item, o[1]);
-			});
-		combo.setActiveItem(value);
-		combo.connect("active-item-changed",
-            Lang.bind(this, fu || function(menuItem, id) {
-			    this._undoButton.show();
-			    settings.set_enum(settingsUrl, id);
-			    if(fu)
-				    fu();
-		    })
-        );	
-	},
 
-	_welcome: function() {
+        this._createItemLabel(section, title, desc);
+        section.add(combo.actor, {y_fill:false});
+        this._group.addActor(section, {x_fill: true});
+
+        items.forEach(function(o) {
+                let item = new PopupMenu.PopupMenuItem(_(o[0]));
+                combo.addMenuItem(item, o[1]);
+            });
+        combo.setActiveItem(value);
+        combo.connect("active-item-changed",
+            Lang.bind(this, fu || function(menuItem, id) {
+                this._undoButton.show();
+                settings.set_enum(settingsUrl, id);
+                if(fu)
+                    fu();
+            })
+        );	
+    },
+
+    _welcome: function() {
         logging('SettingsDialog._welcome()');
-		this._createSwitch(this._indicator._CONF_firstTime, 'first-time',
-			_("First time startup"));
+        this._createSwitch(this._indicator._CONF_firstTime, 'first-time',
+            _("First time startup"));
         if (!this._touchpad[0]) {
             this._createSeparator();
             this._createLabel(_("Attention - No Touchpad Detected"),
                 _("The extension could not detect a touchpad at the moment.\nYou'll find further information in the Debug section."));
         }
-	},
+    },
 
-	_global: function() {
+    _global: function() {
         logging('SettingsDialog._global()');
-		let settings = this._settings;
+        let settings = this._settings;
         let indicator = this._indicator;
         let items = [], methods = [], number;
         let switch_to = 0;
@@ -794,43 +797,43 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
             if (indicator._CONF_switchMethod == METHOD.XINPUT)
                 switch_to = number;
         }
-		this._createCombo(switch_to, 'switch-method', items,
+        this._createCombo(switch_to, 'switch-method', items,
             _("Switch Method"), _("Method by which to switch the touchpad."),
             function(menuItem, id) {
                 this._undoButton.show();
                 let old_method = indicator._CONF_switchMethod;
-			    settings.set_enum("switch-method", methods[id]);
+                settings.set_enum("switch-method", methods[id]);
                 onChangeSwitchMethod(old_method, methods[id]);
-		    });
+            });
         this._createSeparator();
         this._createButton(_("Restore Defaults"),
             _("Restore the default settings."), _("Restore Defaults"), 
             function() {
                 settings.restoreDefault();
-				settings.set_boolean("first-time", false);
+                settings.set_boolean("first-time", false);
             });
-	},
+    },
 
-	_auto_switch: function() {
-		logging('SettingsDialog._auto_switch()');
-		let settings = this._settings;
+    _auto_switch: function() {
+        logging('SettingsDialog._auto_switch()');
+        let settings = this._settings;
         let indicator = this._indicator;
         let mouses = list_mouses();
 
-	    this._createSwitch(indicator._CONF_autoSwitchTouchpad,
+        this._createSwitch(indicator._CONF_autoSwitchTouchpad,
             'auto-switch-touchpad',
             _("Automatically switch Touchpad On/Off"),
             _("Turns the touchpad on or off automatically if a mouse is (un)plugged."));
         if (indicator.trackpoint.is_there_device) {
-	        this._createSwitch(indicator._CONF_autoSwitchTrackpoint, 
+            this._createSwitch(indicator._CONF_autoSwitchTrackpoint, 
                 'auto-switch-trackpoint', 
                 _("Automatically switch Trackpoint On/Off"), 
                 _("Turns trackpoint automatically on or off if a mouse is (un)plugged."));
         }
-	    this._createSeparator();
-	    this._createSwitch(indicator._CONF_showNotifications,
+        this._createSeparator();
+        this._createSwitch(indicator._CONF_showNotifications,
             'show-notifications',
-		    _("Show notification"),
+            _("Show notification"),
             _("Show notifications if the touchpad or the trackpoint is automatically switched on or off."));
         this._createSeparator();
         this._createLabel(_("Exclude mouse device from autodetection"),
@@ -845,25 +848,25 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
                     function(name, state) {
                         let dict = indicator._CONF_excludedMouses;
                         dict[name] = state;
-			            settings.set_dict("excluded-mouses", dict);
+                        settings.set_dict("excluded-mouses", dict);
                     });
             }
         }
-	},
+    },
 
-	_debug: function() {
+    _debug: function() {
         logging('SettingsDialog._debug()');
-		let settings = this._settings;
+        let settings = this._settings;
         let indicator = this._indicator;
 
-		this._createSwitch(indicator._CONF_debug, 'debug',
-		    _("Debug log"), _("Turns the debug log on or off."),
+        this._createSwitch(indicator._CONF_debug, 'debug',
+            _("Debug log"), _("Turns the debug log on or off."),
             Lang.bind(this, function(s) {
-				if(s)
-					this._debug_to_file._mySection.show();
-				else
-					this._debug_to_file._mySection.hide();
-			}));
+                if(s)
+                    this._debug_to_file._mySection.show();
+                else
+                    this._debug_to_file._mySection.hide();
+            }));
         this._debug_to_file = this._createSwitch(indicator._CONF_debugToFile,
             'debug-to-file', _("Write debug information to file."),
             _("All debug logs are additionally written to the file 'touchpad-indicator.log' in the extension directory.\nAttention!\nThis feature will slow down the startup of gnome-shell and the usage of the extension."));
@@ -899,13 +902,13 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
                     }
                     number++;
                 });
-        		this._createCombo(choosen, 'possible-touchpad', items,
+                this._createCombo(choosen, 'possible-touchpad', items,
                     _("Choose possible touchpad"),
                     _("You can choose the mouse entry which could be the touchpad."),
                     function(menuItem, id) {
                         this._undoButton.show();
-			            settings.set_text("possible-touchpad", items[id][0]);
-		            }
+                        settings.set_text("possible-touchpad", items[id][0]);
+                    }
                 );
                 if (indicator._CONF_switchMethod != METHOD.XINPUT) {
                     let tpd_on = true;
@@ -943,19 +946,19 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
         this._createLabel(_("Debug Informations"),
             _("Here you find some information about your system which might be helpful in debugging.\n\n")
             + shellversion + indicatorversion + touchpad + synclient + xinput);
-	},
+    },
 
     _debug_log: function() {
         logging('SettingsDialog._debug_log()');
         this._createLabel('', LOGS);
     },
 
-	close: function() {
+    close: function() {
         logging('SettingsDialog.close()')
-		Main.popModal(this.actor);
-		this.actor.destroy();
-		this._settings._settingsMenu = false;
-	}
+        Main.popModal(this.actor);
+        this.actor.destroy();
+        this._settings._settingsMenu = false;
+    }
 };
 
 
