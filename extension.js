@@ -42,21 +42,35 @@ const ExtensionSystem = imports.ui.extensionSystem;
 //Workaround...
 let currentArray = Conf.PACKAGE_VERSION.split('.');
 if (currentArray[0] == 3 && currentArray[1] < 3) {
+    // Gnome Shell 3.2 and lower
     var Extension = ExtensionSystem.extensions[
                        "touchpad-indicator@orangeshirt"];
     var ExtensionMeta = ExtensionSystem.extensionMeta[
                             "touchpad-indicator@orangeshirt"];
     var ExtensionPath = ExtensionMeta.path
-    var cleanActor = function(o) {return o.destroy_children();};
-} else {
+    var cleanActor = function(o) {return o.destroy_children();}
+    var NOTIFICATION_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
+    var SOURCE_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
+} else if (currentArray[0] == 3 && currentArray[1] < 5) {
+    // Gnome Shell 3.3 or 3.4
     var Extension = imports.misc.extensionUtils.getCurrentExtension();
     var ExtensionMeta = Extension.metadata
     var ExtensionPath = Extension.path
     var cleanActor = function(o) {return o.destroy_all_children();};
+    var NOTIFICATION_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
+    var SOURCE_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
+} else {
+    // Gnome Shell 3.5 and higher
+    var Extension = imports.misc.extensionUtils.getCurrentExtension();
+    var ExtensionMeta = Extension.metadata
+    var ExtensionPath = Extension.path
+    var cleanActor = function(o) {return o.destroy_all_children();};
+    var NOTIFICATION_ICON_SIZE = MessageTray.NOTIFICATION_ICON_SIZE;
+    var SOURCE_ICON_SIZE = MessageTray.Source.prototype.SOURCE_ICON_SIZE;
 }
 
-const StoragePath = '~/.local/share/gnome-shell/extensions/'+
-                        ExtensionMeta.name.toString();
+const StoragePath = '.local/share/gnome-shell/extensions/'+
+                        ExtensionMeta.uuid.toString();
 
 const Gettext = imports.gettext.domain('touchpad-indicator@orangeshirt');
 const _ = Gettext.gettext;
@@ -295,12 +309,12 @@ TouchpadNotificationSource.prototype = {
      __proto__:  MessageTray.Source.prototype,
 
     _init: function() {
-        MessageTray.Source.prototype._init.call(this, _("Touchpad Indicator"));
         let icon = new St.Icon({ icon_name: 'input-touchpad',
-                                 icon_type: St.IconType.SYMBOLIC,
-                                 icon_size: this.ICON_SIZE
+                                 icon_size: SOURCE_ICON_SIZE
                                });
-        this._setSummaryIcon(icon);
+        let banner = '';
+        MessageTray.Source.prototype._init.call(this, _("Touchpad Indicator"),
+            banner, {icon: icon});
     }
 };
 
@@ -326,8 +340,7 @@ function notify(device, title, text) {
     if (!title)
         title = _("Touchpad Indicator");
     let icon = new St.Icon({ icon_name: 'input-touchpad',
-                             icon_type: St.IconType.SYMBOLIC,
-                             icon_size: msg_source.ICON_SIZE
+                             icon_size: NOTIFICATION_ICON_SIZE
                            });
     device._notification = new MessageTray.Notification(msg_source, title,
         text, { icon: icon });
