@@ -50,7 +50,6 @@ if (currentArray[0] == 3 && currentArray[1] < 3) {
     var ExtensionPath = ExtensionMeta.path
     var cleanActor = function(o) {return o.destroy_children();}
     var NOTIFICATION_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
-    var SOURCE_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
 } else if (currentArray[0] == 3 && currentArray[1] < 5) {
     // Gnome Shell 3.3 or 3.4
     var Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -58,7 +57,6 @@ if (currentArray[0] == 3 && currentArray[1] < 3) {
     var ExtensionPath = Extension.path
     var cleanActor = function(o) {return o.destroy_all_children();};
     var NOTIFICATION_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
-    var SOURCE_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
 } else {
     // Gnome Shell 3.5 and higher
     var Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -66,7 +64,6 @@ if (currentArray[0] == 3 && currentArray[1] < 3) {
     var ExtensionPath = Extension.path
     var cleanActor = function(o) {return o.destroy_all_children();};
     var NOTIFICATION_ICON_SIZE = MessageTray.NOTIFICATION_ICON_SIZE;
-    var SOURCE_ICON_SIZE = MessageTray.Source.prototype.SOURCE_ICON_SIZE;
 }
 
 const StoragePath = '.local/share/gnome-shell/extensions/'+
@@ -301,34 +298,33 @@ function watch_mouse() {
 };
 
 
-function TouchpadNotificationSource() {
-    this._init();
-};
-
-TouchpadNotificationSource.prototype = {
-     __proto__:  MessageTray.Source.prototype,
-
-    _init: function() {
-        let icon = new St.Icon({ icon_name: 'input-touchpad',
-                                 icon_size: SOURCE_ICON_SIZE
-                               });
-        let banner = '';
-        MessageTray.Source.prototype._init.call(this, _("Touchpad Indicator"),
-            banner, {icon: icon});
-    }
-};
-
 let msg_source;
 
-function ensureMessageSource() {
-    if (!msg_source) {
-        msg_source = new TouchpadNotificationSource();
-        msg_source.connect('destroy', Lang.bind(this, function() {
+const Source = new Lang.Class({
+    Name: 'TouchpadIndicatorSource',
+    Extends: MessageTray.Source,
+
+    _init: function() {
+        this.parent(_("Touchpad Indicator"));
+        // Workaround vor Gnome Shell 3.4 and lower
+        if (currentArray[0] == 3 && currentArray[1] < 5) {
+            let icon = new St.Icon({ icon_name: 'input-touchpad',
+                                     icon_size: NOTIFICATION_ICON_SIZE
+                                   });
+            this._setSummaryIcon(icon);
+        }
+        this.connect('destroy', Lang.bind(this, function() {
             msg_source = null;
         }));
-        Main.messageTray.add(msg_source);
-    }
-};
+    },
+
+    createIcon : function(size) {
+        return new St.Icon({ icon_name: 'input-touchpad',
+                             icon_size: size
+                           });
+    },
+});
+
 
 function notify(device, title, text) {
     if (device._notification)
@@ -336,7 +332,10 @@ function notify(device, title, text) {
     
     // must call after destroying previous notification,
     // or msg_source will be cleared 
-    ensureMessageSource();
+    if (!msg_source) {
+        msg_source = new Source();
+        Main.messageTray.add(msg_source);
+    }
     if (!title)
         title = _("Touchpad Indicator");
     let icon = new St.Icon({ icon_name: 'input-touchpad',
