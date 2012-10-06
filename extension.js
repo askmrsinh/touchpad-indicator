@@ -38,6 +38,10 @@ const Conf = imports.misc.config;
 
 const ExtensionSystem = imports.ui.extensionSystem;
 
+//Icons
+var TP_ICON = 'input-touchpad';
+var TP_ICON_DISABLED = 'touchpad-disabled';
+
 //Why are functions renames without creating a deprecated pointer..?
 //Workaround...
 let currentArray = Conf.PACKAGE_VERSION.split('.');
@@ -64,10 +68,13 @@ if (currentArray[0] == 3 && currentArray[1] < 3) {
     var ExtensionPath = Extension.path
     var cleanActor = function(o) {return o.destroy_all_children();};
     var NOTIFICATION_ICON_SIZE = MessageTray.NOTIFICATION_ICON_SIZE;
+    var TP_ICON = 'my-touchpad-normal';
+    var TP_ICON_DISABLED = 'my-touchpad-disabled';
 }
 
 const StoragePath = '.local/share/gnome-shell/extensions/'+
                         ExtensionMeta.uuid.toString();
+GLib.mkdir_with_parents(StoragePath, 0775);
 
 const Gettext = imports.gettext.domain('touchpad-indicator@orangeshirt');
 const _ = Gettext.gettext;
@@ -308,7 +315,7 @@ const Source = new Lang.Class({
         this.parent(_("Touchpad Indicator"));
         // Workaround vor Gnome Shell 3.4 and lower
         if (currentArray[0] == 3 && currentArray[1] < 5) {
-            let icon = new St.Icon({ icon_name: 'input-touchpad',
+            let icon = new St.Icon({ icon_name: TP_ICON,
                                      icon_size: NOTIFICATION_ICON_SIZE
                                    });
             this._setSummaryIcon(icon);
@@ -319,7 +326,7 @@ const Source = new Lang.Class({
     },
 
     createIcon : function(size) {
-        return new St.Icon({ icon_name: 'input-touchpad',
+        return new St.Icon({ icon_name: TP_ICON,
                              icon_size: size
                            });
     },
@@ -338,7 +345,7 @@ function notify(device, title, text) {
     }
     if (!title)
         title = _("Touchpad Indicator");
-    let icon = new St.Icon({ icon_name: 'input-touchpad',
+    let icon = new St.Icon({ icon_name: TP_ICON,
                              icon_size: NOTIFICATION_ICON_SIZE
                            });
     device._notification = new MessageTray.Notification(msg_source, title,
@@ -1359,7 +1366,7 @@ touchpadIndicatorButton.prototype = {
             this.pen._disable_all_devices();
 
         PanelMenu.SystemStatusButton.prototype._init.call(this,
-            'input-touchpad');
+            TP_ICON);
 
         this._touchpadItem = new PopupSwitchMenuItem(_("Touchpad"), 0,
             this._touchpad_enabled(), onMenuSelect);
@@ -1452,14 +1459,14 @@ touchpadIndicatorButton.prototype = {
         logging('touchpadIndicatorButton._onChangeIcon()');
         if (!this._touchpad_enabled()) {
             PanelMenu.SystemStatusButton.prototype.setIcon.call(this,
-                'touchpad-disabled');
+                TP_ICON_DISABLED);
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
                 this._touchpadItem, false);
             if (write_setting !== undefined && write_setting)
                 this.settings.set_boolean('touchpad-enabled', false);
         } else {
             PanelMenu.SystemStatusButton.prototype.setIcon.call(this,
-                'input-touchpad');
+                TP_ICON);
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
                 this._touchpadItem, true);
             if (write_setting !== undefined && write_setting)
@@ -1851,6 +1858,11 @@ function onChangeSwitchMethod(old_method, new_method) {
 function init(metadata) {
     imports.gettext.bindtextdomain('touchpad-indicator@orangeshirt',
         GLib.build_filenamev([metadata.path, 'locale']));
+    // Only for Gnome-Shell 3.5 and higher use own icons
+    if (currentArray[0] == 3 && currentArray[1] > 4) {
+        let theme = imports.gi.Gtk.IconTheme.get_default();
+        theme.append_search_path(metadata.path + '/icons');
+    }
 };
 
 function enable() {
