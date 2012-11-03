@@ -305,32 +305,30 @@ function watch_mouse() {
 };
 
 
+function TouchpadNotificationSource() {
+    this._init();
+};
+
+TouchpadNotificationSource.prototype = {
+    __proto__:  MessageTray.Source.prototype,
+        let icon = new St.Icon({ icon_name: 'input-touchpad',
+                                 icon_size: NOTIFICATION_ICON_SIZE
+                               });
+        let banner = '';
+        MessageTray.Source.prototype._init.call(this, _("Touchpad Indicator"),
+            banner, {icon: icon});
+    }
+};
+
 let msg_source;
 
-const Source = new Lang.Class({
-    Name: 'TouchpadIndicatorSource',
-    Extends: MessageTray.Source,
-
-    _init: function() {
-        this.parent(_("Touchpad Indicator"));
-        // Workaround vor Gnome Shell 3.4 and lower
-        if (currentArray[0] == 3 && currentArray[1] < 5) {
-            let icon = new St.Icon({ icon_name: TP_ICON,
-                                     icon_size: NOTIFICATION_ICON_SIZE
-                                   });
-            this._setSummaryIcon(icon);
-        }
-        this.connect('destroy', Lang.bind(this, function() {
-            msg_source = null;
-        }));
-    },
-
-    createIcon : function(size) {
-        return new St.Icon({ icon_name: TP_ICON,
-                             icon_size: size
-                           });
-    },
-});
+function ensureMessageSource() {
+    if (!msg_source) {
+        msg_source = new TouchpadNotificationSource();
+        msg_source.connect('destroy', Lang.bind(this, function() {
+        Main.messageTray.add(msg_source);
+    }
+};
 
 
 function notify(device, title, text) {
@@ -338,11 +336,8 @@ function notify(device, title, text) {
         device._notification.destroy();
     
     // must call after destroying previous notification,
-    // or msg_source will be cleared 
-    if (!msg_source) {
-        msg_source = new Source();
-        Main.messageTray.add(msg_source);
-    }
+    // or msg_source will be cleared
+    ensureMessageSource();
     if (!title)
         title = _("Touchpad Indicator");
     let icon = new St.Icon({ icon_name: TP_ICON,
