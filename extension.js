@@ -290,6 +290,8 @@ function TouchpadNotificationSource() {
 
 TouchpadNotificationSource.prototype = {
     __proto__:  MessageTray.Source.prototype,
+ 
+     _init: function() {
         let icon = new St.Icon({ icon_name: 'input-touchpad',
                                  icon_size: NOTIFICATION_ICON_SIZE
                                });
@@ -305,6 +307,8 @@ function ensureMessageSource() {
     if (!msg_source) {
         msg_source = new TouchpadNotificationSource();
         msg_source.connect('destroy', Lang.bind(this, function() {
+             msg_source = null;
+        }));
         Main.messageTray.add(msg_source);
     }
 };
