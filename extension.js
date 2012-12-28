@@ -25,6 +25,7 @@
 
 const St = imports.gi.St;
 const Main = imports.ui.main;
+const Clutter = imports.gi.Clutter;
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 const Pango = imports.gi.Pango;
@@ -34,6 +35,7 @@ const MessageTray = imports.ui.messageTray;
 const Mainloop = imports.mainloop;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+const ModalDialog = imports.ui.modalDialog;
 const Conf = imports.misc.config;
 
 const ExtensionSystem = imports.ui.extensionSystem;
@@ -356,6 +358,56 @@ function notify(device, title, text) {
         device._notification = null;
     });
     msg_source.notify(device._notification);
+};
+
+
+function ConfirmDialog(doIt) {
+    this._init(doIt);
+}
+
+/* let's use the same layout of the logout dialog */
+ConfirmDialog.prototype = {
+    __proto__: ModalDialog.ModalDialog.prototype,
+    
+    _init: function(doIt) {
+        logging('ConfirmDialog.init()')
+        let msgbox;
+        let subject, description;
+
+        ModalDialog.ModalDialog.prototype._init.call(this,
+            { styleClass: 'end-session-dialog' });
+
+        msgbox = new St.BoxLayout({ vertical: true });
+        this.contentLayout.add(msgbox, { y_align: St.Align.START });
+
+        subject = new St.Label({
+            style_class: 'end-session-dialog-subject',
+            text: _("Confirm Dialog")
+        });
+        msgbox.add(subject, { y_fill: false, y_align: St.Align.START });
+
+        description = new St.Label({
+            style_class: 'end-session-dialog-description',
+            text: _("Would you really disable all mouse devices? - I couldn't detect an other mouse device at the moment")
+        });
+        msgbox.add(description, { y_fill: true, y_align: St.Align.START });
+
+        /* keys won't work in the dialog until bug #662493 gets fixed */
+        this.setButtons([{
+            label: _("Cancel"),
+            action: Lang.bind(this, function() {
+                this.close();
+            }),
+            key: Clutter.Escape
+        }, {
+            label: _("OK"),
+            action: Lang.bind(this, function() {
+                logging('ConfirmDialog.init("OK")')
+                this.close();
+                doIt();
+            })
+        }]);
+    }
 };
 
 
@@ -1596,10 +1648,32 @@ touchpadIndicatorButton.prototype = {
             notify(this, title, content);
     },
 
+    _is_device_enabled: function() {
+        if (this.touchpad.is_there_device && this._CONF_touchpadEnabled)
+            return true;
+        if (this.trackpoint.is_there_device && this._CONF_trackpointEnabled)
+            return true;
+        if (this.fingertouch.is_there_device && this._CONF_fingertouchEnabled)
+            return true;
+        if (this.pen.is_there_device && this._CONF_penEnabled)
+            return true;
+        return false;
+    },
+
+    _confirm: function(doIt) {
+        if(this._is_device_enabled()) {
+            return new ConfirmDialog(doIt).open();
+        } else {
+            doIt();
+        }
+    },
+
     _disable_touchpad: function() {
         logging('touchpadIndicatorButton._disable_touchpad()');
         switch (this._CONF_switchMethod) {
             case METHOD.GCONF:
+                logging('touchpadIndicatorButton._disable_touchpad(Method: '
+                    + 'Gconf)');
                 this.settings.set_boolean('touchpad-enabled', false);
                 if (this.touchpad.set_boolean('touchpad-enabled', false)) {
                     return true;
@@ -1608,6 +1682,8 @@ touchpadIndicatorButton.prototype = {
                 }
                 break;
             case METHOD.SYNCLIENT:
+                logging('touchpadIndicatorButton._disable_touchpad(Method: '
+                    + 'Synclient)');
                 if (this.synclient._disable()) {
                     this.settings.set_boolean('touchpad-enabled', false);
                     this._onChangeIcon(false);
@@ -1617,6 +1693,8 @@ touchpadIndicatorButton.prototype = {
                 }
                 break;
             case METHOD.XINPUT:
+                logging('touchpadIndicatorButton._disable_touchpad(Method: '
+                    + 'XInput)');
                 if (this.touchpadXinput._disable_all_devices()) {
                     this.settings.set_boolean('touchpad-enabled', false);
                     this._onChangeIcon(false);
@@ -1801,28 +1879,36 @@ function onMenuSelect(actor, event) {
             if (actor.state) {
                 touchpadIndicator._enable_touchpad();           
             } else {
-                touchpadIndicator._disable_touchpad();
+                touchpadIndicator._confirm(function() {
+                        touchpadIndicator._disable_touchpad();
+                    });
             }
             break;
         case 1:
             if (actor.state) {
                 touchpadIndicator._enable_trackpoint();
             } else {
-                touchpadIndicator._disable_trackpoint();
+                touchpadIndicator._confirm(function() {
+                        touchpadIndicator._disable_trackpoint();
+                    });
             }
             break;
         case 2:
             if (actor.state) {
                 touchpadIndicator._enable_fingertouch();
             } else {
-                touchpadIndicator._disable_fingertouch();
+                touchpadIndicator._confirm(function() {
+                        touchpadIndicator._disable_fingertouch();
+                    });
             }
             break;
         case 3:
             if (actor.state) {
                 touchpadIndicator._enable_pen();
             } else {
-                touchpadIndicator._disable_pen();
+                touchpadIndicator._confirm(function() {
+                        touchpadIndicator._disable_pen();
+                    });
             }
             break;
         case 9:
