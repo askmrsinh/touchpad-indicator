@@ -2,10 +2,10 @@
  * Copyright 2011 Armin Köhler <orangeshirt at web.de>
  *
  * Thanks to Lorenzo Carbonell Cerezo and Miguel Angel Santamaría Rogado
- * which has written touchpad-indicator 
- * (https://launchpad.net/touchpad-indicator) as python app and inspired 
+ * which has written touchpad-indicator
+ * (https://launchpad.net/touchpad-indicator) as python app and inspired
  * myself to write this extension for gnome-shell.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -82,11 +82,12 @@ const Gettext = imports.gettext.domain('touchpad-indicator@orangeshirt');
 const _ = Gettext.gettext;
 
 const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad',
-                            'bcm5974','trackpad');
+                            'bcm5974','trackpad','smartpad');
 var ALL_TOUCHPADS = TOUCHPADS.slice();
 const TRACKPOINTS = new Array('trackpoint','accu point','trackstick',
                               'touchstyk','pointing stick','dualpoint stick');
 const FINGER_TOUCHES = Array('finger touch');
+const TOUCHSCREENS = Array('touchscreen', 'maxtouch');
 const PENS = Array('pen stylus', 'pen eraser');
 const OTHERS = new Array();
 var ALL_OTHERS = OTHERS.slice();
@@ -99,7 +100,7 @@ const METHOD = {
 };
 
 // Settings
-const TOUCHPAD_SETTINGS_SCHEMA = 
+const TOUCHPAD_SETTINGS_SCHEMA =
     'org.gnome.settings-daemon.peripherals.touchpad';
 
 // Debug Mode Settings
@@ -203,7 +204,7 @@ function list_mouse_devices() {
 function search_touchpads() {
     logging('search_touchpads()');
     where = list_mouse_devices();
-    if (where[0]) {    
+    if (where[0]) {
         where = where[1];
         let touchpads = "";
         let hits = 0;
@@ -235,7 +236,8 @@ function list_mouses(skip_excluded) {
     logging('list_mouses()');
     let where = list_mouse_devices(),
         mouses = new Array(false, []);
-    if (where[0]) {    
+    logging('list_mouse_devices(): ' + where.toString());
+    if (where[0]) {
         where = where[1];
         let hits = 0;
         for (let x = 0; x < where.length; x++) {
@@ -252,6 +254,15 @@ function list_mouses(skip_excluded) {
                 if (!(where[x].toLowerCase().indexOf(
                         TRACKPOINTS[tpt].toString()) == -1)) {
                     logging('list_mouses(): Trackpoint found: '
+                        + where[x].toString());
+                    hits++;
+                    break;
+                }
+            }
+            for (let tch = 0; tch < TOUCHSCREENS.length; tch++) {
+                if (!(where[x].toLowerCase().indexOf(
+                        TOUCHSCREENS[tch].toString()) == -1)) {
+                    logging('list_mouses(): Touchscreen found: '
                         + where[x].toString());
                     hits++;
                     break;
@@ -290,7 +301,7 @@ function list_mouses(skip_excluded) {
                 logging('list_mouses(): Mouse found: '
                     + where[x].toString());
                 mouses[0] = true;
-                mouses[1][mouses[1].length] = where[x].toString(); 
+                mouses[1][mouses[1].length] = where[x].toString();
             } else {
                 hits = 0;
             }
@@ -303,7 +314,7 @@ function list_mouses(skip_excluded) {
 
 function watch_mouse() {
     this.file = Gio.file_new_for_path("/dev/input/by-path")
-    return this.file.monitor(Gio.FileMonitorFlags.NONE, null);       
+    return this.file.monitor(Gio.FileMonitorFlags.NONE, null);
 };
 
 
@@ -338,9 +349,9 @@ const Source = new Lang.Class({
 function notify(device, title, text) {
     if (device._notification)
         device._notification.destroy();
-    
+
     // must call after destroying previous notification,
-    // or msg_source will be cleared 
+    // or msg_source will be cleared
     if (!msg_source) {
         msg_source = new Source();
         Main.messageTray.add(msg_source);
@@ -419,7 +430,7 @@ SettingsContainer.prototype = {
     _init: function() {
         logging('SettingsContainer._init()');
         this._connector = {};
-		
+
         this._conf = {};
         this.set_boolean = this._take_data;
         this.set_double = this._take_data;
@@ -429,10 +440,10 @@ SettingsContainer.prototype = {
         this.set_dict = this._take_data;
 
         this._file = Gio.file_new_for_path(StoragePath + '/settings.json');
-		
+
         if(this._file.query_exists(null)) {
             [flag, data] = this._file.load_contents(null);
-			
+
             if(flag)
                 this._conf = JSON.parse(data);
             else {
@@ -451,7 +462,7 @@ SettingsContainer.prototype = {
             this.restoreDefault();
         }
     },
-	
+
     get_boolean: function(k) {
         return this._conf[k] || false;
     },
@@ -478,7 +489,7 @@ SettingsContainer.prototype = {
         }
         return this._conf[k];
     },
-	
+
     _take_data: function(k, v, noEmit) {
         logging('SettingsContainer._take_data():  "'+ k.toString()
             + '" value "'+ v.toString() +'"');
@@ -488,7 +499,7 @@ SettingsContainer.prototype = {
             this.emit(k);
         }
     },
-	
+
     restoreDefault: function() {
         this._conf = {};
 
@@ -543,8 +554,8 @@ SettingsContainer.prototype = {
         };
         return copy;
     },
-	
-	
+
+
     connect: function(k, f) {
         this._connector[k] = f;
     },
@@ -565,7 +576,7 @@ function SettingsDialog(indicator, chapter) {
 };
 
 SettingsDialog.prototype = {
-    //ST.Entry are causing some strange "Fensterverwaltung-Warnung" after 
+    //ST.Entry are causing some strange "Fensterverwaltung-Warnung" after
     //Dialog has closed and a popup is opened
     //no idea why or what they exactly mean.
 
@@ -622,8 +633,8 @@ SettingsDialog.prototype = {
                 content.add(t.actor);
 
         this._headline = new St.Label({style_class: "headerLine",
-                x: naviWidth + padding, 
-                y: padding, width: boxWidth - naviWidth, 
+                x: naviWidth + padding,
+                y: padding, width: boxWidth - naviWidth,
                 height: headerHeight});
         mainBox.add(this._headline);
 
@@ -631,7 +642,7 @@ SettingsDialog.prototype = {
             this.close));
         mainBox.add(closeButton);
 
-        this._undoButton = new St.Button({ style_class: "dialog_button", 
+        this._undoButton = new St.Button({ style_class: "dialog_button",
             x: padding + boxWidth - 180,
             y: padding, reactive: true,
             can_focus: true, label: _("Undo")});
@@ -708,12 +719,12 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
         this._currentChapterNumber = i;
         c[3].call(this);
     },
-	
+
     _createDesc: function(t) {
         let l = new St.Label({style_class: "descLine", text: t});
         this._content.add(l);
     },
-    
+
     _createItemLabel: function(section, title, desc) {
         let labelGroup = new St.BoxLayout({vertical: true}),
             label = new St.Label({style_class: "item_title", text: title});
@@ -744,7 +755,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
 
     _createButton: function(title, desc, label, doIt) {
         let settings = this._settings,
-            section = new St.BoxLayout({vertical: false, 
+            section = new St.BoxLayout({vertical: false,
                 style:"padding: 5px"}),
             button = new St.Button(
                 {style_class: "dialog_button touchpadIndicator_button",
@@ -762,9 +773,9 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
 
     _createCheckBox: function(desc, state, doIt) {
         let settings = this._settings,
-            section = new St.BoxLayout({vertical: false, 
+            section = new St.BoxLayout({vertical: false,
                 style:"padding: 2px"}),
-            space = new St.BoxLayout({vertical: false, 
+            space = new St.BoxLayout({vertical: false,
                 style:"padding-left: 30px"}),
             button = new St.Button(
                 {style_class: "touchpadIndicator_checkBox",
@@ -805,7 +816,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
 
     _createSwitch: function(switched, settingsUrl, title, desc, doIt) {
         let settings = this._settings,
-            section = new St.BoxLayout({vertical: false, 
+            section = new St.BoxLayout({vertical: false,
                 style:"padding: 5px"}),
             button = new St.Button({reactive: true, can_focus: false}),
             switchObj = new PopupMenu.Switch(switched);
@@ -850,7 +861,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
                 if(fu)
                     fu();
             })
-        );	
+        );
     },
 
     _welcome: function() {
@@ -880,7 +891,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
             methods[number] = METHOD.SYNCLIENT;
             if (indicator._CONF_switchMethod == METHOD.SYNCLIENT)
                 switch_to = number;
-        }      
+        }
         if (indicator.xinput_is_installed) {
             number = items.length;
             items[number] = [_("Xinput"), number];
@@ -898,7 +909,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
             });
         this._createSeparator();
         this._createButton(_("Restore Defaults"),
-            _("Restore the default settings."), _("Restore Defaults"), 
+            _("Restore the default settings."), _("Restore Defaults"),
             function() {
                 settings.restoreDefault();
                 settings.set_boolean("first-time", false);
@@ -916,9 +927,9 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
             _("Automatically switch Touchpad On/Off"),
             _("Turns the touchpad on or off automatically if a mouse is (un)plugged."));
         if (indicator.trackpoint.is_there_device) {
-            this._createSwitch(indicator._CONF_autoSwitchTrackpoint, 
-                'auto-switch-trackpoint', 
-                _("Automatically switch Trackpoint On/Off"), 
+            this._createSwitch(indicator._CONF_autoSwitchTrackpoint,
+                'auto-switch-trackpoint',
+                _("Automatically switch Trackpoint On/Off"),
                 _("Turns trackpoint automatically on or off if a mouse is (un)plugged."));
         }
         this._createSeparator();
@@ -976,7 +987,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
                     x++;
                 });
             } else {
-                mouse = mouses[1].toString(); 
+                mouse = mouses[1].toString();
             }
             this._createLabel(_("Warning - No Touchpad Detected"),
                 _("The extension could not detect a touchpad at the moment.\nPerhaps your touchpad is not detected correctly by the kernel.\nThe following devices are detected as mice:\n") + mouse);
@@ -1084,7 +1095,7 @@ Synclient.prototype = {
             return false;
         }
         for (let x = 0; x < this.output.length; x++) {
-            if (typeof(this.output[x]) == "object" && 
+            if (typeof(this.output[x]) == "object" &&
                     this.output[x].length > 0) {
                  if (!(this.output[x].toString().indexOf(
                         "Couldn't find synaptics properties") == -1)) {
@@ -1131,7 +1142,7 @@ Synclient.prototype = {
                     logging('Synclient._watch: Touchpad state changed to '
                         + state.toString());
                     this.settings.set_boolean('touchpad-enabled', state);
-                    onChangeIcon(false);                    
+                    onChangeIcon(false);
                     this.synclient_status = this.touchpad_off;
                     this._wait();
                 }
@@ -1223,7 +1234,7 @@ XInput.prototype = {
                      devids[y] = lines[line].toString().split('=')[1].
                             split('[')[0].split('\t')[0];
                      y++;
-                }  
+                }
             }
         }
         return devids;
@@ -1244,7 +1255,7 @@ XInput.prototype = {
         if (where) {
             where = where.toString().toLowerCase();
             for (let tpid = 0; tpid < this.devices.length; tpid++) {
-                if (!(where.indexOf(this.devices[tpid].toString()) == -1)) {
+                if (!(where.indexOf(this.devices[tpid].toString().toLowerCase()) == -1)) {
                     return true;
                 }
             }
@@ -1360,11 +1371,12 @@ touchpadIndicatorButton.prototype = {
 
         this.touchpad = getSettings(TOUCHPAD_SETTINGS_SCHEMA);
         if (this._CONF_possibleTouchpad != "-") {
-            ALL_TOUCHPADS[TOUCHPADS.length] = 
+            ALL_TOUCHPADS[TOUCHPADS.length] =
                 this._CONF_possibleTouchpad.toLowerCase();
         }
         this.touchpadXinput = new XInput(ALL_TOUCHPADS);
         this.trackpoint = new XInput(TRACKPOINTS);
+        this.touchscreen = new XInput(TOUCHSCREENS);
         this.fingertouch = new XInput(FINGER_TOUCHES);
         this.pen = new XInput(PENS);
         this.synclient = new Synclient(this.settings);
@@ -1380,7 +1392,7 @@ touchpadIndicatorButton.prototype = {
         }
 
         let switch_method_changed = false;
-        if (METHOD.SYNCLIENT == this._CONF_switchMethod && 
+        if (METHOD.SYNCLIENT == this._CONF_switchMethod &&
                 !this.synclient.synclient_in_use) {
             this._CONF_switchMethod = METHOD.GCONF;
             switch_method_changed = true;
@@ -1411,6 +1423,9 @@ touchpadIndicatorButton.prototype = {
         if (!this._CONF_trackpointEnabled)
             this.trackpoint._disable_all_devices();
 
+        if (!this._CONF_touchscreenEnabled)
+            this.touchscreen._disable_all_devices();
+
         if (!this._CONF_fingertouchEnabled)
             this.fingertouch._disable_all_devices();
 
@@ -1424,16 +1439,20 @@ touchpadIndicatorButton.prototype = {
             this._touchpad_enabled(), onMenuSelect);
         this._trackpointItem = new PopupSwitchMenuItem(_("Trackpoint"), 1,
             this.trackpoint._all_devices_enabled(), onMenuSelect);
-        this._fingertouchItem = new PopupSwitchMenuItem(_("Finger touch"), 2,
+        this._touchscreenItem = new PopupSwitchMenuItem(_("Touchscreen"), 2,
+            this.touchscreen._all_devices_enabled(), onMenuSelect);
+        this._fingertouchItem = new PopupSwitchMenuItem(_("Finger touch"), 3,
             this.fingertouch._all_devices_enabled(), onMenuSelect);
-        this._penItem = new PopupSwitchMenuItem(_("Pen"), 3,
+        this._penItem = new PopupSwitchMenuItem(_("Pen"), 4,
             this.pen._all_devices_enabled(), onMenuSelect);
-        this._SettingsItem = new PopupMenuItem(_("Indicator Settings"), 9, 
+        this._SettingsItem = new PopupMenuItem(_("Indicator Settings"), 9,
             onMenuSelect);
 
         this.menu.addMenuItem(this._touchpadItem);
         if (this.trackpoint.is_there_device)
             this.menu.addMenuItem(this._trackpointItem);
+        if (this.touchscreen.is_there_device)
+            this.menu.addMenuItem(this._touchscreenItem);
         if (this.fingertouch.is_there_device)
             this.menu.addMenuItem(this._fingertouchItem);
         if (this.pen.is_there_device)
@@ -1459,6 +1478,8 @@ touchpadIndicatorButton.prototype = {
             'touchpad-enabled');
 		this._CONF_trackpointEnabled = this.settings.get_boolean(
             'trackpoint-enabled');
+        this._CONF_touchscreenEnabled = this.settings.get_boolean(
+            'touchscreen-enabled');
 		this._CONF_fingertouchEnabled = this.settings.get_boolean(
             'fingertouch-enabled');
 		this._CONF_penEnabled = this.settings.get_boolean(
@@ -1485,6 +1506,8 @@ touchpadIndicatorButton.prototype = {
         this.settings.connect('touchpad-enabled', Lang.bind(this,
             this._loadConfig));
 		this.settings.connect('trackpoint-enabled', Lang.bind(this,
+            this._loadConfig));
+        this.settings.connect('touchscreen-enabled', Lang.bind(this,
             this._loadConfig));
 		this.settings.connect('fingertouch-enabled', Lang.bind(this,
             this._loadConfig));
@@ -1588,13 +1611,13 @@ touchpadIndicatorButton.prototype = {
                     tpd = true;
                 }
             }
-            if (this._CONF_autoSwitchTrackpoint && 
+            if (this._CONF_autoSwitchTrackpoint &&
                     this.trackpoint.is_there_device) {
                 note_tpt = true;
                 if (is_mouse && this.trackpoint._all_devices_enabled()) {
                     this._disable_trackpoint();
                     tpt = false;
-                } else if (!is_mouse && 
+                } else if (!is_mouse &&
                         !this.trackpoint._all_devices_enabled()) {
                     this._enable_trackpoint();
                     tpt = true;
@@ -1758,7 +1781,7 @@ touchpadIndicatorButton.prototype = {
         let enabled = this._touchpad_enabled();
         this._enable_touchpad();
         if (this._CONF_possibleTouchpad != " ") {
-            ALL_TOUCHPADS[TOUCHPADS.length] = 
+            ALL_TOUCHPADS[TOUCHPADS.length] =
                 this._CONF_possibleTouchpad.toLowerCase();
         } else {
             ALL_TOUCHPADS = TOUCHPADS.slice();
@@ -1790,6 +1813,32 @@ touchpadIndicatorButton.prototype = {
         } else {
             PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
                 call(this._trackpointItem, false);
+            return false;
+        }
+    },
+
+    _disable_touchscreen: function() {
+        if (this.touchscreen._disable_all_devices()) {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._touchscreenItem, false);
+            this.settings.set_boolean('touchscreen-enabled', false);
+            return true;
+        } else {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._touchscreenItem, true);
+            return false;
+        }
+    },
+
+    _enable_touchscreen: function() {
+        if (this.touchscreen._enable_all_devices()) {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._touchscreenItem, true);
+            this.settings.set_boolean('touchscreen-enabled', true);
+            return true;
+        } else {
+            PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
+                call(this._touchscreenItem, false);
             return false;
         }
     },
@@ -1877,7 +1926,7 @@ function onMenuSelect(actor, event) {
     switch (actor.tag) {
         case 0:
             if (actor.state) {
-                touchpadIndicator._enable_touchpad();           
+                touchpadIndicator._enable_touchpad();
             } else {
                 touchpadIndicator._confirm(function() {
                         touchpadIndicator._disable_touchpad();
@@ -1895,6 +1944,12 @@ function onMenuSelect(actor, event) {
             break;
         case 2:
             if (actor.state) {
+                touchpadIndicator._enable_touchscreen();
+            } else {
+                touchpadIndicator._disable_touchscreen();
+            }
+        case 3:
+            if (actor.state) {
                 touchpadIndicator._enable_fingertouch();
             } else {
                 touchpadIndicator._confirm(function() {
@@ -1902,7 +1957,7 @@ function onMenuSelect(actor, event) {
                     });
             }
             break;
-        case 3:
+        case 4:
             if (actor.state) {
                 touchpadIndicator._enable_pen();
             } else {

@@ -2,6 +2,7 @@
 "first-time": true,
 "touchpad-enabled": true,
 "trackpoint-enabled": true,
+"touchscreen-enabled": true,
 "fingertouch-enabled": true,
 "pen-enabled": true,
 "auto-switch-touchpad": false,
