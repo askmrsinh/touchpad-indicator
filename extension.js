@@ -1805,17 +1805,6 @@ touchpadIndicatorButton.prototype = {
 
     _touchpad_enabled: function() {
         return this._CONF_touchpadEnabled;
-        /*switch (this._CONF_switchMethod) {
-            case METHOD.GCONF:
-                return this.touchpad.get_boolean('touchpad-enabled');
-                break;
-            case METHOD.SYNCLIENT:
-                return !this.synclient.synclient_status;
-                break;
-            case METHOD.XINPUT:
-                return this.touchpadXinput._all_devices_enabled();
-                break;
-        }*/
     },
 
     _possible_touchpad_changed: function() {
