@@ -1355,6 +1355,7 @@ PopupSwitchMenuItem.prototype = {
         PopupMenu.PopupSwitchMenuItem.prototype._init.call(this, label, state);
 	    this.tag = tag;
         this.connect('activate', callback);
+        this.connect('toggled', callback);
     }
 };
 
