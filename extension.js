@@ -372,15 +372,15 @@ function notify(device, title, text) {
 };
 
 
-function ConfirmDialog(doIt) {
-    this._init(doIt);
+function ConfirmDialog(doIt, cancelIt) {
+    this._init(doIt, cancelIt);
 }
 
 /* let's use the same layout of the logout dialog */
 ConfirmDialog.prototype = {
     __proto__: ModalDialog.ModalDialog.prototype,
     
-    _init: function(doIt) {
+    _init: function(doIt, cancelIt) {
         logging('ConfirmDialog.init()')
         let msgbox;
         let subject, description;
@@ -399,7 +399,8 @@ ConfirmDialog.prototype = {
 
         description = new St.Label({
             style_class: 'end-session-dialog-description',
-            text: _("Would you really disable all mouse devices? - I couldn't detect an other mouse device at the moment")
+            text: _("Would you really disable this device?\n\
+There seems to be no other mouse device enabled!")
         });
         msgbox.add(description, { y_fill: true, y_align: St.Align.START });
 
@@ -407,13 +408,15 @@ ConfirmDialog.prototype = {
         this.setButtons([{
             label: _("Cancel"),
             action: Lang.bind(this, function() {
+                logging('ConfirmDialog.init("Cancel")');
+                cancelIt();
                 this.close();
             }),
             key: Clutter.Escape
         }, {
             label: _("OK"),
             action: Lang.bind(this, function() {
-                logging('ConfirmDialog.init("OK")')
+                logging('ConfirmDialog.init("OK")');
                 this.close();
                 doIt();
             })
@@ -1549,6 +1552,21 @@ touchpadIndicatorButton.prototype = {
         }
     },
 
+    _adjustSwitchPosition: function() {
+        logging('touchpadIndicatorButton._adjustSwitchPosition()');
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
+            this._touchpadItem, this._CONF_touchpadEnabled);
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
+            this._trackpointItem, this._CONF_trackpointEnabled);
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
+            this._touchscreenItem, this._CONF_touchscreenEnabled);
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
+            this._fingertouchItem, this._CONF_fingertouchEnabled);
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
+            this._penItem, this._CONF_penEnabled);
+
+    },
+
     _onChangeSwitchMethod: function(old_method, new_method) {
         logging('touchpadIndicatorButton._onChangeSwitchMethod()');
         touchpad_enabled = this._CONF_touchpadEnabled;
@@ -1672,20 +1690,44 @@ touchpadIndicatorButton.prototype = {
     },
 
     _is_device_enabled: function() {
-        if (this.touchpad.is_there_device && this._CONF_touchpadEnabled)
-            return true;
+        hits = 0;
+        if (METHOD.GCONF == this._CONF_switchMethod) {
+            if (this._CONF_touchpadEnabled)
+                hits++;
+        } else if (METHOD.SYNCLIENT == this._CONF_switchMethod) {
+            if (this._CONF_touchpadEnabled)
+                hits++;
+        } else if (METHOD.XINPUT == this._CONF_switchMethod) {
+            if (this.touchpadXinput.is_there_device && 
+                    this._CONF_touchpadEnabled)
+                hits++;
+        }
         if (this.trackpoint.is_there_device && this._CONF_trackpointEnabled)
-            return true;
+            hits++;
+        if (this.touchscreen.is_there_device && this._CONF_touchscreenEnabled)
+            hits++;
         if (this.fingertouch.is_there_device && this._CONF_fingertouchEnabled)
-            return true;
+            hits++;
         if (this.pen.is_there_device && this._CONF_penEnabled)
+            hits++;
+        if (list_mouses(true)[0])
+            hits++;
+        if (hits > 1) {
+            logging('touchpadIndicatorButton._is_device_enabled(Found an other'
+                + ' Device)');
             return true;
-        return false;
+        } else {
+            logging('touchpadIndicatorButton._is_device_enabled(No other '
+                + 'Device)');
+            return false;
+        }
     },
 
     _confirm: function(doIt) {
-        if(this._is_device_enabled()) {
-            return new ConfirmDialog(doIt).open();
+        if(!this._is_device_enabled()) {
+            new ConfirmDialog(doIt, function() {
+                    touchpadIndicator._adjustSwitchPosition();
+                }).open();
         } else {
             doIt();
         }
@@ -1946,7 +1988,9 @@ function onMenuSelect(actor, event) {
             if (actor.state) {
                 touchpadIndicator._enable_touchscreen();
             } else {
-                touchpadIndicator._disable_touchscreen();
+                touchpadIndicator._confirm(function() {
+                        touchpadIndicator._disable_touchscreen();
+                    });
             }
         case 3:
             if (actor.state) {
