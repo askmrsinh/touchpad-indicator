@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-27 21:43+0200\n"
+"POT-Creation-Date: 2012-12-29 22:22+0100\n"
 "PO-Revision-Date: 2012-01-14 13:13+0100\n"
 "Last-Translator: Köhler <orangeshirt at web.de>\n"
 "Language-Team: German\n"
@@ -18,27 +18,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: extension.js:171 extension.js:175
+#: extension.js:197 extension.js:201
 msgid "    - No mouse device detected."
 msgstr "    - Keine Maus gefunden."
 
-#: extension.js:202 extension.js:206
+#: extension.js:228 extension.js:232
 msgid "No Touchpad detected."
 msgstr "Kein Touchpad gefunden."
 
-#: extension.js:275 extension.js:304
+#: extension.js:328 extension.js:360
 msgid "Touchpad Indicator"
 msgstr "Touchpad Indicator"
 
-#: extension.js:543
+#: extension.js:396
+msgid "Confirm Dialog"
+msgstr "Bestätigung"
+
+#: extension.js:402
+msgid ""
+"Would you really disable this device?\n"
+"There seems to be no other mouse device enabled!"
+msgstr ""
+"Soll dieses Gerät wirklich deaktiviert werden?\n"
+"Es scheint keine andere Maus aktiviert zu sein!"
+
+#: extension.js:409
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: extension.js:417
+msgid "OK"
+msgstr "OK"
+
+#: extension.js:651
 msgid "Undo"
 msgstr "Rückgängig"
 
-#: extension.js:553
+#: extension.js:661
 msgid "Welcome"
 msgstr "Willkommen"
 
-#: extension.js:554
+#: extension.js:662
 msgid ""
 "These settings allow you to customize this extension to your needs. You can "
 "open this dialog again by clicking on the extension's icon and selecting "
@@ -68,45 +88,45 @@ msgstr ""
 "\n"
 "Armin"
 
-#: extension.js:560
+#: extension.js:668
 msgid "General"
 msgstr "Allgemeines"
 
-#: extension.js:561
+#: extension.js:669
 msgid "Auto Switch"
 msgstr "Auto Switch"
 
-#: extension.js:562
+#: extension.js:670
 msgid "Define the behaviour if a mouse is (un)plugged."
 msgstr "Verhalten wenn eine Maus an- bzw abgesteckt wird."
 
-#: extension.js:563
+#: extension.js:671
 msgid "Debug"
 msgstr "Debug"
 
-#: extension.js:564
+#: extension.js:672
 msgid "Settings for debugging the extension."
-msgstr ""
+msgstr "Einstellungen für die Fehlersuche"
 
-#: extension.js:565
+#: extension.js:673
 msgid "Debug Log"
 msgstr "Debug Log"
 
-#: extension.js:566
+#: extension.js:674
 msgid "The debug log since last restart, if debugging is enabled."
 msgstr ""
 "Die Logmeldungen seit dem letzten Neustart, falls das Logging vorher "
 "aktiviert wurde, bzw. alle Meldungen seit der Aktivierung des Logging."
 
-#: extension.js:765
+#: extension.js:873
 msgid "First time startup"
 msgstr "Erster Start"
 
-#: extension.js:768
+#: extension.js:876
 msgid "Attention - No Touchpad Detected"
 msgstr "Achtung - Es wurde kein Touchpad gefunden"
 
-#: extension.js:769
+#: extension.js:877
 msgid ""
 "The extension could not detect a touchpad at the moment.\n"
 "You'll find further information in the Debug section."
@@ -114,59 +134,75 @@ msgstr ""
 "Die Extension konnte leider kein Touchpad finden.\n"
 "Weitere Informationen dazu findst du unter 'Debug'."
 
-#: extension.js:779
+#: extension.js:887
 msgid "Gconf Settings"
 msgstr "Gconf Settings"
 
-#: extension.js:785
+#: extension.js:893
 msgid "Synclient"
 msgstr "Synclient"
 
-#: extension.js:792
+#: extension.js:900
 msgid "Xinput"
 msgstr "Xinput"
 
-#: extension.js:798
+#: extension.js:906
 msgid "Switch Method"
 msgstr "Umschaltmethode"
 
-#: extension.js:798
+#: extension.js:906
 msgid "Method by which to switch the touchpad."
 msgstr "Methode die zum Schalten des Touchpads genutzt wird."
 
-#: extension.js:806 extension.js:807
+#: extension.js:914 extension.js:915
 msgid "Restore Defaults"
 msgstr "Standardwerte wiederherstellen"
 
-#: extension.js:807
+#: extension.js:915
 msgid "Restore the default settings."
 msgstr "Die standardmäßig gesetzten Einstellungen wiederherstellen."
 
-#: extension.js:822
+#: extension.js:923
+msgid "Show Icon in Main Panel"
+msgstr "Zeige das Icon in der Menuleiste"
+
+#: extension.js:924
+msgid ""
+"Attention!\n"
+"If you hide the icon in the main panel you could not open this dialog "
+"again.\n"
+"To change settings while the icon is hidden you have to edit the file "
+"'settings.json' in the extension directory manually!"
+msgstr ""
+"Achtung!\n"
+"Sobald das Icon in der Menuleiste verborgen wird, können sie diesen Dialog nicht mehr öffnen.\n"
+"Die Einstellungen können dann nur noch von Hand in der Datei 'settings.json' im Extensionverzeichnis geändert werden!"
+
+#: extension.js:935
 msgid "Automatically switch Touchpad On/Off"
 msgstr "Touchpad automatisch ein- bzw. ausschalten"
 
-#: extension.js:823
+#: extension.js:936
 msgid "Turns the touchpad on or off automatically if a mouse is (un)plugged."
 msgstr ""
 "Schalte das Touchpad automatisch ein bzw. aus, wenn eine Maus an- bzw "
 "abgesteckt wird."
 
-#: extension.js:827
+#: extension.js:940
 msgid "Automatically switch Trackpoint On/Off"
 msgstr "Trackpoint automatisch ein- bzw. ausschalten"
 
-#: extension.js:828
+#: extension.js:941
 msgid "Turns trackpoint automatically on or off if a mouse is (un)plugged."
 msgstr ""
 "Schalte den Trackpoint automatisch ein bzw. aus, wenn eine Maus an- bzw "
 "abgesteckt wird."
 
-#: extension.js:833
+#: extension.js:946
 msgid "Show notification"
 msgstr "Benachrichtigung anzeigen"
 
-#: extension.js:834
+#: extension.js:947
 msgid ""
 "Show notifications if the touchpad or the trackpoint is automatically "
 "switched on or off."
@@ -174,11 +210,11 @@ msgstr ""
 "Zeige Benachrichtigungen an, wenn das Touchpad oder der Trackpoint "
 "automatisch ein- bzw. ausgeschaltet wird."
 
-#: extension.js:836
+#: extension.js:949
 msgid "Exclude mouse device from autodetection"
 msgstr "Maus von der automatischen Erkennung ausschließen"
 
-#: extension.js:837
+#: extension.js:950
 msgid ""
 "Here you can choose some mouse devices to be excluded from autodetection, "
 "like your IR Remote Control or something similar.\n"
@@ -189,19 +225,19 @@ msgstr ""
 "IR Fernbedienung oder ähnliches.\n"
 "Alle hier markierten Geräte werden ignoriert."
 
-#: extension.js:860
+#: extension.js:973
 msgid "Debug log"
 msgstr "Debug log"
 
-#: extension.js:860
+#: extension.js:973
 msgid "Turns the debug log on or off."
 msgstr "Debug log an- bzw. ausschalten."
 
-#: extension.js:868
+#: extension.js:981
 msgid "Write debug information to file."
 msgstr "Debug Informationen zusätzlich in eine Datei speichern"
 
-#: extension.js:869
+#: extension.js:982
 msgid ""
 "All debug logs are additionally written to the file 'touchpad-indicator.log' "
 "in the extension directory.\n"
@@ -210,30 +246,30 @@ msgid ""
 "extension."
 msgstr ""
 "Alle Meldungen werden zusätzlich in die Datei 'touchpad-indicator.log' im "
-"Extension Verzeichnis geschrieben.\n"
+"Extensionverzeichnis geschrieben.\n"
 "Achtung!\n"
 "Dieses Feature verlängert den Start der Gnome-Shell und verlangsamt die "
 "Benutzung der Extension deutlich."
 
-#: extension.js:887
+#: extension.js:1000
 msgid "Warning - No Touchpad Detected"
 msgstr "Achtung - Kein Touchpad gefunden"
 
-#: extension.js:888
+#: extension.js:1001
 msgid ""
 "The extension could not detect a touchpad at the moment.\n"
 "Perhaps your touchpad is not detected correctly by the kernel.\n"
 "The following devices are detected as mice:\n"
 msgstr ""
-"Die Extensino konnte leider kein Touchpad finden.\n"
+"Die Extension konnte leider kein Touchpad finden.\n"
 "Vielleicht wurde dein Touchpad vom Kernel nicht korrekt erkannt.\n"
 "Die folgenden Geräte sind vom Kernel als Maus gelistet:\n"
 
-#: extension.js:891
+#: extension.js:1004
 msgid "Try to find the touchpad"
 msgstr "Touchpad manuell auswählen"
 
-#: extension.js:892
+#: extension.js:1005
 msgid ""
 "You could try to find a possible touchpad.\n"
 "Below you could choose the possible touchpad from the list of the detected "
@@ -250,21 +286,21 @@ msgstr ""
 "ist es möglich ein nicht korrekt erkanntes Touchpad mit der Extension zu "
 "schalten.\n"
 
-#: extension.js:903
+#: extension.js:1016
 msgid "Choose possible touchpad"
 msgstr "Wähle das mögliche Touchpad"
 
-#: extension.js:904
+#: extension.js:1017
 msgid "You can choose the mouse entry which could be the touchpad."
 msgstr ""
 "Hier kannst du das Mausgerät wählen, welches wahrscheinlich dein Touchpad "
 "ist."
 
-#: extension.js:921
+#: extension.js:1034
 msgid "No Xinput installed"
 msgstr "Kein 'Xinput' installiert"
 
-#: extension.js:922
+#: extension.js:1035
 msgid ""
 "If you install 'xinput' on your pc, the extension could try to switch an "
 "undetected touchpad.\n"
@@ -275,47 +311,47 @@ msgstr ""
 "Bitte installiere 'Xinput' über die Paketverwaltung und starte die gnome-"
 "shell neu um die Möglichkeit zu aktivieren."
 
-#: extension.js:926
+#: extension.js:1039
 msgid "Gnome Shell Version: "
 msgstr "Gnome Shell Version: "
 
-#: extension.js:928
+#: extension.js:1041
 msgid "Touchpad Indicator Version: "
 msgstr "Touchpad Indicator Version: "
 
-#: extension.js:930
+#: extension.js:1043
 msgid "Touchpad(s): "
 msgstr "Touchpad(s): "
 
-#: extension.js:931
+#: extension.js:1044
 msgid "Xinput: "
 msgstr "Xinput: "
 
-#: extension.js:933
+#: extension.js:1046
 msgid "Is installed."
 msgstr "Ist installiert."
 
-#: extension.js:935
+#: extension.js:1048
 msgid "Not found on your system."
 msgstr "Nicht auf dem System gefunden."
 
-#: extension.js:937
+#: extension.js:1050
 msgid "Synclient: "
 msgstr "Synclient: "
 
-#: extension.js:939
+#: extension.js:1052
 msgid "Is installed and in use.\n"
 msgstr "Installiert und in Benutzung.\n"
 
-#: extension.js:941
+#: extension.js:1054
 msgid "Not found or used on your system.\n"
 msgstr "Nicht gefunden oder nicht auf dem System installiert.\n"
 
-#: extension.js:943
+#: extension.js:1056
 msgid "Debug Informations"
 msgstr "Debug Informationen"
 
-#: extension.js:944
+#: extension.js:1057
 msgid ""
 "Here you find some information about your system which might be helpful in "
 "debugging.\n"
@@ -325,51 +361,63 @@ msgstr ""
 "zu beheben.\n"
 "\n"
 
-#: extension.js:1320
+#: extension.js:1447
 msgid "Touchpad"
 msgstr "Touchpad"
 
-#: extension.js:1322
+#: extension.js:1449
 msgid "Trackpoint"
 msgstr "Trackpoint"
 
-#: extension.js:1324
+#: extension.js:1451
+msgid "Touchscreen"
+msgstr ""
+
+#: extension.js:1453
+msgid "Finger touch"
+msgstr ""
+
+#: extension.js:1455
+msgid "Pen"
+msgstr ""
+
+#: extension.js:1457
 msgid "Indicator Settings"
 msgstr "Indicatoreinstellungen"
 
-#: extension.js:1332
+#: extension.js:1471
 msgid "Touchpad Settings"
 msgstr "Touchpadeinstellungen"
 
-#: extension.js:1486
+#: extension.js:1669
 msgid "Mouse plugged in - "
 msgstr "Maus gefunden - "
 
-#: extension.js:1488
+#: extension.js:1671
 msgid "Mouse unplugged - "
 msgstr "Maus entfernt - "
 
-#: extension.js:1492
+#: extension.js:1675
 msgid "touchpad and trackpoint enabled"
 msgstr "Touchpad und Trackpoint aktiviert"
 
-#: extension.js:1494
+#: extension.js:1677
 msgid "touchpad and trackpoint disabled"
 msgstr "Touchpad und Trackpoint deaktiviert"
 
-#: extension.js:1498
+#: extension.js:1681
 msgid "touchpad enabled"
 msgstr "Touchpad aktiviert"
 
-#: extension.js:1500
+#: extension.js:1683
 msgid "touchpad disabled"
 msgstr "Touchpad deaktiviert"
 
-#: extension.js:1504
+#: extension.js:1687
 msgid "trackpoint enabled"
 msgstr "Trackpoint aktiviert"
 
-#: extension.js:1506
+#: extension.js:1689
 msgid "trackpoint disabled"
 msgstr "Trackpoint deaktiviert"
 
