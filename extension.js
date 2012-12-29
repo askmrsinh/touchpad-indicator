@@ -917,6 +917,11 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
                 settings.restoreDefault();
                 settings.set_boolean("first-time", false);
             });
+        this._createSeparator();
+        this._createSwitch(indicator._CONF_showPanelIcon,
+            'show-panelicon',
+            _("Show Icon in Main Panel"),
+            _("Attention!\nIf you hide the icon in the main panel you could not open this dialog again.\nTo change settings while the icon is hidden you have to edit the file 'settings.json' in the extension directory manually!"));
     },
 
     _auto_switch: function() {
@@ -1473,7 +1478,7 @@ touchpadIndicatorButton.prototype = {
         this._connectConfig();
         if (switch_method_changed)
             this.settings.set_enum('switch-method', this._CONF_switchMethod);
-
+        this._showPanelIcon(this._CONF_showPanelIcon);
     },
 
     _loadConfig: function() {
@@ -1501,6 +1506,7 @@ touchpadIndicatorButton.prototype = {
         this._CONF_possibleTouchpad = this.settings.get_text(
             'possible-touchpad');
         this._CONF_excludedMouses = this.settings.get_dict('excluded-mouses');
+        this._CONF_showPanelIcon = this.settings.get_boolean('show-panelicon');
 	},
 
     _connectConfig: function() {
@@ -1532,6 +1538,8 @@ touchpadIndicatorButton.prototype = {
             this._possible_touchpad_changed));
         this.settings.connect('excluded-mouses', Lang.bind(this,
             this._excluded_mouses_changed));
+        this.settings.connect('show-panelicon', Lang.bind(this,
+            this._panelIconChanged));
     },
 
     _onChangeIcon: function(write_setting) {
@@ -1550,6 +1558,20 @@ touchpadIndicatorButton.prototype = {
                 this._touchpadItem, true);
             if (write_setting !== undefined && write_setting)
                 this.settings.set_boolean('touchpad-enabled', true);
+        }
+    },
+
+    _panelIconChanged: function() {
+        this._loadConfig();
+        this._showPanelIcon(this._CONF_showPanelIcon);
+    },
+
+    _showPanelIcon: function(value) {
+        // show or hide the Icon in the Main Panel
+        if (value) {
+            this.actor.show();
+        } else {
+            this.actor.hide();
         }
     },
 

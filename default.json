@@ -12,5 +12,6 @@
 "debug-to-file":false,
 "switch-method": 1,
 "possible-touchpad":"-",
-"excluded-mouses":{}
+"excluded-mouses":{},
+"show-panelicon": true
 }
