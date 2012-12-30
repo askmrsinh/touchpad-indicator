@@ -236,7 +236,7 @@ function list_mouses(skip_excluded) {
     logging('list_mouses()');
     let where = list_mouse_devices(),
         mouses = new Array(false, []);
-    logging('list_mouse_devices(): ' + where.toString());
+    logging('list_mouses(): ' + where.toString());
     if (where[0]) {
         where = where[1];
         let hits = 0;
@@ -534,9 +534,9 @@ SettingsContainer.prototype = {
     },
 
     _restore_backup: function(b) {
-        this._conf = b;
-        this.save_data();
-        onLoadConfig();
+        for(let k in b) {
+            this._take_data(k, b[k])
+        };
     },
 
     save_data: function() {
@@ -551,9 +551,18 @@ SettingsContainer.prototype = {
     },
 
     _get_backup: function() {
-        let copy={};
+        let copy = {};
         for(let k in this._conf) {
-            copy[k] = this._conf[k];
+            if (k == "excluded-mouses") {
+                copy[k] = {};
+                for(let subkey in this._conf[k]) {
+                    copy[k][subkey] = this._conf[k][subkey];
+                }
+            } else {
+                copy[k] = this._conf[k];
+            }
+            logging('SettingsContainer._get_backup():  "'+ k.toString()
+                + '" value "'+ copy[k].toString() +'"');
         };
         return copy;
     },
@@ -1834,7 +1843,7 @@ touchpadIndicatorButton.prototype = {
         this._loadConfig();
         let enabled = this._touchpad_enabled();
         this._enable_touchpad();
-        if (this._CONF_possibleTouchpad != " ") {
+        if (this._CONF_possibleTouchpad != "-") {
             ALL_TOUCHPADS[TOUCHPADS.length] =
                 this._CONF_possibleTouchpad.toLowerCase();
         } else {
