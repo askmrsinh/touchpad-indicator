@@ -1368,7 +1368,6 @@ PopupSwitchMenuItem.prototype = {
     _init: function(label, tag, state, callback) {
         PopupMenu.PopupSwitchMenuItem.prototype._init.call(this, label, state);
 	    this.tag = tag;
-        this.connect('activate', callback);
         this.connect('toggled', callback);
     }
 };
@@ -1722,35 +1721,62 @@ touchpadIndicatorButton.prototype = {
     },
 
     _is_device_enabled: function() {
+        logging('touchpadIndicatorButton._is_device_enabled()');
         hits = 0;
         if (METHOD.GCONF == this._CONF_switchMethod) {
-            if (this._CONF_touchpadEnabled)
+            if (this._CONF_touchpadEnabled) {
+                logging('touchpadIndicatorButton._is_device_enabled(Found an '
+                + 'enabled Touchpad)');
                 hits++;
+            }
         } else if (METHOD.SYNCLIENT == this._CONF_switchMethod) {
-            if (this._CONF_touchpadEnabled)
+            if (this._CONF_touchpadEnabled) {
+                logging('touchpadIndicatorButton._is_device_enabled(Found an '
+                + 'enabled Touchpad)');
                 hits++;
+            }
         } else if (METHOD.XINPUT == this._CONF_switchMethod) {
             if (this.touchpadXinput.is_there_device && 
-                    this._CONF_touchpadEnabled)
+                    this._CONF_touchpadEnabled) {
+                logging('touchpadIndicatorButton._is_device_enabled(Found an '
+                + 'enabled Touchpad)');
                 hits++;
+            }
         }
-        if (this.trackpoint.is_there_device && this._CONF_trackpointEnabled)
+        if (this.trackpoint.is_there_device && this._CONF_trackpointEnabled) {
+            logging('touchpadIndicatorButton._is_device_enabled(Found an '
+                + 'enabled Trackpoint)');
             hits++;
-        if (this.touchscreen.is_there_device && this._CONF_touchscreenEnabled)
+        }
+        if (this.touchscreen.is_there_device &&
+                this._CONF_touchscreenEnabled) {
+            logging('touchpadIndicatorButton._is_device_enabled(Found an '
+                + 'enabled Touchscreen)');
             hits++;
-        if (this.fingertouch.is_there_device && this._CONF_fingertouchEnabled)
+        }
+        if (this.fingertouch.is_there_device &&
+                this._CONF_fingertouchEnabled) {
+            logging('touchpadIndicatorButton._is_device_enabled(Found an '
+                + 'enabled Fingertouch)');
             hits++;
-        if (this.pen.is_there_device && this._CONF_penEnabled)
+        }
+        if (this.pen.is_there_device && this._CONF_penEnabled) {
+            logging('touchpadIndicatorButton._is_device_enabled(Found an '
+                + 'enabled Pen)');
             hits++;
-        if (list_mouses(true)[0])
+        }
+        if (list_mouses(true)[0]) {
+            logging('touchpadIndicatorButton._is_device_enabled(Found an '
+                + 'enabled Mouse)');
             hits++;
+        }
         if (hits > 1) {
             logging('touchpadIndicatorButton._is_device_enabled(Found an other'
-                + ' Device)');
+                + ' enabled Device)');
             return true;
         } else {
             logging('touchpadIndicatorButton._is_device_enabled(No other '
-                + 'Device)');
+                + 'enabled Device)');
             return false;
         }
     },
