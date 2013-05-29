@@ -44,7 +44,6 @@ const ExtensionSystem = imports.ui.extensionSystem;
 var TP_ICON = 'input-touchpad';
 var TP_ICON_DISABLED = 'touchpad-disabled';
 
-//Why are functions renames without creating a deprecated pointer..?
 //Workaround...
 let currentArray = Conf.PACKAGE_VERSION.split('.');
 if (currentArray[0] == 3 && currentArray[1] < 3) {
@@ -63,8 +62,8 @@ if (currentArray[0] == 3 && currentArray[1] < 3) {
     var ExtensionPath = Extension.path
     var cleanActor = function(o) {return o.destroy_all_children();};
     var NOTIFICATION_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
-} else {
-    // Gnome Shell 3.5 and higher
+} else if (currentArray[0] == 3 && currentArray[1] < 7) {
+    // Gnome Shell 3.5 or 3.6
     var Extension = imports.misc.extensionUtils.getCurrentExtension();
     var ExtensionMeta = Extension.metadata
     var ExtensionPath = Extension.path
@@ -72,11 +71,20 @@ if (currentArray[0] == 3 && currentArray[1] < 3) {
     var NOTIFICATION_ICON_SIZE = MessageTray.NOTIFICATION_ICON_SIZE;
     var TP_ICON = 'my-touchpad-normal';
     var TP_ICON_DISABLED = 'my-touchpad-disabled';
+} else {
+    // Gnome Shell 3.7 and higher
+    var Extension = imports.misc.extensionUtils.getCurrentExtension();
+    var ExtensionMeta = Extension.metadata
+    var ExtensionPath = Extension.path
+    var cleanActor = function(o) {return o.destroy_all_children();};
+    var NOTIFICATION_ICON_SIZE = MessageTray.Notification.prototype.ICON_SIZE;
+    var TP_ICON = 'my-touchpad-normal';
+    var TP_ICON_DISABLED = 'my-touchpad-disabled';
 }
 
 const StoragePath = '.local/share/gnome-shell/extensions/'+
                         ExtensionMeta.uuid.toString();
-GLib.mkdir_with_parents(StoragePath, 0775);
+GLib.mkdir_with_parents(StoragePath, parseInt('0775', 8));
 
 const Gettext = imports.gettext.domain('touchpad-indicator@orangeshirt');
 const _ = Gettext.gettext;
@@ -120,9 +128,9 @@ var TIMEOUT_SETTINGSDIALOG = false;
 
 function logging(message) {
     if (DEBUG || FORCE_DEBUG) {
-        global.log(DEBUG_INFO + message);
         let timestamp = format_time(new Date(new Date().getTime()));
         message = timestamp + "    " + message + "\n";
+        global.log(DEBUG_INFO + message);
         LOGS += message;
         if (DEBUG_TO_FILE) {
             GLib.file_set_contents(DEBUG_LOG_FILE, LOGS);
@@ -203,7 +211,7 @@ function list_mouse_devices() {
 
 function search_touchpads() {
     logging('search_touchpads()');
-    where = list_mouse_devices();
+    var where = list_mouse_devices();
     if (where[0]) {
         where = where[1];
         let touchpads = "";
@@ -361,8 +369,13 @@ function notify(device, title, text) {
     let icon = new St.Icon({ icon_name: TP_ICON,
                              icon_size: NOTIFICATION_ICON_SIZE
                            });
-    device._notification = new MessageTray.Notification(msg_source, title,
-        text, { icon: icon });
+    if (currentArray[0] == 3 && currentArray[1] < 7) {
+        device._notification = new MessageTray.Notification(msg_source, title,
+            text, { icon: icon });
+    } else {
+        device._notification = new MessageTray.Notification(msg_source, title,
+            text);
+	}
     device._notification.setUrgency(MessageTray.Urgency.LOW);
     device._notification.setTransient(true);
     device._notification.connect('destroy', function() {
@@ -1154,8 +1167,8 @@ Synclient.prototype = {
                 if (this.synclient_status == this.touchpad_off) {
                     this._wait();
                 } else {
-                    parts = this.touchpad_off.split("= ");
-                    state = !to_boolean(parts[1]);
+                    var parts = this.touchpad_off.split("= ");
+                    var state = !to_boolean(parts[1]);
                     logging('Synclient._watch: Touchpad state changed to '
                         + state.toString());
                     this.settings.set_boolean('touchpad-enabled', state);
