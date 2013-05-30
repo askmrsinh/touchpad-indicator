@@ -1414,8 +1414,6 @@ touchpadIndicatorButton.prototype = {
 
         if (!this.xinput_is_installed) {
             logging('touchpadIndicatorButton._init(): Can`t find Xinput');
-            this.settings.set_boolean('switch-if-mouse', false);
-            this.settings.set_boolean('auto-switch-touchpad', false);
             this.settings.set_boolean('auto-switch-trackpoint', false);
         } else {
             logging('touchpadIndicatorButton._init(): Xinput is installed');
