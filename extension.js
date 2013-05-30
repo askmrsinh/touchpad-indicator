@@ -869,16 +869,16 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
                 style:"padding: 5px"}),
             combo = new PopupMenu.PopupComboBoxMenuItem({
                 style_class: "touchpadIndicator_combo"});
-
-        this._createItemLabel(section, title, desc);
-        section.add(combo.actor, {y_fill:false});
-        this._group.addActor(section, {x_fill: true});
-
         items.forEach(function(o) {
                 let item = new PopupMenu.PopupMenuItem(_(o[0]));
                 combo.addMenuItem(item, o[1]);
             });
         combo.setActiveItem(value);
+
+        this._createItemLabel(section, title, desc);
+        section.add(combo.actor, {y_fill:false});
+        this._group.addActor(section, {x_fill: true});
+
         combo.connect("active-item-changed",
             Lang.bind(this, fu || function(menuItem, id) {
                 this._undoButton.show();
