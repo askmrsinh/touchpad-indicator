@@ -359,11 +359,10 @@ touchpadIndicatorButton.prototype = {
             this.menu.addMenuItem(this._penItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        this.menu.addSettingsAction(_("Touchpad Settings"),
+        this.menu.addSettingsAction(_("Touchpad Preferences"),
             'gnome-mouse-panel.desktop');
-
-        this._SettingsItem = new PopupMenuItem(_("Indicator Settings"), false,
-            Lang.bind(this, function() {Lib.execute_async(
+        this._SettingsItem = new PopupMenuItem(_("Indicator Preferences"),
+            false, Lang.bind(this, function() {Lib.execute_async(
                 'gnome-shell-extension-prefs ' + Me.uuid)}));
         this.menu.addMenuItem(this._SettingsItem);
 

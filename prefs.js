@@ -153,7 +153,7 @@ function buildPrefsWidget() {
         addBoldTextToBox(_("Attention - No Touchpad Detected"), vbox_welcome);
         addTextToBox(_("The extension could not detect a touchpad at the moment.\nYou'll find further information in the Debug section."), vbox_welcome);
     }
-    addTextToBox(_("These settings allow you to customize this extension to your needs. You can open this dialog again by clicking on the extension's icon and selecting Indicator Settings.\n\
+    addTextToBox(_("These settings allow you to customize this extension to your needs. You can open this dialog again by clicking on the extension's icon and selecting Indicator Preferences.\n\
 \n\
 Please feel free to contact me if you find bugs or have suggestions, criticisms, or feedback. I am always happy to receive feedback - whatever kind. :-) \n\
 \n\
@@ -165,7 +165,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
 
     // General Page
     let vbox_general = buildVbox();
-    vbox_general.set_size_request(400, 350);
+    vbox_general.set_size_request(550, 350);
     let pl_general = createText(_("General"));
     addTextToBox(_(" "), vbox_general);
 
