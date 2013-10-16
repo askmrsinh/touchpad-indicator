@@ -631,13 +631,14 @@ touchpadIndicatorButton.prototype = {
     },
 
     _switch_touchpad: function(state) {
-        logging('touchpadIndicatorButton._switch_touchpad()');
+        logging('touchpadIndicatorButton._switch_touchpad('+ state.toString() 
+            +')');
         this.gsettings.set_boolean('touchpad-enabled', state);
     },
 
     _touchpad_changed: function() {
-        this._loadConfig();
         logging('touchpadIndicatorButton._touchpad_changed()');
+        this._loadConfig();
         let state;
         switch (this._CONF_switchMethod) {
             case METHOD.GCONF:
@@ -667,6 +668,7 @@ touchpadIndicatorButton.prototype = {
 
 
     _possible_touchpad_changed: function() {
+        logging('touchpadIndicatorButton._possible_touchpad_changed()');
         this._loadConfig();
         let enabled = this._CONF_touchpadEnabled;
         this._switch_touchpad(true);
@@ -682,10 +684,13 @@ touchpadIndicatorButton.prototype = {
     },
 
     _switch_trackpoint: function(state) {
+        logging('touchpadIndicatorButton._switch_trackpoint('+ state.toString() 
+            +')');
         this.gsettings.set_boolean('trackpoint-enabled', state);
     },
 
     _trackpoint_changed: function() {
+        logging('touchpadIndicatorButton._trackpoint_changed()');
         this._loadConfig();
         let state = this.trackpoint._switch_all_devices(
             this._CONF_trackpointEnabled);
@@ -696,10 +701,13 @@ touchpadIndicatorButton.prototype = {
     },
 
     _switch_touchscreen: function(state) {
+        logging('touchpadIndicatorButton._switch_touchscreen('+ state.toString() 
+            +')');
         this.gsettings.set_boolean('touchscreen-enabled', state);
     },
 
     _touchscreen_changed: function() {
+        logging('touchpadIndicatorButton._touchscreen_changed()');
         this._loadConfig();
         let state = this.touchscreen._switch_all_devices(
             this._CONF_touchscreenEnabled);
@@ -710,10 +718,13 @@ touchpadIndicatorButton.prototype = {
     },
 
     _switch_fingertouch: function(state) {
+        logging('touchpadIndicatorButton._switch_fingertouch('+ state.toString() 
+            +')');
         this.gsettings.set_boolean('fingertouch-enabled', state);
     },
 
     _fingertouch_changed: function() {
+        logging('touchpadIndicatorButton._fingertouch_changed()');
         this._loadConfig();
         let state = this.fingertouch._switch_all_devices(
             this._CONF__fingertouchEnabled);
@@ -724,10 +735,13 @@ touchpadIndicatorButton.prototype = {
     },
 
     _switch_pen: function(state) {
+        logging('touchpadIndicatorButton._switch_pen('+ state.toString() 
+            +')');
         this.gsettings.set_boolean('pen-enabled', state);
     },
 
     _pen_changed: function() {
+        logging('touchpadIndicatorButton._pen_changed()');
         this._loadConfig();
         let state = this.pen._switch_all_devices(this._CONF_penEnabled);
         PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.
@@ -883,6 +897,7 @@ function onMousePlugged() {
 
 // Put your extension initialization code here
 function init(metadata) {
+    logging('init()');
     Convenience.initTranslations('touchpad-indicator@orangeshirt');
     // Only for Gnome-Shell 3.5 and higher use own icons
     if (currentArray[0] == 3 && currentArray[1] > 4) {
@@ -892,6 +907,7 @@ function init(metadata) {
 };
 
 function enable() {
+    logging('enable()');
     touchpadIndicator = new touchpadIndicatorButton;
     Main.panel.addToStatusArea('touchpad-indicator', touchpadIndicator);
 
@@ -905,6 +921,7 @@ function enable() {
 };
 
 function disable() {
+    logging('disable()');
     if (TIMEOUT_SETTINGSDIALOG) {
         Mainloop.source_remove(TIMEOUT_SETTINGSDIALOG);
         TIMEOUT_SETTINGSDIALOG = false;
