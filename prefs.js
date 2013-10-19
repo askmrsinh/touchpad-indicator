@@ -46,6 +46,7 @@ let synclient = new Synclient.Synclient();
 let synclient_in_use = synclient.synclient_in_use;
 
 let vbox_debuglog;
+let vbox_debugtofile;
 
 // Settings
 const SETTINGS_SCHEMA = Lib.SETTINGS_SCHEMA;
@@ -149,9 +150,9 @@ function buildPrefsWidget() {
     let vbox_welcome = buildVbox();
     let pl_welcome = createText(_("Welcome"));
     if (!touchpads[0]) {
-        vbox_welcome.add(createSeparator());
         addBoldTextToBox(_("Attention - No Touchpad Detected"), vbox_welcome);
         addTextToBox(_("The extension could not detect a touchpad at the moment.\nYou'll find further information in the Debug section."), vbox_welcome);
+	vbox_welcome.add(createSeparator());
     }
     addTextToBox(_("These settings allow you to customize this extension to your needs. You can open this dialog again by clicking on the extension's icon and selecting Indicator Preferences.\n\
 \n\
@@ -241,6 +242,11 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
 
 
     // Debug Page
+    let vbox_debugcont = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL,
+        margin_top: 0 }); 
+    let vbox_view = new Gtk.Viewport();
+    let vbox_scroll = new Gtk.ScrolledWindow({ vexpand: true });
+
     let vbox_debug = buildVbox();
     let pl_debug = createText(_("Debug"));
     addTextToBox(_("Settings for debugging the extension."), vbox_debug);
@@ -363,12 +369,16 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
     let buffer = new Gtk.TextBuffer({ text: Lib.get_logs() });
     let textview = new Gtk.TextView({ buffer: buffer });
     textview.set_editable(false);
-    scroll.set_size_request(400, 150);
+    scroll.set_size_request(400, 310);
     scroll.add(textview);
     vbox_debuglog.add(scroll);
     vbox_debugtofile.add(vbox_debuglog);
     vbox_debug.add(vbox_debugtofile);
-    notebook.append_page(vbox_debug, pl_debug);
+
+    vbox_view.add(vbox_debug);
+    vbox_scroll.add(vbox_view);
+    vbox_debugcont.add(vbox_scroll);
+    notebook.append_page(vbox_debugcont, pl_debug);
 
     frame.add(notebook);
     frame.show_all();

@@ -27,6 +27,9 @@
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 
+const Gettext = imports.gettext.domain('touchpad-indicator@orangeshirt');
+const _ = Gettext.gettext;
+
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 

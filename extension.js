@@ -655,6 +655,8 @@ touchpadIndicatorButton.prototype = {
             case METHOD.XINPUT:
                 state = this.touchpadXinput._switch_all_devices(
                     this._CONF_touchpadEnabled);
+                if (!this.touchpadXinput.is_there_device)
+                    state = true;
                 break;
         }
         this._onChangeIcon();
@@ -679,7 +681,7 @@ touchpadIndicatorButton.prototype = {
             ALL_TOUCHPADS = TOUCHPADS.slice();
         }
         this.touchpadXinput = new XInput.XInput(ALL_TOUCHPADS);
-        if (!enabled)
+        if (this.touchpadXinput.is_there_device && !enabled)
             this._switch_touchpad(false);
     },
 
