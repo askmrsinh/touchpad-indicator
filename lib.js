@@ -44,6 +44,9 @@ var DEBUG_TO_FILE = false; // overwritten by settings
 var DEBUG_INFO = 'Extension '+ Me.metadata.name.toString() +': ';
 var DEBUG_LOG_FILE = GLib.build_filenamev([StoragePath,
    'touchpad-indicator.log']);
+if (GLib.file_test(DEBUG_LOG_FILE, GLib.FileTest.EXISTS) === false)
+    GLib.file_set_contents(DEBUG_LOG_FILE, "");
+    
 
 let LOGS = "";
 

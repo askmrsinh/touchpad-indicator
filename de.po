@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-19 14:37+0200\n"
+"POT-Creation-Date: 2013-10-23 20:32+0200\n"
 "PO-Revision-Date: 2013-10-16 21:47+0100\n"
 "Last-Translator: Köhler <orangeshirt at web.de>\n"
 "Language-Team: German\n"
@@ -42,15 +42,15 @@ msgstr "Abbrechen"
 msgid "OK"
 msgstr "OK"
 
-#: extension.js:340 prefs.js:70
+#: extension.js:340 prefs.js:71
 msgid "Touchpad"
 msgstr "Touchpad"
 
-#: extension.js:342 prefs.js:74
+#: extension.js:342 prefs.js:75
 msgid "Trackpoint"
 msgstr "Trackpoint"
 
-#: extension.js:344 prefs.js:78
+#: extension.js:344 prefs.js:79
 msgid "Touchscreen"
 msgstr "Touchscreen"
 
@@ -58,7 +58,7 @@ msgstr "Touchscreen"
 msgid "Finger touch"
 msgstr "Finger touch"
 
-#: extension.js:348 prefs.js:86
+#: extension.js:348 prefs.js:87
 msgid "Pen"
 msgstr "Pen"
 
@@ -102,39 +102,39 @@ msgstr "Trackpoint aktiviert"
 msgid "trackpoint disabled"
 msgstr "Trackpoint deaktiviert"
 
-#: prefs.js:66
+#: prefs.js:67
 msgid "First time startup"
 msgstr "Erster Start"
 
-#: prefs.js:82
+#: prefs.js:83
 msgid "Fingertouch"
 msgstr ""
 
-#: prefs.js:90
+#: prefs.js:91
 msgid "Automatically switch Touchpad On/Off"
 msgstr "Touchpad automatisch ein- bzw. ausschalten"
 
-#: prefs.js:91
+#: prefs.js:92
 msgid "Turns touchpad automatically on or off if a mouse is (un)plugged."
 msgstr ""
 "Schalte das Touchpad automatisch ein bzw. aus, wenn eine Maus an- bzw. "
 "abgesteckt wird."
 
-#: prefs.js:95
+#: prefs.js:96
 msgid "Automatically switch Trackpoint On/Off"
 msgstr "Trackpoint automatisch ein- bzw. ausschalten"
 
-#: prefs.js:96
+#: prefs.js:97
 msgid "Turns trackpoint automatically on or off if a mouse is (un)plugged."
 msgstr ""
 "Schalte den Trackpoint automatisch ein bzw. aus, wenn eine Maus an- bzw. "
 "abgesteckt wird."
 
-#: prefs.js:100
+#: prefs.js:101
 msgid "Show notification"
 msgstr "Benachrichtigung anzeigen"
 
-#: prefs.js:101
+#: prefs.js:102
 msgid ""
 "Show notifications if the touchpad or the trackpoint is automatically "
 "switched on or off."
@@ -142,19 +142,19 @@ msgstr ""
 "Zeige Benachrichtigungen an, wenn das Touchpad oder der Trackpoint "
 "automatisch ein- bzw. ausgeschaltet wird."
 
-#: prefs.js:105
+#: prefs.js:106
 msgid "Debug log"
 msgstr "Debug log"
 
-#: prefs.js:106
+#: prefs.js:107
 msgid "Turns the debug log on or off."
 msgstr "Debug log an- bzw. ausschalten."
 
-#: prefs.js:110
+#: prefs.js:111
 msgid "Write debug information to file."
 msgstr "Debug Informationen zusätzlich in eine Datei speichern"
 
-#: prefs.js:111
+#: prefs.js:112
 msgid ""
 "All debug logs are additionally written to the file 'touchpad-indicator.log' "
 "in the extension directory.\n"
@@ -168,41 +168,41 @@ msgstr ""
 "Dieses Feature verlängert den Start der Gnome-Shell und verlangsamt die "
 "Benutzung der Extension deutlich."
 
-#: prefs.js:115 prefs.js:194
+#: prefs.js:116 prefs.js:195
 msgid "Switch Method"
 msgstr "Umschaltmethode"
 
-#: prefs.js:116 prefs.js:194
+#: prefs.js:117 prefs.js:195
 msgid "Method by which to switch the touchpad."
 msgstr "Methode die zum Schalten des Touchpads genutzt wird."
 
-#: prefs.js:118
+#: prefs.js:119
 msgid "Gconf"
 msgstr "Gconf"
 
-#: prefs.js:119 prefs.js:181
+#: prefs.js:120 prefs.js:182
 msgid "Synclient"
 msgstr "Synclient"
 
-#: prefs.js:120
+#: prefs.js:121
 msgid "XInput"
 msgstr "XInput"
 
-#: prefs.js:125 prefs.js:285 prefs.js:287
+#: prefs.js:126 prefs.js:288 prefs.js:290
 msgid "Choose possible touchpad"
 msgstr "Wähle das mögliche Touchpad"
 
-#: prefs.js:126 prefs.js:288
+#: prefs.js:127 prefs.js:291
 msgid "You can choose the mouse entry which could be the touchpad."
 msgstr ""
 "Hier kannst du das Mausgerät wählen, welches wahrscheinlich dein Touchpad "
 "ist."
 
-#: prefs.js:130 prefs.js:218
+#: prefs.js:131 prefs.js:221
 msgid "Exclude mouse device from autodetection"
 msgstr "Maus von der automatischen Erkennung ausschließen"
 
-#: prefs.js:131 prefs.js:220
+#: prefs.js:132 prefs.js:223
 msgid ""
 "Here you can choose some mouse devices to be excluded from autodetection, "
 "like your IR Remote Control or something similar.\n"
@@ -213,23 +213,23 @@ msgstr ""
 "IR Fernbedienung oder ähnliches.\n"
 "Alle hier markierten Geräte werden ignoriert."
 
-#: prefs.js:135
+#: prefs.js:136
 msgid "Show Icon in Main Panel"
 msgstr "Zeige das Icon in der Menuleiste"
 
-#: prefs.js:136
+#: prefs.js:137
 msgid "Show or hide the icon in the panel"
 msgstr "Zeige bzw. verstecke das Icon in der Menuleiste"
 
-#: prefs.js:151
+#: prefs.js:152
 msgid "Welcome"
 msgstr "Willkommen"
 
-#: prefs.js:153
+#: prefs.js:154
 msgid "Attention - No Touchpad Detected"
 msgstr "Achtung - Es wurde kein Touchpad gefunden"
 
-#: prefs.js:154
+#: prefs.js:155
 msgid ""
 "The extension could not detect a touchpad at the moment.\n"
 "You'll find further information in the Debug section."
@@ -237,7 +237,7 @@ msgstr ""
 "Die Extension konnte leider kein Touchpad finden.\n"
 "Weitere Informationen dazu findst du unter 'Debug'."
 
-#: prefs.js:157
+#: prefs.js:158
 msgid ""
 "These settings allow you to customize this extension to your needs. You can "
 "open this dialog again by clicking on the extension's icon and selecting "
@@ -267,43 +267,43 @@ msgstr ""
 "\n"
 "Armin"
 
-#: prefs.js:170
+#: prefs.js:171
 msgid "General"
 msgstr "Allgemeines"
 
-#: prefs.js:171
+#: prefs.js:172
 msgid " "
 msgstr " "
 
-#: prefs.js:175
+#: prefs.js:176
 msgid "Gconf Settings"
 msgstr "Gconf Settings"
 
-#: prefs.js:188
+#: prefs.js:189
 msgid "Xinput"
 msgstr "Xinput"
 
-#: prefs.js:208
+#: prefs.js:209
 msgid "Auto Switch"
 msgstr "Auto Switch"
 
-#: prefs.js:209
+#: prefs.js:210
 msgid "Define the behaviour if a mouse is (un)plugged."
 msgstr "Verhalten wenn eine Maus an- bzw abgesteckt wird."
 
-#: prefs.js:251
+#: prefs.js:254
 msgid "Debug"
 msgstr "Debug"
 
-#: prefs.js:252
+#: prefs.js:255
 msgid "Settings for debugging the extension."
 msgstr "Einstellungen für die Fehlersuche"
 
-#: prefs.js:269
+#: prefs.js:272
 msgid "Warning - No Touchpad Detected"
 msgstr "Achtung - Kein Touchpad gefunden"
 
-#: prefs.js:270
+#: prefs.js:273
 msgid ""
 "The extension could not detect a touchpad at the moment.\n"
 "Perhaps your touchpad is not detected correctly by the kernel.\n"
@@ -313,11 +313,11 @@ msgstr ""
 "Vielleicht wurde dein Touchpad vom Kernel nicht korrekt erkannt.\n"
 "Die folgenden Geräte sind vom Kernel als Maus gelistet:\n"
 
-#: prefs.js:273
+#: prefs.js:276
 msgid "Try to find the touchpad"
 msgstr "Touchpad manuell auswählen"
 
-#: prefs.js:274
+#: prefs.js:277
 msgid ""
 "You could try to find a possible touchpad.\n"
 "Below you could choose the possible touchpad from the list of the detected "
@@ -334,11 +334,11 @@ msgstr ""
 "ist es möglich ein nicht korrekt erkanntes Touchpad mit der Extension zu "
 "schalten.\n"
 
-#: prefs.js:327
+#: prefs.js:330
 msgid "No Xinput installed"
 msgstr "Kein 'Xinput' installiert"
 
-#: prefs.js:328
+#: prefs.js:331
 msgid ""
 "If you install 'xinput' on your pc, the extension could try to switch an "
 "undetected touchpad.\n"
@@ -349,51 +349,51 @@ msgstr ""
 "Bitte installiere 'Xinput' über die Paketverwaltung und starte die gnome-"
 "shell neu um die Möglichkeit zu aktivieren."
 
-#: prefs.js:332
+#: prefs.js:335
 msgid "Gnome Shell Version: "
 msgstr "Gnome Shell Version: "
 
-#: prefs.js:334
+#: prefs.js:337
 msgid "Touchpad Indicator Version: "
 msgstr "Touchpad Indicator Version: "
 
-#: prefs.js:336
+#: prefs.js:339
 msgid "Touchpad(s): "
 msgstr "Touchpad(s): "
 
-#: prefs.js:337
+#: prefs.js:340
 msgid "Xinput: "
 msgstr "Xinput: "
 
-#: prefs.js:339
+#: prefs.js:342
 msgid "Is installed.\n"
 msgstr "Ist installiert.\n"
 
-#: prefs.js:341
+#: prefs.js:344
 msgid "Not found on your system.\n"
 msgstr "Nicht auf dem System gefunden.\n"
 
-#: prefs.js:343
+#: prefs.js:346
 msgid "Synclient: "
 msgstr "Synclient: "
 
-#: prefs.js:345
+#: prefs.js:348
 msgid "Is installed and in use.\n"
 msgstr "Installiert und in Benutzung.\n"
 
-#: prefs.js:347
+#: prefs.js:350
 msgid "Not found or used on your system.\n"
 msgstr "Nicht gefunden oder nicht auf dem System installiert.\n"
 
-#: prefs.js:349
+#: prefs.js:352
 msgid "Switch Method: "
 msgstr "Umschaltmethode: "
 
-#: prefs.js:351
+#: prefs.js:354
 msgid "Debug Informations"
 msgstr "Debug Informationen"
 
-#: prefs.js:352
+#: prefs.js:355
 msgid ""
 "Here you find some information about your system which might be helpful in "
 "debugging.\n"
@@ -403,21 +403,21 @@ msgstr ""
 "zu beheben.\n"
 "\n"
 
-#: prefs.js:364
+#: prefs.js:367
 msgid "Debug Log"
 msgstr "Debug Log"
 
-#: prefs.js:366
+#: prefs.js:369
 msgid "The debug log since last restart, if debugging to file was enabled."
 msgstr ""
 "Die Logmeldungen seit dem letzten Neustart, falls das Logging in eine Datei "
 "vorher aktiviert wurde, bzw. alle Meldungen seit der Aktivierung des Logging."
 
-#: lib.js:156 lib.js:160
+#: lib.js:159 lib.js:163
 msgid "    - No mouse device detected."
 msgstr "    - Keine Maus gefunden."
 
-#: lib.js:187 lib.js:191
+#: lib.js:190 lib.js:194
 msgid "No Touchpad detected."
 msgstr "Kein Touchpad gefunden."
 

@@ -5,14 +5,14 @@ Touchpad Indicator is a minimalistic Touchpad management extension for the Gnome
 
 2. What does it?
 
-Touchpad Indicator allows you to switch your Touchpad On or Off, if a Trackpoint exists it is also possible to switch it On or Off through the extension (Needs 'xinput' to detect and switch the trackpoint).
-There's further the possibility to automatically switch On or Off the touchpad and/or trackpoint if a mouse is detected at startup or if a mouse is plugged or the automatc switch off is disabled by default.
-If your touchpad use synclient the extension also use synclient to switch the touchpad On or Off and not the standard gsettings values of gnome-shell.
+Touchpad Indicator allows you to switch your Touchpad On or Off, if a Trackpoint, a Fingertouch, a Touchscreen or a Pen exists it is also possible to switch it On or Off through the extension (Needs 'xinput' to detect and switch the trackpoint and the one of the other devices).
+There's further the possibility to automatically switch On or Off the touchpad and/or trackpoint if a mouse is detected at startup or if a mouse is plugged or the automatic switch off is disabled by default.
+If your touchpad use synclient the extension could also use synclient to switch the touchpad On or Off, you could change this in the preferences. The standard settings is to use gsettings values of gnome-shell.
 
 
 3. Where can I change settings?
 
-To choose your preferred option you could change the values below "Indicatorsettings".
+To choose your preferred option you could change the values below "Indicatorpreferences".
 
 
 4. How can I install the extension
@@ -22,10 +22,16 @@ You can use this link: https://extensions.gnome.org/extension/131/touchpad-indic
 If you want the newest code you should pull the code from github. Pull the code from repository and move it to ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt
 Finally restart the shell with Alt+F2 and 'r' or logout and in.
 
+5. Where can I report a bug?
 
-5. How can I translate the extension?
+Please report all issues on github, on extensions.gnome.org or send an email to me.
+Github: https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator
+Gnome Extensions Page: https://extensions.gnome.org/extension/131/touchpad-indicator/
+Please do not only make a Comment or a Rating!!
 
-5.1 Start a new translation
+6. How can I translate the extension?
+
+6.1 Start a new translation
 
 You have to open a terminal and change your directory:
 cd ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt/
@@ -38,7 +44,7 @@ where 'de' is the language abbreviation of your translation. It is the same as f
 Now you could restart gnome-shell with Alt+F2 and 'r' or logout and in. Touchpad-indicator now should be shown in your language.
 
 
-5.2 Update an existing translation
+6.2 Update an existing translation
 
 You have to open a terminal and change to the directory where your *.po file still exists:
 cd ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt/
@@ -50,6 +56,6 @@ where 'de' is the language abbreviation of your translation. It is the same as f
 Now you could restart gnome-shell with Alt+F2 and 'r' or logout and in. Touchpad-indicator now should be shown in your language.
 
 
-6 FAQ
+7 FAQ
 
 Currently there is no FAQ

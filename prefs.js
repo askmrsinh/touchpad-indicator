@@ -36,7 +36,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 let Convenience = Me.imports.convenience;
 let Lib = Me.imports.lib;
 let Synclient = Me.imports.synclient;
-let Xinput = Me.imports.synclient;
+let XInput = Me.imports.xinput;
 
 let METHOD = Lib.METHOD;
 let gsettings;
@@ -44,6 +44,7 @@ let settings;
 let xinput_is_installed = Lib.execute_sync('xinput --list');
 let synclient = new Synclient.Synclient();
 let synclient_in_use = synclient.synclient_in_use;
+let trackpoint = new XInput.XInput(Lib.TRACKPOINTS);
 
 let vbox_debuglog;
 let vbox_debugtofile;
@@ -210,7 +211,9 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
         vbox_autoswitch);
     vbox_autoswitch.add(createSeparator());
     vbox_autoswitch.add(createBoolSetting(settings, "autoswitch_touchpad"));
-    vbox_autoswitch.add(createBoolSetting(settings, "autoswitch_trackpoint"));
+    if (trackpoint.is_there_device)
+        vbox_autoswitch.add(createBoolSetting(settings,
+            "autoswitch_trackpoint"));
     vbox_autoswitch.add(createSeparator());
     vbox_autoswitch.add(createBoolSetting(settings, "show_notifications"));
     vbox_autoswitch.add(createSeparator());
