@@ -87,8 +87,8 @@ const SETTINGS_SCHEMA = Lib.SETTINGS_SCHEMA;
 const TOUCHPAD_SETTINGS_SCHEMA = Lib.TOUCHPAD_SETTINGS_SCHEMA;
 
 // Debug Mode Settings
-var DEBUG = true; // overwritten by settings
-var DEBUG_TO_FILE = true; // overwritten by settings
+var DEBUG = false; // overwritten by settings
+var DEBUG_TO_FILE = false; // overwritten by settings
 var DEBUG_LOG_FILE = Lib.DEBUG_LOG_FILE;
 GLib.file_set_contents(DEBUG_LOG_FILE, "");
 
@@ -98,17 +98,8 @@ var USE_SYNCLIENT = true;
 var TIMEOUT_SETTINGSDIALOG = false;
 
 
-//let logging = Lib.logging;
-
 function logging(message) {
     Lib.logging(message, DEBUG, DEBUG_TO_FILE);
-};
-
-
-function to_boolean(string) {
-    if (string == 'true' || string == '1')
-        return true;
-    return false;
 };
 
 

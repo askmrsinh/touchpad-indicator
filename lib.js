@@ -76,7 +76,13 @@ const TOUCHPAD_SETTINGS_SCHEMA =
 
 
 function get_logs() {
-    return GLib.file_get_contents(DEBUG_LOG_FILE)[1].toString();
+    let logtxt;
+    try {
+        logtxt = GLib.file_get_contents(DEBUG_LOG_FILE)[1].toString();
+    } catch (err) {
+        logtxt = _("Sorry could not read logfile!\n") + err;
+    }
+    return logtxt;
 }
 
 function logging(message, debug, debug_to_file) {

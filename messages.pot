@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-23 20:32+0200\n"
+"POT-Creation-Date: 2013-10-31 20:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,85 +17,85 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:122 extension.js:154
+#: extension.js:113 extension.js:145
 msgid "Touchpad Indicator"
 msgstr ""
 
-#: extension.js:195
+#: extension.js:186
 msgid "Confirm Dialog"
 msgstr ""
 
-#: extension.js:201
+#: extension.js:192
 msgid ""
 "Would you really disable this device?\n"
 "There seems to be no other mouse device enabled!"
 msgstr ""
 
-#: extension.js:208
+#: extension.js:199
 msgid "Cancel"
 msgstr ""
 
-#: extension.js:216
+#: extension.js:207
 msgid "OK"
 msgstr ""
 
-#: extension.js:340 prefs.js:71
+#: extension.js:331 prefs.js:71
 msgid "Touchpad"
 msgstr ""
 
-#: extension.js:342 prefs.js:75
+#: extension.js:333 prefs.js:75
 msgid "Trackpoint"
 msgstr ""
 
-#: extension.js:344 prefs.js:79
+#: extension.js:335 prefs.js:79
 msgid "Touchscreen"
 msgstr ""
 
-#: extension.js:346
+#: extension.js:337
 msgid "Finger touch"
 msgstr ""
 
-#: extension.js:348 prefs.js:87
+#: extension.js:339 prefs.js:87
 msgid "Pen"
 msgstr ""
 
-#: extension.js:362
+#: extension.js:353
 msgid "Touchpad Preferences"
 msgstr ""
 
-#: extension.js:364
+#: extension.js:355
 msgid "Indicator Preferences"
 msgstr ""
 
-#: extension.js:521
+#: extension.js:512
 msgid "Mouse plugged in - "
 msgstr ""
 
-#: extension.js:523
+#: extension.js:514
 msgid "Mouse unplugged - "
 msgstr ""
 
-#: extension.js:527
+#: extension.js:518
 msgid "touchpad and trackpoint enabled"
 msgstr ""
 
-#: extension.js:529
+#: extension.js:520
 msgid "touchpad and trackpoint disabled"
 msgstr ""
 
-#: extension.js:533
+#: extension.js:524
 msgid "touchpad enabled"
 msgstr ""
 
-#: extension.js:535
+#: extension.js:526
 msgid "touchpad disabled"
 msgstr ""
 
-#: extension.js:539
+#: extension.js:530
 msgid "trackpoint enabled"
 msgstr ""
 
-#: extension.js:541
+#: extension.js:532
 msgid "trackpoint disabled"
 msgstr ""
 
@@ -357,10 +357,14 @@ msgstr ""
 msgid "The debug log since last restart, if debugging to file was enabled."
 msgstr ""
 
-#: lib.js:159 lib.js:163
+#: lib.js:83
+msgid "Sorry could not read logfile!\n"
+msgstr ""
+
+#: lib.js:165 lib.js:169
 msgid "    - No mouse device detected."
 msgstr ""
 
-#: lib.js:190 lib.js:194
+#: lib.js:196 lib.js:200
 msgid "No Touchpad detected."
 msgstr ""
