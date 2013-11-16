@@ -226,7 +226,13 @@ PopupMenuItem.prototype = {
         PopupMenu.PopupBaseMenuItem.prototype._init.call(this);
         this.label = new St.Label({ text: text,
                                     style_class: 'touchpad-menu-label' });
-        this.addActor(this.label);
+        if (currentArray[0] == 3 && currentArray[1] < 9) {
+            // Gnome Shell 3.4 - 3.8
+            this.addActor(this.label);
+        } else {
+            // Gnome Shell 3.9 and higher
+            this.actor.add(this.label);
+        }
         if (tag)
 	        this.tag = tag;
         if (callback)
@@ -250,14 +256,16 @@ PopupSwitchMenuItem.prototype = {
 };
 
 
-function touchpadIndicatorButton() {
-    this._init();
-};
-
-touchpadIndicatorButton.prototype = {
-    __proto__: PanelMenu.SystemStatusButton.prototype,
+const touchpadIndicatorButton = new Lang.Class({
+    Name: 'TouchpadIndicator.TouchpadIndicator',
+    Extends: PanelMenu.Button,
 
     _init: function() {
+        this.parent(0.0, _("Touchpad Indicator"));
+        this.touchpadIcon = new St.Icon({ icon_name: TP_ICON,
+                                          style_class: 'system-status-icon' });
+        this.panelicon = this.actor.add_actor(this.touchpadIcon);
+
         logging('touchpadIndicatorButton._init()');
         this.gsettings = Convenience.getSettings(SETTINGS_SCHEMA);
         this._loadConfig();
@@ -324,9 +332,6 @@ touchpadIndicatorButton.prototype = {
 
         if (!this._CONF_penEnabled)
             this.pen._disable_all_devices();
-
-        PanelMenu.SystemStatusButton.prototype._init.call(this,
-            TP_ICON);
 
         this._touchpadItem = new PopupSwitchMenuItem(_("Touchpad"), 0,
             this._CONF_touchpadEnabled, onMenuSelect);
@@ -398,11 +403,9 @@ touchpadIndicatorButton.prototype = {
     _onChangeIcon: function() {
         logging('touchpadIndicatorButton._onChangeIcon()');
         if (!this._CONF_touchpadEnabled) {
-            PanelMenu.SystemStatusButton.prototype.setIcon.call(this,
-                TP_ICON_DISABLED);
+            this.touchpadIcon.icon_name = TP_ICON_DISABLED;
         } else {
-            PanelMenu.SystemStatusButton.prototype.setIcon.call(this,
-                TP_ICON);
+            this.touchpadIcon.icon_name = TP_ICON;
         }
     },
 
@@ -816,7 +819,7 @@ touchpadIndicatorButton.prototype = {
         this.watch_mouse.cancel();
         this.synclient._cancel();
     }
-};
+});
 
 
 let touchpadIndicator;
