@@ -541,11 +541,7 @@ const touchpadIndicatorButton = new Lang.Class({
     },
 
     _load_excluded_mouses: function() {
-        ALL_OTHERS = OTHERS.slice();
-        for(var key in this._CONF_excludedMouses) {
-            if (this._CONF_excludedMouses[key])
-                ALL_OTHERS[ALL_OTHERS.length] = key.toString().toLowerCase();
-        }
+        ALL_OTHERS = Lib.load_excluded_mouses(this._CONF_excludedMouses);
     },
 
     _excluded_mouses_changed: function() {

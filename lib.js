@@ -284,3 +284,12 @@ function watch_mouse() {
     this.file = Gio.file_new_for_path("/dev/input/by-path")
     return this.file.monitor(Gio.FileMonitorFlags.NONE, null);
 };
+
+function load_excluded_mouses(excluded_mouses) {
+    ALL_OTHERS = OTHERS.slice();
+    for(var key in excluded_mouses) {
+        if (excluded_mouses[key])
+            ALL_OTHERS[ALL_OTHERS.length] = key.toString().toLowerCase();
+    }
+    return ALL_OTHERS;
+};
