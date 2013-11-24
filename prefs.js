@@ -301,7 +301,8 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
                 if (!gsettings.get_boolean("touchpad-enabled")) {
                     switch (gsettings.get_enum("switchmethod")) {
                         case METHOD.GCONF:
-                            let tpdgs = getSettings(TOUCHPAD_SETTINGS_SCHEMA);
+                            let tpdgs = Convenience.getSettings(
+                                TOUCHPAD_SETTINGS_SCHEMA);
                             if (tpdgs.set_boolean('touchpad-enabled', false)) {
                                gsettings.set_boolean('touchpad-enabled', false);
                             }
