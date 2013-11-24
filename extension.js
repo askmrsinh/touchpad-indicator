@@ -488,6 +488,7 @@ const touchpadIndicatorButton = new Lang.Class({
             let is_mouse = Lib.list_mouses(true)[0];
             let note_tpd = false, tpd = !is_mouse;
             let note_tpt = false, tpt = !is_mouse;
+            let notify = true;
             if (this._CONF_autoSwitchTouchpad) {
                 note_tpd = true;
                 if (is_mouse && this._CONF_touchpadEnabled) {
@@ -496,6 +497,8 @@ const touchpadIndicatorButton = new Lang.Class({
                 } else if (!is_mouse && !this._CONF_touchpadEnabled) {
                     this._switch_touchpad(true);
                     tpd = true;
+                } else {
+                    notify = false;
                 }
             }
             if (this._CONF_autoSwitchTrackpoint &&
@@ -508,6 +511,8 @@ const touchpadIndicatorButton = new Lang.Class({
                         !this.trackpoint._all_devices_enabled()) {
                     this._switch_trackpoint(true);
                     tpt = true;
+                } else {
+                    notify = false;
                 }
             }
             let content;
@@ -535,8 +540,10 @@ const touchpadIndicatorButton = new Lang.Class({
                     content = content + _("trackpoint disabled");
                 }
             }
-            logging(content);
-            this._notify(false, content);
+            logging('touchpadIndicatorButton._onMousePlugged(Notification('
+                + notify +'): '+ content +')');
+            if (notify)
+                this._notify(false, content);
 	    }
     },
 
@@ -883,6 +890,7 @@ function onSwitchGconf() {
 };
 
 function onMousePlugged() {
+    logging('onMousePlugged()')
     touchpadIndicator._onMousePlugged();
 };
 
