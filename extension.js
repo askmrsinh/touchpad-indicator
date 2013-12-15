@@ -889,9 +889,12 @@ function onSwitchGconf() {
     }
 };
 
-function onMousePlugged() {
-    logging('onMousePlugged()')
-    touchpadIndicator._onMousePlugged();
+function onMousePlugged(filemonitor, file, other_file, event_type) {
+    logging('onMousePlugged('+ file.get_path() +', '+ event_type +')');
+    if (event_type > 1 && event_type < 4 
+            && !(file.get_path().toLowerCase().indexOf('mouse') == -1)) {
+        touchpadIndicator._onMousePlugged();
+    }
 };
 
 

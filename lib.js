@@ -281,8 +281,8 @@ function list_mouses(skip_excluded) {
 };
 
 function watch_mouse() {
-    this.file = Gio.file_new_for_path("/dev/input/by-path")
-    return this.file.monitor(Gio.FileMonitorFlags.NONE, null);
+    let file = Gio.file_new_for_path("/dev/input")
+    return file.monitor_directory(Gio.FileMonitorFlags.NONE, null);
 };
 
 function load_excluded_mouses(excluded_mouses) {
