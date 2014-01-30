@@ -362,9 +362,9 @@ const touchpadIndicatorButton = new Lang.Class({
                 'gnome-shell-extension-prefs ' + Me.uuid)}));
         this.menu.addMenuItem(this._SettingsItem);
 
-        this._onMousePlugged();
         this._onChangeIcon();
         this._connect_signals();
+        this._onMousePlugged();
         if (switch_method_changed)
             this.gsettings.set_enum('switchmethod', this._CONF_switchMethod);
         this._showPanelIcon(this._CONF_showPanelIcon);
