@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="my-touchpad-normal-dark.svg">
+  <defs
+     id="defs2995">
+    <filter
+       inkscape:label="Invert"
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       inkscape:menu="Color"
+       inkscape:menu-tooltip="Invert colors"
+       color-interpolation-filters="sRGB"
+       id="filter2997">
+      <feColorMatrix
+         type="saturate"
+         values="1"
+         result="fbSourceGraphic"
+         id="feColorMatrix2999" />
+      <feColorMatrix
+         in="fbSourceGraphic"
+         values="-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0 "
+         id="feColorMatrix3001" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="741"
+     id="namedview2993"
+     showgrid="false"
+     inkscape:zoom="14.75"
+     inkscape:cx="8"
+     inkscape:cy="8"
+     inkscape:window-x="0"
+     inkscape:window-y="26"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384" />
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Gnome Symbolic Icon Theme</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <title
+     id="title9167">Gnome Symbolic Icon Theme</title>
+  <g
+     id="layer10"
+     transform="translate(-281,-448)"
+     style="filter:url(#filter2997)">
+    <path
+       id="rect5837"
+       style="block-progression:tb;text-indent:0;color:#bebebe;text-transform:none;fill:#bebebe"
+       d="m284.03 449c-1.6692 0-3.0312 1.3621-3.0312 3.0312v7.9375c0 1.6692 1.3621 3.0312 3.0312 3.0312h8.9375c1.6692 0 3.0312-1.3621 3.0312-3.0312v-7.9375c0-1.6692-1.3621-3.0312-3.0312-3.0312h-8.9375zm0 2h8.9375c0.59578 0 1.0312 0.43547 1.0312 1.0312v5.9688h-11v-5.9688c0-0.59578 0.43547-1.0312 1.0312-1.0312zm-1.0312 8h5v2h-3.9688c-0.59578 0-1.0312-0.43547-1.0312-1.0312v-0.96875zm6 0h5v0.96875c0 0.59578-0.43547 1.0312-1.0312 1.0312h-3.9688v-2z" />
+    <rect
+       id="rect5839-9"
+       style="opacity:.35;color:#bebebe;fill:#bebebe"
+       rx="0"
+       ry="0"
+       height="7"
+       width="11"
+       y="451"
+       x="283" />
+  </g>
+  <path
+     style="fill:#000000"
+     d="M 2.2281166,14.842494 C 1.1103413,14.489185 0.27254548,13.556753 0.09443656,12.467797 0.05607226,12.233237 0.02823615,10.324459 0.02868852,7.959322 0.02954401,3.4865155 0.04766781,3.2327942 0.41061216,2.6126396 0.67190725,2.1661706 1.1906867,1.638889 1.5738334,1.4303544 2.2849158,1.0433349 2.2736327,1.0440678 7.5205831,1.0440678 c 4.2359969,0 4.8655859,0.013256 5.1891459,0.1092558 1.070096,0.3174972 1.826478,1.0561226 2.130756,2.0807342 0.157068,0.5289042 0.151497,9.0063312 -0.0063,9.5434672 -0.281169,0.957263 -1.05463,1.742263 -2.009463,2.039441 -0.377445,0.117474 -0.716688,0.124983 -5.3629944,0.118704 -3.8172422,-0.0052 -5.0230953,-0.02663 -5.23364,-0.09318 l 0,0 z m 4.7820529,-2.849274 0,-1.050847 -2.5084746,0 -2.5084746,0 2.509e-4,0.694915 c 3.051e-4,0.827612 0.1057405,1.067216 0.5604693,1.273639 0.2625769,0.119196 0.4623793,0.130289 2.3714807,0.131652 l 2.0847483,0.0015 0,-1.050848 z m 5.5333315,0.877167 c 0.40156,-0.299999 0.464836,-0.457726 0.489788,-1.220898 l 0.02312,-0.707116 -2.548544,0 -2.548544,0 0,1.053514 0,1.053513 2.198538,-0.01961 c 2.098514,-0.01872 2.207049,-0.02598 2.385641,-0.159398 l 0,0 z M 13.029634,6.8455706 C 13.010581,3.6981144 13.007153,3.6260787 12.867489,3.438791 12.789016,3.3335576 12.621219,3.1864407 12.494608,3.1118644 12.270279,2.9797302 12.142475,2.9762712 7.4847458,2.9762712 l -4.7796611,0 -0.2470195,0.153611 C 1.987387,3.4225771 1.9932203,3.3752434 1.9932203,6.9017715 l 0,3.1592455 5.527939,0 5.5279397,0 -0.01947,-3.2154464 0,0 z"
+     id="path2999"
+     inkscape:connector-curvature="0" />
+</svg>
