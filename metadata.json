@@ -3,13 +3,7 @@
   "description": "Switch the touchpad, trackpoint, fingertouch, touchscreen or a pen device on and off easily from the top panel. Optionally, automatically disable some or all devices when a mouse is plugged in, and reenable it when unplugged.", 
   "name": "Touchpad Indicator", 
   "shell-version": [
-    "3.4",
-    "3.6",
-    "3.8",
-    "3.10",
-    "3.12",
-    "3.12.2",
-    "3.14"
+    "3.16"
   ], 
   "url": "https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator", 
   "uuid": "touchpad-indicator@orangeshirt", 
