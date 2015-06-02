@@ -72,7 +72,7 @@ const METHOD = {
 // Settings
 const SETTINGS_SCHEMA = 'org.gnome.shell.extensions.touchpad-indicator';
 const TOUCHPAD_SETTINGS_SCHEMA =
-    'org.gnome.settings-daemon.peripherals.touchpad';
+    'org.gnome.desktop.peripherals.touchpad';
 
 
 function get_logs() {

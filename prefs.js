@@ -303,7 +303,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
                         case METHOD.GCONF:
                             let tpdgs = Convenience.getSettings(
                                 TOUCHPAD_SETTINGS_SCHEMA);
-                            if (tpdgs.set_boolean('touchpad-enabled', false)) {
+                            if ( tpdgs.set_string('send-events', 'disabled') ) {
                                gsettings.set_boolean('touchpad-enabled', false);
                             }
                             break;
