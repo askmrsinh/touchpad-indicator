@@ -19,15 +19,15 @@ To choose your preferred option you could change the values below "Indicatorpref
 
 The easiest way is to install the extension from https://extensions.gnome.org
 You can use this link: https://extensions.gnome.org/extension/131/touchpad-indicator/
+But the newest version you'll find on github:
 If you want the newest code you should pull the code from github. Pull the code from repository and move it to ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt
 Finally restart the shell with Alt+F2 and 'r' or logout and in.
 
 5. Where can I report a bug?
 
-Please report all issues on github, on extensions.gnome.org or send an email to me.
+Please report all issues on github, but I don't support and develop the extension by myself, perhaps there ist somebody which will help you.
 Github: https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator
 Gnome Extensions Page: https://extensions.gnome.org/extension/131/touchpad-indicator/
-Please do not only make a Comment or a Rating!!
 
 6. How can I translate the extension?
 
