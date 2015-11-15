@@ -1,153 +1,154 @@
-# Chinese translations for PACKAGE package
+# Spanish translations for PACKAGE package
+# Traducciones al español para el paquete PACKAGE.
 # Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# namiheike <warmsun0220@gmail.com>, 2013.
+# Isidro Rodríguez González<isirguezglez@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-31 20:08+0100\n"
-"PO-Revision-Date: 2013-11-23 21:47+0100\n"
-"Last-Translator: sun <warmsun0220@gmail.com>\n"
-"Language-Team: Chinese (simplified)\n"
-"Language: zh_CN\n"
-"MIME-Version: 2.0\n"
+"POT-Creation-Date: 2013-10-23 20:32+0200\n"
+"PO-Revision-Date: 2013-12-06 19:16+0000\n"
+"Last-Translator: Isidro <isirguezglez@gmail.com>\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: extension.js:113 extension.js:145
+#: extension.js:122 extension.js:154
 msgid "Touchpad Indicator"
-msgstr "触摸板指示器"
+msgstr "Touchpad Indicator"
 
-#: extension.js:186
+#: extension.js:195
 msgid "Confirm Dialog"
-msgstr "确认会话"
+msgstr "Dialogo de Confirmación"
 
-#: extension.js:192
+#: extension.js:201
 msgid ""
 "Would you really disable this device?\n"
 "There seems to be no other mouse device enabled!"
 msgstr ""
-"你真的想禁用该设备吗？\n"
-"似乎没有其他鼠标设备可以启用"
+"¿De verdad quieres desactivar este dispositivo?\n"
+"¡Parece que no hay más dispositivos de ratón activados!"
 
-#: extension.js:199
+#: extension.js:208
 msgid "Cancel"
-msgstr "取消"
+msgstr "Cancelar"
 
-#: extension.js:207
+#: extension.js:216
 msgid "OK"
-msgstr "确认"
+msgstr "OK"
 
-#: extension.js:331 prefs.js:71
+#: extension.js:340 prefs.js:71
 msgid "Touchpad"
-msgstr "触摸板"
+msgstr "Touchpad"
 
-#: extension.js:333 prefs.js:75
+#: extension.js:342 prefs.js:75
 msgid "Trackpoint"
-msgstr "指点杆"
+msgstr "Trackpoint"
 
-#: extension.js:335 prefs.js:79
+#: extension.js:344 prefs.js:79
 msgid "Touchscreen"
-msgstr "触摸屏"
+msgstr "Touchscreen"
 
-#: extension.js:337
+#: extension.js:346
 msgid "Finger touch"
 msgstr "Finger touch"
 
-#: extension.js:339 prefs.js:87
+#: extension.js:348 prefs.js:87
 msgid "Pen"
-msgstr "笔"
+msgstr "Pen"
 
-#: extension.js:353
+#: extension.js:362
 msgid "Touchpad Preferences"
-msgstr "触摸板设置"
+msgstr "Preferencias de Touchpad"
 
-#: extension.js:355
+#: extension.js:364
 msgid "Indicator Preferences"
-msgstr "指示器设置"
+msgstr "Preferencias de Touchpad Indicator"
 
-#: extension.js:512
+#: extension.js:521
 msgid "Mouse plugged in - "
-msgstr "鼠标插入 - "
+msgstr "Ratón enchufado - "
 
-#: extension.js:514
+#: extension.js:523
 msgid "Mouse unplugged - "
-msgstr "鼠标拔出 - "
+msgstr "Ratón desenchufado - "
 
-#: extension.js:518
+#: extension.js:527
 msgid "touchpad and trackpoint enabled"
-msgstr "触摸板 & 指点杆 已启用"
+msgstr "Touchpad y Trackpoint activados"
 
-#: extension.js:520
+#: extension.js:529
 msgid "touchpad and trackpoint disabled"
-msgstr "触摸板 & 指点杆 已禁用"
+msgstr "Touchpad y Trackpoint desactivados"
 
-#: extension.js:524
+#: extension.js:533
 msgid "touchpad enabled"
-msgstr "触摸板 已启用"
+msgstr "Touchpad activado"
 
-#: extension.js:526
+#: extension.js:535
 msgid "touchpad disabled"
-msgstr "触摸板 已禁用"
+msgstr "Touchpad desactivado"
 
-#: extension.js:530
+#: extension.js:539
 msgid "trackpoint enabled"
-msgstr "指点杆 已启用"
+msgstr "Trackpoint activado"
 
-#: extension.js:532
+#: extension.js:541
 msgid "trackpoint disabled"
-msgstr "Trackpoint deaktiviert"
+msgstr "Trackpoint desactivado"
 
 #: prefs.js:67
 msgid "First time startup"
-msgstr "首次使用"
+msgstr "Primera ejecución"
 
 #: prefs.js:83
 msgid "Fingertouch"
-msgstr ""
+msgstr "Fingertouch"
 
 #: prefs.js:91
 msgid "Automatically switch Touchpad On/Off"
-msgstr "自动打开和关闭触摸板"
+msgstr "Activar Touchpad automáticamente Sí/No"
 
 #: prefs.js:92
 msgid "Turns touchpad automatically on or off if a mouse is (un)plugged."
-msgstr ""
-"如果鼠标插入时自动启用/禁用触摸板"
+msgstr "Activar Touchpad automáticamente, sí o no, si el ratón está (des)enchufado."
 
 #: prefs.js:96
 msgid "Automatically switch Trackpoint On/Off"
-msgstr "自动关闭/打开指点杆"
+msgstr "Activar Trackpoint automáticamente Sí/No"
 
 #: prefs.js:97
 msgid "Turns trackpoint automatically on or off if a mouse is (un)plugged."
-msgstr ""
-"如果鼠标插入时自动启用/禁用指点杆"
+msgstr "Activar Trackpoint automáticamente, sí o no, si el ratón está (des)enchufado."
 
 #: prefs.js:101
 msgid "Show notification"
-msgstr "显示通知"
+msgstr "Mostrar notificación"
 
 #: prefs.js:102
 msgid ""
 "Show notifications if the touchpad or the trackpoint is automatically "
 "switched on or off."
 msgstr ""
-"触摸板或指点杆自动启用/禁用时显示通知"
+"Mostrar notificaciones si el touchpad o el trackpoin es activado "
+"o desactivado automáticamente."
 
 #: prefs.js:106
 msgid "Debug log"
-msgstr "调试信息"
+msgstr "Log de depuración"
 
 #: prefs.js:107
 msgid "Turns the debug log on or off."
-msgstr "打开或关闭调试信息"
+msgstr "Activar el log de depuración sí o no."
 
 #: prefs.js:111
 msgid "Write debug information to file."
-msgstr "将调试信息写入文件"
+msgstr "Escribe la información de depuración a un archivo."
 
 #: prefs.js:112
 msgid ""
@@ -157,17 +158,18 @@ msgid ""
 "This feature will slow down the startup of gnome-shell and the usage of the "
 "extension."
 msgstr ""
-"所有的调试信息写入扩展所在目录的'touchpad-indicator.log'文件中\n"
-"注意!\n"
-"这个功能会使gnome-shell的启动和扩展的使用变慢"
+"Todos los logs de depuración se añaden al archivo 'touchpad-indicator.log' "
+"en el directorio de la extensión.\n"
+"¡Atención!\n"
+"Esta característica ralentizará el arranque de gnome-shell y el uso de la extensión."
 
 #: prefs.js:116 prefs.js:195
 msgid "Switch Method"
-msgstr "开关方式"
+msgstr "Método de intercambio"
 
 #: prefs.js:117 prefs.js:195
 msgid "Method by which to switch the touchpad."
-msgstr "控制触摸板启用/禁用的方式"
+msgstr "Método por el cual se realiza el intercambio del Touchpad"
 
 #: prefs.js:119
 msgid "Gconf"
@@ -183,16 +185,15 @@ msgstr "XInput"
 
 #: prefs.js:126 prefs.js:288 prefs.js:290
 msgid "Choose possible touchpad"
-msgstr "选择可能的触摸板"
+msgstr "Elige posible Touchpad"
 
 #: prefs.js:127 prefs.js:291
 msgid "You can choose the mouse entry which could be the touchpad."
-msgstr ""
-"你可以选择可能被识别为鼠标的触摸板 "
+msgstr "Puedes elegir la entrada de ratón en la que puede estar el touchpad."
 
 #: prefs.js:131 prefs.js:221
-msgid "Exclude mouse device from autodetection"
-msgstr "从自动检测中排除的鼠标设备"
+msgid "Ignora el reconocimiento automático del dispositivo de ratón"
+msgstr ""
 
 #: prefs.js:132 prefs.js:223
 msgid ""
@@ -200,31 +201,33 @@ msgid ""
 "like your IR Remote Control or something similar.\n"
 "All chosen devices are ignored."
 msgstr ""
-"这里你可以选择一些被自动检测排除的鼠标设备，所有选中的设备均被忽略\n"
-"like your IR Remote Control or something similar."
+"Aquí puedes elegir que dispositivos de ratón son ignorados en el reconocimiento "
+"automático, como dispositivos de control de remoto o similares.\n"
+"Todos los dispositivos elegidos son ignorados."
 
 #: prefs.js:136
 msgid "Show Icon in Main Panel"
-msgstr "在主面板上显示图标"
+msgstr "Mostrar Icono en el Panel Principal"
 
 #: prefs.js:137
 msgid "Show or hide the icon in the panel"
-msgstr "在主面板上显示或隐藏图标"
+msgstr "Mostrar o esconder el icono en el panel"
 
 #: prefs.js:152
 msgid "Welcome"
-msgstr "欢迎"
+msgstr "Bienvenido"
 
 #: prefs.js:154
 msgid "Attention - No Touchpad Detected"
-msgstr "注意 - 没有检测到触摸板"
+msgstr "Atención - No se ha detectado Touchpad"
 
 #: prefs.js:155
 msgid ""
 "The extension could not detect a touchpad at the moment.\n"
 "You'll find further information in the Debug section."
 msgstr ""
-"扩展没有检测到触摸设备，你可以从调试功能中获得更多信息."
+"La extensión no ha detectado Touchpad en este momento.\n"
+"Encontrarás más información en la sección de depuración."
 
 #: prefs.js:158
 msgid ""
@@ -240,15 +243,21 @@ msgid ""
 "touchpad-indicator) or on my bug tracker (https://extensions.gnome.org/"
 "extension/131/touchpad-indicator/)."
 msgstr ""
-"通过点击扩展图标选择“指示器设置”，这些设置允许你根据需求来对扩展进行调整"
+"Esta configuración te permite personalizar esta extensión a tus necesidades "
+"Puedes volver a abrir este diálogo haciendo click en el icono de la extensión "
+"y elegir Preferencias del indicador.\n"
 "\n"
-"如果你找到bug或者有更好的建议，请联系我们,我很高兴能够收到反馈 ：）"
+"Por favor, contacta conmigo si encuentras algún error o tienes alguna sugerencia, "
+"crítica o discusión. Siempre me alegra recibir discusiones - de cualquier "
+"tipo. :-) \n"
 "\n"
-"在github上联系我 (https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator) 或者bug跟踪系统 (https://extensions.gnome.org/extension/131/touchpad-indicator/)."
+"Contacta conmigo en github (https://github.com/orangeshirt/gnome-shell-extension-"
+"touchpad-indicator) o en el tracker de depuración (https://extensions.gnome.org/"
+"extension/131/touchpad-indicator/)."
 
 #: prefs.js:171
 msgid "General"
-msgstr "常规"
+msgstr "General"
 
 #: prefs.js:172
 msgid " "
@@ -256,7 +265,7 @@ msgstr " "
 
 #: prefs.js:176
 msgid "Gconf Settings"
-msgstr "Gconf 设置"
+msgstr "Gconf Configuración"
 
 #: prefs.js:189
 msgid "Xinput"
@@ -264,23 +273,23 @@ msgstr "Xinput"
 
 #: prefs.js:209
 msgid "Auto Switch"
-msgstr "自动切换"
+msgstr "Intercambio Automático"
 
 #: prefs.js:210
 msgid "Define the behaviour if a mouse is (un)plugged."
-msgstr "当有鼠标插入/拔除时插件的动作"
+msgstr "Define el comportamiento si el ratón es (des)conectado."
 
 #: prefs.js:254
 msgid "Debug"
-msgstr "调试"
+msgstr "Depuración"
 
 #: prefs.js:255
 msgid "Settings for debugging the extension."
-msgstr "扩展调试设置"
+msgstr "Configuración de la depuración de la extensión."
 
 #: prefs.js:272
 msgid "Warning - No Touchpad Detected"
-msgstr "警告 - 没有检测到触摸板"
+msgstr "Advertencia - No se ha detectado Touchpad"
 
 #: prefs.js:273
 msgid ""
@@ -288,12 +297,13 @@ msgid ""
 "Perhaps your touchpad is not detected correctly by the kernel.\n"
 "The following devices are detected as mice:\n"
 msgstr ""
-"扩展没有检测到触摸设备，可能你的触摸板不能被内核识别\n"
-"下面这些设备被检测为鼠标设备：\n"
+"La extensión no ha podido detectar un Touchpad en este momento.\n"
+"Puede que el kernel no lo haya detectado correctamente el Touchpad.\n"
+"Los siguientes dispositivos han sido detectados como ratones:\n"
 
 #: prefs.js:276
 msgid "Try to find the touchpad"
-msgstr "尝试找到触摸板"
+msgstr "Intenta encontrar el Touchpad"
 
 #: prefs.js:277
 msgid ""
@@ -304,10 +314,16 @@ msgid ""
 "The switch method will be automatically switched to Xinput, because only "
 "with Xinput it is possible to switch an undetected touchpad.\n"
 msgstr ""
+"Puedes intentar encontrar un Touchpad.\n"
+"O puedes escoger un Touchpad desde la lista de dispositivos detectados."
+"En la mayoría de los casos puedes elegir la entrada 'Ratón Genérico PS/2' "
+"si está disponible.\n"
+"El método de intercambio se cambiará automáticamente a Xinput, porque sólo "
+"con Ximput será posible cambiar a un Touchpad no detectado.\n"
 
 #: prefs.js:330
 msgid "No Xinput installed"
-msgstr "没有安装Xinput"
+msgstr "Xinput no está instalado"
 
 #: prefs.js:331
 msgid ""
@@ -315,20 +331,22 @@ msgid ""
 "undetected touchpad.\n"
 "Please install 'xinput' and reload gnome-shell to enable this feature."
 msgstr ""
-"如果你的计算机上安装了'Xinput'，扩展会尝试选择一个没有检测到的触摸板。\n"
-"请安装'Xinput'，然后重启gnome-shell来启用这一功能"
+"Si instalas 'xinput' en tu pc, la extensión puede intentar cambiar a "
+"un Touchpad no detectado.\n"
+"Por favor, instala 'xinput' y recarga gnome-shell para activar esta "
+"característica."
 
 #: prefs.js:335
 msgid "Gnome Shell Version: "
-msgstr "Gnome Shell 版本: "
+msgstr "Versión de Gnome Shell: "
 
 #: prefs.js:337
 msgid "Touchpad Indicator Version: "
-msgstr "触摸板指示器版本: "
+msgstr ""
 
 #: prefs.js:339
 msgid "Touchpad(s): "
-msgstr "触摸板: "
+msgstr "Version de Touchpad Indicator: "
 
 #: prefs.js:340
 msgid "Xinput: "
@@ -336,11 +354,11 @@ msgstr "Xinput: "
 
 #: prefs.js:342
 msgid "Is installed.\n"
-msgstr "已安装\n"
+msgstr "Está instalado.\n"
 
 #: prefs.js:344
 msgid "Not found on your system.\n"
-msgstr "没有在系统中发现.\n"
+msgstr "No encontrado en tu sistema.\n"
 
 #: prefs.js:346
 msgid "Synclient: "
@@ -348,19 +366,19 @@ msgstr "Synclient: "
 
 #: prefs.js:348
 msgid "Is installed and in use.\n"
-msgstr "已安装并且正在使用.\n"
+msgstr "Está instalado y en uso.\n"
 
 #: prefs.js:350
 msgid "Not found or used on your system.\n"
-msgstr "没有在你的系统中找到或被使用.\n"
+msgstr "No encontrado ni utilizado en tu sistema.\n"
 
 #: prefs.js:352
 msgid "Switch Method: "
-msgstr "开关方式: "
+msgstr "Método de intercambio: "
 
 #: prefs.js:354
 msgid "Debug Informations"
-msgstr "调试信息"
+msgstr "Información de Depuración"
 
 #: prefs.js:355
 msgid ""
@@ -368,25 +386,22 @@ msgid ""
 "debugging.\n"
 "\n"
 msgstr ""
-"这里你能够找到一些关于系统的相关信息，可能会对于调试过程有帮助。\n"
-
+"Aquí puedes encontrar algo de información sobre tu sistema que puede ser "
+"útil para la depuración.\n"
+"\n"
 
 #: prefs.js:367
 msgid "Debug Log"
-msgstr "调试日志"
+msgstr "Log de Depuración"
 
 #: prefs.js:369
 msgid "The debug log since last restart, if debugging to file was enabled."
-msgstr ""
+msgstr "El log de depuración desde el último reinicio, si el archivo de depuración ha sido activado."
 
-#: lib.js:83
-msgid "Sorry could not read logfile!\n"
-msgstr "不能读取日志文件!\n"
-
-#: lib.js:165 lib.js:169
+#: lib.js:159 lib.js:163
 msgid "    - No mouse device detected."
-msgstr "    - 没有检测到鼠标设备."
+msgstr "    - No ha sido detectado dispositivo de ratón."
 
-#: lib.js:196 lib.js:200
+#: lib.js:190 lib.js:194
 msgid "No Touchpad detected."
-msgstr "没有检测到触摸设备."
+msgstr "No ha sido detectado Touchpad."

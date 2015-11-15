@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="touchpad-indicator@orangeshirt">
+  <enum id='org.gnome.shell.extensions.touchpad-indicator.switchmethod'>
+    <value value="0" nick="gconf"/>
+    <value value="1" nick="synclient"/>
+    <value value="2" nick="xinput"/>
+  </enum>
+  <schema path="/org/gnome/shell/extensions/touchpad-indicator/" id="org.gnome.shell.extensions.touchpad-indicator">
+    <key type="b" name="first-time">
+        <default>true</default>
+        <summary></summary>
+        <description></description>
+    </key>
+    <key type="b" name="touchpad-enabled">
+        <default>true</default>
+        <summary></summary>
+        <description></description>
+    </key>
+    <key type="b" name="trackpoint-enabled">
+        <default>true</default>
+        <summary></summary>
+        <description></description>
+    </key>
+    <key type="b" name="touchscreen-enabled">
+        <default>true</default>
+        <summary></summary>
+        <description></description>
+    </key>
+    <key type="b" name="fingertouch-enabled">
+        <default>true</default>
+        <summary></summary>
+        <description></description>
+    </key>
+    <key type="b" name="pen-enabled">
+        <default>true</default>
+        <summary></summary>
+        <description></description>
+    </key>
+    <key type="b" name="autoswitch-touchpad">
+        <default>false</default>
+        <summary>Automatically switch Touchpad On/Off</summary>
+        <description>Turns touchpad automatically on or off if a mouse is (un)plugged.</description>
+    </key>
+    <key type="b" name="autoswitch-trackpoint">
+        <default>false</default>
+        <summary>Automatically switch Trackpoint On/Off</summary>
+        <description>Turns trackpoint automatically on or off if a mouse is (un)plugged.</description>
+    </key>
+    <key type="b" name="show-notifications">
+        <default>true</default>
+        <summary>Show notification</summary>
+        <description>Show notifications if the touchpad or the trackpoint is automatically switched on or off.</description>
+    </key>
+    <key type="b" name="debug">
+        <default>false</default>
+        <summary>Debug log</summary>
+        <description>Turns the debug log on or off.</description>
+    </key>
+    <key type="b" name="debugtofile">
+        <default>false</default>
+        <summary>Write debug information to file.</summary>
+        <description>All debug logs are additionally written to the file 'touchpad-indicator.log' in the extension directory.\nAttention!\nThis feature will slow down the startup of gnome-shell and the usage of the extension.</description>
+    </key>
+    <key name="switchmethod" enum="org.gnome.shell.extensions.touchpad-indicator.switchmethod">
+        <default>'gconf'</default>
+        <summary>Switch Method</summary>
+		<description>Method by which to switch the touchpad.</description>
+    </key>
+    <key type="s" name="possible-touchpad">
+        <default>'-'</default>
+        <summary>Choose possible touchpad</summary>
+        <description>You can choose the mouse entry which could be the touchpad.</description>
+    </key>
+    <key type="s" name="excluded-mouses">
+    	<default>'{}'</default>
+    	<summary>Exclude mouse device from autodetection</summary>
+		<description>Here you can choose some mouse devices to be excluded from autodetection, like your IR Remote Control or something similar.\nAll chosen devices are ignored.</description>
+    </key>
+    <key type="b" name="show-panelicon">
+        <default>true</default>
+        <summary>Show Icon in Main Panel</summary>
+        <description>Show or hide the ivon in the panel</description>
+    </key>
+  </schema>
+</schemalist>

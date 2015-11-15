@@ -1,0 +1,451 @@
+# French translations for PACKAGE package
+# Traductions françaises du paquet PACKAGE.
+# Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Dalan <remi.bertho@gmail.com>, 2013.
+# 
+# Rémi BERTHO <remi.bertho@gmail.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-31 20:08+0100\n"
+"PO-Revision-Date: 2014-03-05 14:32+0100\n"
+"Last-Translator: Rémi BERTHO <remi.bertho@gmail.com>\n"
+"Language-Team: français <wesnoth@ml.free.fr>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 2.91.6\n"
+
+#: extension.js:113 extension.js:145
+msgid "Touchpad Indicator"
+msgstr "Indicateur de pavé tactile"
+
+#: extension.js:186
+msgid "Confirm Dialog"
+msgstr "Confirmer le dialogue"
+
+#: extension.js:192
+msgid ""
+"Would you really disable this device?\n"
+"There seems to be no other mouse device enabled!"
+msgstr ""
+"Voulez vous vraiment désactiver cet appareil ?\n"
+"Il ne semble pas y avoir d'autres souris disponibles !"
+
+#: extension.js:199
+msgid "Cancel"
+msgstr "Annuler"
+
+#: extension.js:207
+msgid "OK"
+msgstr "OK"
+
+#: extension.js:331 prefs.js:71
+msgid "Touchpad"
+msgstr "Pavé tactile"
+
+#: extension.js:333 prefs.js:75
+msgid "Trackpoint"
+msgstr "Souris tactile"
+
+#: extension.js:335 prefs.js:79
+msgid "Touchscreen"
+msgstr "Écran tactile"
+
+#: extension.js:337
+msgid "Finger touch"
+msgstr "Toucher du doigt"
+
+#: extension.js:339 prefs.js:87
+msgid "Pen"
+msgstr "Stylo"
+
+#: extension.js:353
+msgid "Touchpad Preferences"
+msgstr "Préférences du pavé tactile"
+
+#: extension.js:355
+msgid "Indicator Preferences"
+msgstr "Préférences de l'Indicateur"
+
+#: extension.js:512
+msgid "Mouse plugged in - "
+msgstr "La souris est branché - "
+
+#: extension.js:514
+msgid "Mouse unplugged - "
+msgstr "La souris débranché - "
+
+#: extension.js:518
+msgid "touchpad and trackpoint enabled"
+msgstr "Pavé tactile et souris tactile activés"
+
+#: extension.js:520
+msgid "touchpad and trackpoint disabled"
+msgstr "Pavé tactile et souris tactile désactivés"
+
+#: extension.js:524
+msgid "touchpad enabled"
+msgstr "Pavé tactile activé"
+
+#: extension.js:526
+msgid "touchpad disabled"
+msgstr "Pavé tactile désactivé"
+
+#: extension.js:530
+msgid "trackpoint enabled"
+msgstr "Souris tactile activé"
+
+#: extension.js:532
+msgid "trackpoint disabled"
+msgstr "Souris tactile désactivé"
+
+#: prefs.js:67
+msgid "First time startup"
+msgstr "Premier démarrage"
+
+#: prefs.js:83
+msgid "Fingertouch"
+msgstr "Clavier virtuel"
+
+#: prefs.js:91
+msgid "Automatically switch Touchpad On/Off"
+msgstr "Activation/désactivation automatique du pavé tactile"
+
+#: prefs.js:92
+msgid "Turns touchpad automatically on or off if a mouse is (un)plugged."
+msgstr ""
+"Activer/Désactiver automatiquement la souris tactile si une souris est (dé)"
+"brancher."
+
+#: prefs.js:96
+msgid "Automatically switch Trackpoint On/Off"
+msgstr "Activation/Désactivation automatique de la souris tactile"
+
+#: prefs.js:97
+msgid "Turns trackpoint automatically on or off if a mouse is (un)plugged."
+msgstr ""
+"Activer/Désactiver automatiquement la souris tactile si une souris est (dé)"
+"brancher."
+
+#: prefs.js:101
+msgid "Show notification"
+msgstr "Montrer les notifications"
+
+#: prefs.js:102
+msgid ""
+"Show notifications if the touchpad or the trackpoint is automatically "
+"switched on or off."
+msgstr ""
+"Montrer les notifications si le pavé tactile ou la souris tactile est "
+"automatiquement activer/désactiver."
+
+#: prefs.js:106
+msgid "Debug log"
+msgstr "Journal de débogage"
+
+#: prefs.js:107
+msgid "Turns the debug log on or off."
+msgstr "Activer/Désactiver le journal de débogage."
+
+#: prefs.js:111
+msgid "Write debug information to file."
+msgstr "Écrit les informations de débogage sur le fichier."
+
+#: prefs.js:112
+msgid ""
+"All debug logs are additionally written to the file 'touchpad-indicator.log' "
+"in the extension directory.\n"
+"Attention!\n"
+"This feature will slow down the startup of gnome-shell and the usage of the "
+"extension."
+msgstr ""
+"Tout les journaux de débogage seront ajouter au fichier 'touchpad-indicator."
+"log' dans le répertoire de l'extension.\n"
+"Attention !\n"
+"Cette fonction va ralentir le démarrage de gnome-shell et l'utilisation de "
+"cette extension."
+
+#: prefs.js:116 prefs.js:195
+msgid "Switch Method"
+msgstr "Méthodes de (dé)activation"
+
+#: prefs.js:117 prefs.js:195
+msgid "Method by which to switch the touchpad."
+msgstr "Méthode permettant d'activer/désactiver le pavé tactile."
+
+#: prefs.js:119
+msgid "Gconf"
+msgstr "Gconf"
+
+#: prefs.js:120 prefs.js:182
+msgid "Synclient"
+msgstr "Synclient"
+
+#: prefs.js:121
+msgid "XInput"
+msgstr "XInput"
+
+#: prefs.js:126 prefs.js:288 prefs.js:290
+msgid "Choose possible touchpad"
+msgstr "Choisir votre pavé tactile probable"
+
+#: prefs.js:127 prefs.js:291
+msgid "You can choose the mouse entry which could be the touchpad."
+msgstr "Vous pouvez choisir l'entrée souris qui peut être le pavé tactile."
+
+#: prefs.js:131 prefs.js:221
+msgid "Exclude mouse device from autodetection"
+msgstr "Exclure les souris de l’auto-détection"
+
+#: prefs.js:132 prefs.js:223
+msgid ""
+"Here you can choose some mouse devices to be excluded from autodetection, "
+"like your IR Remote Control or something similar.\n"
+"All chosen devices are ignored."
+msgstr ""
+"Vous pouvez choisir ici les différents appareils qui peuvent être exclu de "
+"l’auto-détection, comme votre télécommande infrarouge.\n"
+"\n"
+"Tout les appareils sélectionnés seront ignorés."
+
+#: prefs.js:136
+msgid "Show Icon in Main Panel"
+msgstr "Montrer l’icône dans le panneau principale"
+
+#: prefs.js:137
+msgid "Show or hide the icon in the panel"
+msgstr "Afficher ou masquer l’icône dans le panneau supérieur"
+
+#: prefs.js:152
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#: prefs.js:154
+msgid "Attention - No Touchpad Detected"
+msgstr "Attention - Pas De Pavé Tactile Détecté"
+
+#: prefs.js:155
+msgid ""
+"The extension could not detect a touchpad at the moment.\n"
+"You'll find further information in the Debug section."
+msgstr ""
+"L'extension ne peut pas détecter de pavé tactile actuellement.\n"
+"Vous pourrez trouver plus d'information dans la Section de débogage."
+
+#: prefs.js:158
+msgid ""
+"These settings allow you to customize this extension to your needs. You can "
+"open this dialog again by clicking on the extension's icon and selecting "
+"Indicator Preferences.\n"
+"\n"
+"Please feel free to contact me if you find bugs or have suggestions, "
+"criticisms, or feedback. I am always happy to receive feedback - whatever "
+"kind. :-) \n"
+"\n"
+"Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-"
+"touchpad-indicator) or on my bug tracker (https://extensions.gnome.org/"
+"extension/131/touchpad-indicator/)."
+msgstr ""
+"Ces préférences vous permettent de personnaliser cette extension comme vous "
+"le voulez. Vous pouvez ouvrir cette fenêtre de nouveau en cliquant sur "
+"l’icône de l'extension et sélectionner Préférences de l'Indicateur.\n"
+"\n"
+"S'il vous plaît n'hésitez pas à me contacter si vous avez des suggestions, "
+"des critiques ou des retour d'informations. Je suis toujours content de "
+"recevoir des retour d'informations - quel qu'il soit :-)\n"
+"\n"
+"Contacter moi sur github (https://github.com/orangeshirt/gnome-shell-"
+"extension-touchpad-indicator) ou sur mon traqueur de bogue (https://"
+"extensions.gnome.org/extension/131/touchpad-indicator/)."
+
+#: prefs.js:171
+msgid "General"
+msgstr "Général"
+
+#: prefs.js:172
+msgid " "
+msgstr " "
+
+#: prefs.js:176
+msgid "Gconf Settings"
+msgstr "Paramètres de Gconf"
+
+#: prefs.js:189
+msgid "Xinput"
+msgstr "Xinput"
+
+#: prefs.js:209
+msgid "Auto Switch"
+msgstr "Basculement automatique"
+
+#: prefs.js:210
+msgid "Define the behaviour if a mouse is (un)plugged."
+msgstr "Définir le comportement si une souris est (dé)brancher."
+
+#: prefs.js:254
+msgid "Debug"
+msgstr "Débogage"
+
+#: prefs.js:255
+msgid "Settings for debugging the extension."
+msgstr "Réglages pour déboguer l'extension."
+
+#: prefs.js:272
+msgid "Warning - No Touchpad Detected"
+msgstr "Attention - Pas de pavé tactile détecté"
+
+#: prefs.js:273
+msgid ""
+"The extension could not detect a touchpad at the moment.\n"
+"Perhaps your touchpad is not detected correctly by the kernel.\n"
+"The following devices are detected as mice:\n"
+msgstr ""
+"L'extension ne détecte pas de pavé tactile pour le moment.\n"
+"Peut-être que votre pavé tactile n'est pas correctement détecté par le "
+"noyau.\n"
+"Les appareils suivant sont détectés comme des souris :\n"
+
+#: prefs.js:276
+msgid "Try to find the touchpad"
+msgstr "Essayer de trouver le pavé tactile"
+
+#: prefs.js:277
+msgid ""
+"You could try to find a possible touchpad.\n"
+"Below you could choose the possible touchpad from the list of the detected "
+"mice. In most cases you should choose the entry 'PS/2 Generic Mouse' if "
+"available.\n"
+"The switch method will be automatically switched to Xinput, because only "
+"with Xinput it is possible to switch an undetected touchpad.\n"
+msgstr ""
+"Vous pouvez essayer de trouver un pavé tactile probable.\n"
+"Vous pouvez choisir votre pavé tactile probable dans la liste des appareils "
+"détecté comme des souris ci-dessous. Dans la plupart des cas, choisissez "
+"l'entrer 'PS/2 Generic Mouse' s'il est disponible.\n"
+"La méthode de basculement utilisera automatiquement Xinput, parce que c'est "
+"le seul qui permet de faire basculer un pavé tactile non détecté.\n"
+
+#: prefs.js:330
+msgid "No Xinput installed"
+msgstr "Xinput n'est pas installé"
+
+#: prefs.js:331
+msgid ""
+"If you install 'xinput' on your pc, the extension could try to switch an "
+"undetected touchpad.\n"
+"Please install 'xinput' and reload gnome-shell to enable this feature."
+msgstr ""
+"Si vous installer 'xinput' sur votre PC, l’extension pourra essayer "
+"d'activer/désactiver votre pavé tactile non détecté.\n"
+"S'il vous plaît installez 'xinput' et relancé gnome-shell pour activer cette "
+"fonction."
+
+#: prefs.js:335
+msgid "Gnome Shell Version: "
+msgstr "Version de Gnome Shell : "
+
+#: prefs.js:337
+msgid "Touchpad Indicator Version: "
+msgstr "Version de l'Indicateur de pavé tactile : "
+
+#: prefs.js:339
+msgid "Touchpad(s): "
+msgstr "Pavé(s) tactile(s) : "
+
+#: prefs.js:340
+msgid "Xinput: "
+msgstr "Xinput : "
+
+#: prefs.js:342
+msgid "Is installed.\n"
+msgstr "Est installé.\n"
+
+#: prefs.js:344
+msgid "Not found on your system.\n"
+msgstr "Pas trouvé sur votre système.\n"
+
+#: prefs.js:346
+msgid "Synclient: "
+msgstr "Synclient : "
+
+#: prefs.js:348
+msgid "Is installed and in use.\n"
+msgstr "Est installé et est en marche.\n"
+
+#: prefs.js:350
+msgid "Not found or used on your system.\n"
+msgstr "N'est pas trouvé sur votre système.\n"
+
+#: prefs.js:352
+msgid "Switch Method: "
+msgstr "Méthodes de (dé)activation : "
+
+#: prefs.js:354
+msgid "Debug Informations"
+msgstr "Informations de débogage"
+
+#: prefs.js:355
+msgid ""
+"Here you find some information about your system which might be helpful in "
+"debugging.\n"
+"\n"
+msgstr ""
+"Ici vous pourrez trouver quelques d'informations sur votre système qui "
+"pourrait vous aidez dans votre débogage.\n"
+"\n"
+
+#: prefs.js:367
+msgid "Debug Log"
+msgstr "Journal de débogage"
+
+#: prefs.js:369
+msgid "The debug log since last restart, if debugging to file was enabled."
+msgstr ""
+"Le journal de débogage depuis le dernier redémarrage, si le débogage est "
+"activé."
+
+#: lib.js:83
+msgid "Sorry could not read logfile!\n"
+msgstr "Désolé, ne peut pas lire le fichier de log !\n"
+
+#: lib.js:165 lib.js:169
+msgid "    - No mouse device detected."
+msgstr "    - Pas de souris détecté."
+
+#: lib.js:196 lib.js:200
+msgid "No Touchpad detected."
+msgstr "Pas de pavé tactile détecté"
+
+#~ msgid "Undo"
+#~ msgstr "Annuler"
+
+#~ msgid "Restore Defaults"
+#~ msgstr "Rétablir par défaut"
+
+#~ msgid "Restore the default settings."
+#~ msgstr "Rétablir les paramètres par défaut."
+
+#~ msgid ""
+#~ "Attention!\n"
+#~ "If you hide the icon in the main panel you could not open this dialog "
+#~ "again.\n"
+#~ "To change settings while the icon is hidden you have to edit the file "
+#~ "'settings.json' in the extension directory manually!"
+#~ msgstr ""
+#~ "Attention !\n"
+#~ "Si vous cacher cette icône dans le panneau principale vous ne pourrez pas "
+#~ "ouvrir cette fenêtre de nouveau.\n"
+#~ "Dans ce cas, pour changer les paramètres vous devrez éditer le fichier "
+#~ "'settings.json' dans le répertoire de l'extension manuellement !"
+
+#~ msgid ""
+#~ "Turns the touchpad on or off automatically if a mouse is (un)plugged."
+#~ msgstr ""
+#~ "Activer/Désactiver automatiquement le pavé tactile si une souris est (dé)"
+#~ "brancher."
