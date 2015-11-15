@@ -300,13 +300,17 @@ const touchpadIndicatorButton = new Lang.Class({
         }
 
         if (METHOD.GCONF != this._CONF_switchMethod) {
-            if (!this.touchpadgsettings.get_boolean('touchpad-enabled'))
-                this.touchpadgsettings.set_boolean('touchpad-enabled', true);
+            if (this.touchpadgsettings.get_string('send-events') != 'enabled')
+                this.touchpadgsettings.set_string('send-events', 'enabled');
         }
 
         if (METHOD.GCONF == this._CONF_switchMethod) {
-            this.touchpadgsettings.set_boolean('touchpad-enabled',
-                this._CONF_touchpadEnabled);
+            if ( this._CONF_touchpadEnabled ) {
+                this.touchpadgsettings.set_string('send-events', 'enabled');
+            } else {
+                this.touchpadgsettings.set_string('send-events', 'disabled');
+            }
+
         } else if (METHOD.SYNCLIENT == this._CONF_switchMethod) {
             if (this._CONF_touchpadEnabled) {
                 this.synclient._enable();
@@ -444,7 +448,7 @@ const touchpadIndicatorButton = new Lang.Class({
         let new_method = this.gsettings.get_enum('switchmethod');
         switch (old_method) {
             case METHOD.GCONF:
-                this.touchpadgsettings.set_boolean('touchpad-enabled', true);
+                this.touchpadgsettings.set_string('send-events', 'enabled');
                 break;
             case METHOD.SYNCLIENT:
                 this.synclient._enable();
@@ -466,10 +470,8 @@ const touchpadIndicatorButton = new Lang.Class({
                 this.synclient._is_synclient_still_in_use();
                 if (synclient_in_use != this.synclient.synclient_in_use) {
                     if (this.synclient.synclient_in_use) {
-                        if (!this.touchpadgsettings.get_boolean(
-                                'touchpad-enabled')) {
-                            this.touchpadgsettings.set_boolean(
-                                'touchpad-enabled', true);
+                        if (this.touchpadgsettings.get_string('send-events') != 'enabled') {
+                            this.touchpadgsettings.set_string('send-events', 'enabled');
                         }
                         this.synclient._watch();
                         if (this._CONF_touchpadEnabled) {
@@ -480,8 +482,13 @@ const touchpadIndicatorButton = new Lang.Class({
                     } else {
                         this.synclient._cancel();
                         this.gsettings.set_enum('switchmethod', METHOD.GCONF);
-                        this.touchpadgsettings.set_boolean('touchpad-enabled',
-                            this._CONF_touchpadEnabled);
+
+                        if ( this._CONF_touchpadEnabled ) {
+                            this.touchpadgsettings.set_string('send-events', 'enabled');
+                        } else {
+                            this.touchpadgsettings.set_string('send-events', 'disabled');
+                        }
+            
                     }
                 }
             }
@@ -639,10 +646,10 @@ const touchpadIndicatorButton = new Lang.Class({
         let state;
         switch (this._CONF_switchMethod) {
             case METHOD.GCONF:
-                if (this.touchpadgsettings.get_boolean('touchpad-enabled') != 
-                    this._CONF_touchpadEnabled) {
-                    this.touchpadgsettings.set_boolean('touchpad-enabled',
-                        this._CONF_touchpadEnabled);
+                if (this._CONF_touchpadEnabled && this.touchpadgsettings.get_string('send-events') == "disabled" ) {
+                    this.touchpadgsettings.set_string('send-events',"enabled");
+                } else if (!this._CONF_touchpadEnabled && this.touchpadgsettings.get_string('send-events') == "enabled" ) {
+                    this.touchpadgsettings.set_string('send-events',"disabled") ;
                 }
                 state = this._CONF_touchpadEnabled;
                 break;
@@ -661,7 +668,7 @@ const touchpadIndicatorButton = new Lang.Class({
             call(this._touchpadItem, state);
         if (state != this._CONF_touchpadEnabled) {
             logging('touchpadIndicatorButton._touchpad_changed() - Error');
-    	    this.gsettings.set_boolean('touchpad-enabled', state);
+            this.gsettings.set_boolean('touchpad-enabled', state);
         }
     },
 
@@ -792,7 +799,7 @@ const touchpadIndicatorButton = new Lang.Class({
             this._panelIconChanged));
 
         this.signal_touchpadEnabledGconf = this.touchpadgsettings.connect(
-            'changed::touchpad-enabled', onSwitchGconf);
+            'changed::send-events', onSwitchGconf);
         this.watch_mouse = Lib.watch_mouse();
         this.signal_watchMouse = this.watch_mouse.connect('changed',
             onMousePlugged);
@@ -879,14 +886,13 @@ function onMenuSelect(actor, event) {
 
 function onSwitchGconf() {
     logging('onSwitchGconf()');
-    let state = touchpadIndicator.touchpadgsettings.get_boolean(
-        'touchpad-enabled');
-    if (!state) {
-        if (touchpadIndicator.gsettings.get_enum('switchmethod') != 
-                METHOD.GCONF) {
+
+    if (touchpadIndicator.touchpadgsettings.get_string('send-events') == "disabled" ) {
+        if (touchpadIndicator.gsettings.get_enum('switchmethod') != METHOD.GCONF) {
             touchpadIndicator.gsettings.set_boolean('touchpad-enabled', state);
         }
     }
+    
 };
 
 function onMousePlugged(filemonitor, file, other_file, event_type) {

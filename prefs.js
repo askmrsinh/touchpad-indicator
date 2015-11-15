@@ -157,9 +157,9 @@ function buildPrefsWidget() {
     }
     addTextToBox(_("These settings allow you to customize this extension to your needs. You can open this dialog again by clicking on the extension's icon and selecting Indicator Preferences.\n\
 \n\
-Please feel free to contact me if you find bugs or have suggestions, criticisms, or feedback. I am always happy to receive feedback - whatever kind. :-) \n\
+I stopped development of this extension, but you can use github to report bugs and send fixes (https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator). \n\
 \n\
-Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator) or on my bug tracker (https://extensions.gnome.org/extension/131/touchpad-indicator/)."), 
+Sometimes I'll merge pull requests and update the code to extensions.gnome.org."), 
         vbox_welcome);
     vbox_welcome.add(createSeparator());
     vbox_welcome.add(createBoolSetting(settings, "first_time"));
@@ -303,7 +303,7 @@ Contact me on github (https://github.com/orangeshirt/gnome-shell-extension-touch
                         case METHOD.GCONF:
                             let tpdgs = Convenience.getSettings(
                                 TOUCHPAD_SETTINGS_SCHEMA);
-                            if (tpdgs.set_boolean('touchpad-enabled', false)) {
+                            if ( tpdgs.set_string('send-events', 'disabled') ) {
                                gsettings.set_boolean('touchpad-enabled', false);
                             }
                             break;
