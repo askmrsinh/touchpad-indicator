@@ -157,9 +157,8 @@ function buildPrefsWidget() {
     }
     addTextToBox(_("These settings allow you to customize this extension to your needs. You can open this dialog again by clicking on the extension's icon and selecting Indicator Preferences.\n\
 \n\
-I stopped development of this extension, but you can use github to report bugs and send fixes (https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator). \n\
-\n\
-Sometimes I'll merge pull requests and update the code to extensions.gnome.org."), 
+This extension was orignally developed by orangeshirt (https://github.com/orangeshirt).\n\
+Project's GitHub page - https://github.com/user501254/TouchpadIndicator"), 
         vbox_welcome);
     vbox_welcome.add(createSeparator());
     vbox_welcome.add(createBoolSetting(settings, "first_time"));
