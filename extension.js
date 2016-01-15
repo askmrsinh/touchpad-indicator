@@ -57,13 +57,13 @@ if (currentArray[0] == 3 && currentArray[1] < 5) {
 } else if (currentArray[0] == 3 && currentArray[1] < 7) {
     // Gnome Shell 3.5 or 3.6
     var NOTIFICATION_ICON_SIZE = MessageTray.NOTIFICATION_ICON_SIZE;
-    var TP_ICON = 'my-touchpad-normal';
-    var TP_ICON_DISABLED = 'my-touchpad-disabled';
+    var TP_ICON = 'input-touchpad-symbolic';
+    var TP_ICON_DISABLED = 'touchpad-disabled-symbolic';
 } else {
     // Gnome Shell 3.7 and higher
     var NOTIFICATION_ICON_SIZE = MessageTray.Notification.prototype.ICON_SIZE;
-    var TP_ICON = 'my-touchpad-normal';
-    var TP_ICON_DISABLED = 'my-touchpad-disabled';
+    var TP_ICON = 'input-touchpad-symbolic';
+    var TP_ICON_DISABLED = 'touchpad-disabled-symbolic';
 }
 
 const StoragePath = Lib.StoragePath;
@@ -169,7 +169,7 @@ function ConfirmDialog(doIt, cancelIt) {
 /* let's use the same layout of the logout dialog */
 ConfirmDialog.prototype = {
     __proto__: ModalDialog.ModalDialog.prototype,
-    
+
     _init: function(doIt, cancelIt) {
         logging('ConfirmDialog.init()');
         let msgbox;
@@ -488,7 +488,7 @@ const touchpadIndicatorButton = new Lang.Class({
                         } else {
                             this.touchpadgsettings.set_string('send-events', 'disabled');
                         }
-            
+
                     }
                 }
             }
@@ -571,7 +571,7 @@ const touchpadIndicatorButton = new Lang.Class({
     _is_device_enabled: function() {
         logging('touchpadIndicatorButton._is_device_enabled()');
         hits = 0;
-        if (METHOD.GCONF == this._CONF_switchMethod || 
+        if (METHOD.GCONF == this._CONF_switchMethod ||
                 METHOD.SYNCLIENT == this._CONF_switchMethod) {
             if (this._CONF_touchpadEnabled) {
                 logging('touchpadIndicatorButton._is_device_enabled(Found an '
@@ -579,7 +579,7 @@ const touchpadIndicatorButton = new Lang.Class({
                 hits++;
             }
         } else if (METHOD.XINPUT == this._CONF_switchMethod) {
-            if (this.touchpadXinput.is_there_device && 
+            if (this.touchpadXinput.is_there_device &&
                     this._CONF_touchpadEnabled) {
                 logging('touchpadIndicatorButton._is_device_enabled(Found an '
                 + 'enabled Touchpad)');
@@ -635,7 +635,7 @@ const touchpadIndicatorButton = new Lang.Class({
     },
 
     _switch_touchpad: function(state) {
-        logging('touchpadIndicatorButton._switch_touchpad('+ state.toString() 
+        logging('touchpadIndicatorButton._switch_touchpad('+ state.toString()
             +')');
         this.gsettings.set_boolean('touchpad-enabled', state);
     },
@@ -690,7 +690,7 @@ const touchpadIndicatorButton = new Lang.Class({
     },
 
     _switch_trackpoint: function(state) {
-        logging('touchpadIndicatorButton._switch_trackpoint('+ state.toString() 
+        logging('touchpadIndicatorButton._switch_trackpoint('+ state.toString()
             +')');
         this.gsettings.set_boolean('trackpoint-enabled', state);
     },
@@ -707,7 +707,7 @@ const touchpadIndicatorButton = new Lang.Class({
     },
 
     _switch_touchscreen: function(state) {
-        logging('touchpadIndicatorButton._switch_touchscreen('+ state.toString() 
+        logging('touchpadIndicatorButton._switch_touchscreen('+ state.toString()
             +')');
         this.gsettings.set_boolean('touchscreen-enabled', state);
     },
@@ -724,7 +724,7 @@ const touchpadIndicatorButton = new Lang.Class({
     },
 
     _switch_fingertouch: function(state) {
-        logging('touchpadIndicatorButton._switch_fingertouch('+ state.toString() 
+        logging('touchpadIndicatorButton._switch_fingertouch('+ state.toString()
             +')');
         this.gsettings.set_boolean('fingertouch-enabled', state);
     },
@@ -741,7 +741,7 @@ const touchpadIndicatorButton = new Lang.Class({
     },
 
     _switch_pen: function(state) {
-        logging('touchpadIndicatorButton._switch_pen('+ state.toString() 
+        logging('touchpadIndicatorButton._switch_pen('+ state.toString()
             +')');
         this.gsettings.set_boolean('pen-enabled', state);
     },
@@ -813,16 +813,16 @@ const touchpadIndicatorButton = new Lang.Class({
         this.gsettings.disconnect(this.signal_trackpointEnabled);
         this.gsettings.disconnect(this.signal_touchscreenEnabled);
         this.gsettings.disconnect(this.signal_fingertouchEnabled);
-        this.gsettings.disconnect(this.signal_penEnabled); 
-        this.gsettings.disconnect(this.signal_autoSwitchTouchpad); 
-        this.gsettings.disconnect(this.signal_autoSwitchTrackpoint); 
-        this.gsettings.disconnect(this.signal_showNotifications); 
-        this.gsettings.disconnect(this.signal_debug); 
-        this.gsettings.disconnect(this.signal_debugToFile); 
-        this.gsettings.disconnect(this.signal_switchMethod); 
-        this.gsettings.disconnect(this.signal_possibleTouchpad); 
-        this.gsettings.disconnect(this.signal_excludedMouses); 
-        this.gsettings.disconnect(this.signal_showPanelIcon);  
+        this.gsettings.disconnect(this.signal_penEnabled);
+        this.gsettings.disconnect(this.signal_autoSwitchTouchpad);
+        this.gsettings.disconnect(this.signal_autoSwitchTrackpoint);
+        this.gsettings.disconnect(this.signal_showNotifications);
+        this.gsettings.disconnect(this.signal_debug);
+        this.gsettings.disconnect(this.signal_debugToFile);
+        this.gsettings.disconnect(this.signal_switchMethod);
+        this.gsettings.disconnect(this.signal_possibleTouchpad);
+        this.gsettings.disconnect(this.signal_excludedMouses);
+        this.gsettings.disconnect(this.signal_showPanelIcon);
 
         this.touchpadgsettings.disconnect(this.signal_touchpadEnabledGconf);
         this.watch_mouse.disconnect(this.signal_watchMouse);
@@ -892,12 +892,12 @@ function onSwitchGconf() {
             touchpadIndicator.gsettings.set_boolean('touchpad-enabled', state);
         }
     }
-    
+
 };
 
 function onMousePlugged(filemonitor, file, other_file, event_type) {
     logging('onMousePlugged('+ file.get_path() +', '+ event_type +')');
-    if (event_type > 1 && event_type < 4 
+    if (event_type > 1 && event_type < 4
             && !(file.get_path().toLowerCase().indexOf('mouse') == -1)) {
         touchpadIndicator._onMousePlugged();
     }
