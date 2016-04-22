@@ -64,7 +64,7 @@ function init() {
     settings = {
         first_time: {
             type: "b",
-            label: _("First time startup")
+            label: _("Dont show this again")
         },
         touchpad_enabled: {
             type: "b",
@@ -141,34 +141,18 @@ function init() {
 
 
 function buildPrefsWidget() {
+    let touchpads = Lib.search_touchpads();
     let frame = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL,
                              border_width: 10});
     let notebook = new Gtk.Notebook();
     notebook.set_scrollable(true);
 
-    //Welcome Page
-    let touchpads = Lib.search_touchpads();
-    let vbox_welcome = buildVbox();
-    let pl_welcome = createText(_("Welcome"));
-    if (!touchpads[0]) {
-        addBoldTextToBox(_("Attention - No Touchpad Detected"), vbox_welcome);
-        addTextToBox(_("The extension could not detect a touchpad at the moment.\nYou'll find further information in the Debug section."), vbox_welcome);
-	vbox_welcome.add(createSeparator());
-    }
-    addTextToBox(_("These settings allow you to customize this extension to your needs. You can open this dialog again by clicking on the extension's icon and selecting Indicator Preferences.\n\
-\n\
-This extension was orignally developed by orangeshirt (https://github.com/orangeshirt).\n\
-Project's GitHub page - https://github.com/user501254/TouchpadIndicator"), 
-        vbox_welcome);
-    vbox_welcome.add(createSeparator());
-    vbox_welcome.add(createBoolSetting(settings, "first_time"));
-    notebook.append_page(vbox_welcome, pl_welcome);
-
     // General Page
     let vbox_general = buildVbox();
     vbox_general.set_size_request(550, 350);
     let pl_general = createText(_("General"));
-    addTextToBox(_(" "), vbox_general);
+    addBoldTextToBox(_("Set switching method and indicator icon preferences."), vbox_general);
+    vbox_general.add(createSeparator());
 
     let items = [], methods = [], number;
     let switch_to = 0;
@@ -199,7 +183,7 @@ Project's GitHub page - https://github.com/user501254/TouchpadIndicator"),
         });
     vbox_general.add(combo);
 
-    vbox_general.add(createSeparator());
+    addTextToBox((""), vbox_general);
     vbox_general.add(createBoolSetting(settings, "show_panelicon"));
     notebook.append_page(vbox_general, pl_general);
 
@@ -213,13 +197,15 @@ Project's GitHub page - https://github.com/user501254/TouchpadIndicator"),
     if (trackpoint.is_there_device)
         vbox_autoswitch.add(createBoolSetting(settings,
             "autoswitch_trackpoint"));
-    vbox_autoswitch.add(createSeparator());
+    addTextToBox((""), vbox_autoswitch);
     vbox_autoswitch.add(createBoolSetting(settings, "show_notifications"));
-    vbox_autoswitch.add(createSeparator());
+    
+    addTextToBox(("\n"), vbox_autoswitch);
 
     addBoldTextToBox(_("Exclude mouse device from autodetection"),
         vbox_autoswitch);
-    addTextToBox(_("Here you can choose some mouse devices to be excluded from autodetection, like your IR Remote Control or something similar.\nAll chosen devices are ignored."), vbox_autoswitch);
+    vbox_autoswitch.add(createSeparator());
+    addTextToBox(_("Here you can choose some mouse devices to be excluded from autodetection, like your IR Remote Control or something similar.\n\nAll chosen devices are ignored."), vbox_autoswitch);
     let mouses = Lib.list_mouses();
     if (mouses[0]) {
         for (let x = 0; x < mouses[1].length; x++) {
@@ -251,7 +237,6 @@ Project's GitHub page - https://github.com/user501254/TouchpadIndicator"),
 
     let vbox_debug = buildVbox();
     let pl_debug = createText(_("Debug"));
-    addTextToBox(_("Settings for debugging the extension."), vbox_debug);
 
     if (!touchpads[0]) {
         vbox_debug.add(createSeparator());
@@ -331,7 +316,6 @@ Project's GitHub page - https://github.com/user501254/TouchpadIndicator"),
             addTextToBox(_("If you install 'xinput' on your pc, the extension could try to switch an undetected touchpad.\nPlease install 'xinput' and reload gnome-shell to enable this feature."), vbox_debug);
         }
     }
-    vbox_debug.add(createSeparator());
     let shellversion = (_("Gnome Shell Version: ") + Conf.PACKAGE_VERSION
         + "\n");
     let indicatorversion = (_("Touchpad Indicator Version: ")
@@ -351,12 +335,11 @@ Project's GitHub page - https://github.com/user501254/TouchpadIndicator"),
     }
     let switchmethod = _("Switch Method: ") +
         settings['switchmethod']['list'][gsettings.get_enum('switchmethod')]['name'] + "\n";
-    addBoldTextToBox(_("Debug Informations"),vbox_debug);
-    addTextToBox(_("Here you find some information about your system which might be helpful in debugging.\n\n")
-        + shellversion + indicatorversion + touchpad_lbl + synclient_lbl
-        + xinput_lbl + switchmethod, vbox_debug);
-
+    addBoldTextToBox(_("View debug information."),vbox_debug);
     vbox_debug.add(createSeparator());
+    addTextToBox(_("Here you can find some information about your system which might be helpful in debugging.\n"),vbox_debug);
+    addSelectableTextToBox((shellversion + indicatorversion + touchpad_lbl + synclient_lbl + xinput_lbl + switchmethod),vbox_debug);
+
     vbox_debug.add(createBoolSetting(settings, "debug"));
     vbox_debugtofile = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL,
         margin_top: 0 });
@@ -364,7 +347,6 @@ Project's GitHub page - https://github.com/user501254/TouchpadIndicator"),
     vbox_debugtofile.add(createSeparator());
     vbox_debuglog = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL,
         margin_top: 10 });
-    addBoldTextToBox(_("Debug Log"), vbox_debuglog);
     addTextToBox(
         _("The debug log since last restart, if debugging to file was enabled."),
         vbox_debuglog);
@@ -383,10 +365,17 @@ Project's GitHub page - https://github.com/user501254/TouchpadIndicator"),
     vbox_debugcont.add(vbox_scroll);
     notebook.append_page(vbox_debugcont, pl_debug);
 
+    //About Page
+    let vbox_about = buildVbox();
+    let pl_about = createText(_("About"));
+    aboutText(vbox_about);
+    addLinkToBox("GNU General Public License, version 2","https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html",vbox_about)
+    notebook.append_page(vbox_about, pl_about);
+
     frame.add(notebook);
     frame.show_all();
     if (!gsettings.get_boolean("first-time"))
-        notebook.set_current_page(1);
+        notebook.set_current_page(0);
     if (gsettings.get_boolean("debug") == false)
         vbox_debugtofile.hide();
     if (gsettings.get_boolean("debugtofile") == false)
@@ -407,6 +396,11 @@ function createText(text) {
     return new Gtk.Label({label: text, xalign: 0 });
 };
 
+function addLinkToBox(text, link, box) {
+    txt = new Gtk.LinkButton ({label: text,uri: link});
+    box.add(txt);
+}
+
 function addTextToBox(text, box) {
     let txt = new Gtk.Label({label: text, xalign: 0 });
     txt.set_line_wrap(true);
@@ -420,6 +414,31 @@ function addBoldTextToBox(text, box) {
     box.add(txt);
 };
 
+function addSelectableTextToBox(text, box) {
+    let txt = new Gtk.Label({label: text, xalign: 0 });
+    txt.set_line_wrap(true);
+    txt.set_selectable(true);
+    box.add(txt);
+};
+
+function aboutText(box) {
+    let txt1 = new Gtk.Label({halign: Gtk.Align.CENTER, valign: Gtk.Align.START });
+    txt1.set_markup("<b>Touchpad Indicator</b>");
+    txt1.set_justify(Gtk.Justification.CENTER);
+    txt1.set_padding(10,20);
+    box.add(txt1);
+    let txt2 = new Gtk.Label({halign: Gtk.Align.CENTER, valign: Gtk.Align.START });
+    txt2.set_markup("Switch the touchpad, trackpoint, fingertouch, touchscreen or a pen device on and off easily from the top panel. Optionally, automatically disable some or all devices when a mouse is plugged in and re-enable them when unplugged.\n\nThis a fork of orangeshirt's Touchpad Indicator GNOME Shell Extension.\n");
+    txt2.set_line_wrap(true);
+    txt2.set_justify(Gtk.Justification.FILL);
+    txt2.set_padding(50,50);
+    box.add(txt2);
+    let txt3 = new Gtk.Label({halign: Gtk.Align.CENTER, valign: Gtk.Align.START });
+    txt3.set_markup("<a href=\"https://github.com/user501254/TouchpadIndicator/\" title=\"https://github.com/user501254/TouchpadIndicator/\">Webpage</a>");
+    txt3.set_justify(Gtk.Justification.CENTER);
+    txt3.set_padding(10,20);
+    box.add(txt3);
+}
 
 function createCheckBox(label, active, fu) {
     let cbx = new Gtk.CheckButton({ label: label });
