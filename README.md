@@ -1,61 +1,45 @@
-1. What is Touchpad Indicator?
+#Touchpad Indicator
+![Touchpad Indicator Icon](https://raw.githubusercontent.com/user501254/TouchpadIndicator/gh-pages/images/my-touchpad-normal-dark-16x.png)
+**Touchpad management GNOME Shell Extension**
 
-Touchpad Indicator is a minimalistic Touchpad management extension for the Gnome Shell.
+Switch the touchpad, trackpoint, fingertouch, touchscreen or a pen device on and off easily from the top panel. Optionally, automatically disable some or all devices when a mouse is plugged in and re-enable them when unplugged.
 
-
-2. What does it?
-
-Touchpad Indicator allows you to switch your Touchpad On or Off, if a Trackpoint, a Fingertouch, a Touchscreen or a Pen exists it is also possible to switch it On or Off through the extension (Needs 'xinput' to detect and switch the trackpoint and the one of the other devices).
-There's further the possibility to automatically switch On or Off the touchpad and/or trackpoint if a mouse is detected at startup or if a mouse is plugged or the automatic switch off is disabled by default.
-If your touchpad use synclient the extension could also use synclient to switch the touchpad On or Off, you could change this in the preferences. The standard settings is to use gsettings values of gnome-shell.
+![Touchpad Indicator preview](https://raw.githubusercontent.com/user501254/TouchpadIndicator/gh-pages/images/TouchpadIndicator.gif)
 
 
-3. Where can I change settings?
+##Installation:
 
-To choose your preferred option you could change the values below "Indicatorpreferences".
+**From GNOME Shell Extension Website**
+ 1. Visit [https://extensions.gnome.org/extension/131/touchpad-indicator/](https://extensions.gnome.org/extension/131/touchpad-indicator/) in Firefox browser.
+ 2. Click on the switch at left side to toggle it from OFF to ON.
+ 3. Accept any installation prompts.
 
-
-4. How can I install the extension
-
-The easiest way is to install the extension from https://extensions.gnome.org
-You can use this link: https://extensions.gnome.org/extension/131/touchpad-indicator/
-But the newest version you'll find on github:
-If you want the newest code you should pull the code from github. Pull the code from repository and move it to ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt
-Finally restart the shell with Alt+F2 and 'r' or logout and in.
-
-5. Where can I report a bug?
-
-Please report all issues on github, but I don't support and develop the extension by myself, perhaps there ist somebody which will help you.
-Github: https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator
-Gnome Extensions Page: https://extensions.gnome.org/extension/131/touchpad-indicator/
-
-6. How can I translate the extension?
-
-6.1 Start a new translation
-
-You have to open a terminal and change your directory:
-cd ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt/
-Now you have to start a new translation file with:
-msginit
-After that you'll find a new file like de.po (where de is the language abbreviation of your language) in the directory above. Open this file with your prefered texteditor and change the strings to your language. That's it. Please push this file in github or send it to my email address (You could find them in the code of extension.js) If you would test your language file before you send it to me you have to do the following things:
-mkdir -p locale/de/LC_MESSAGES
-msgfmt de.po -o locale/de/LC_MESSAGES/touchpad-indicator@orangeshirt.mo
-where 'de' is the language abbreviation of your translation. It is the same as for the .po file.
-Now you could restart gnome-shell with Alt+F2 and 'r' or logout and in. Touchpad-indicator now should be shown in your language.
+**From GitHub**
+ 1. Open a terminal and run:
+ 
+    ```Bash
+    git clone --depth=1 "https://github.com/user501254/TouchpadIndicator.git"; rm -rf TouchpadIndicator/.git
+    rm -rf ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt
+    mv TouchpadIndicator/ ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt
+    ```
+ 2. Restart GNOME Shell by pressing `Alt+F2`, `r`, `Enter`.
+ 3. Enable the extension in *gnome-tweak-tool*.
 
 
-6.2 Update an existing translation
-
-You have to open a terminal and change to the directory where your *.po file still exists:
-cd ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt/
-Now update the existing translation:
-msgmerge -U de.po messages.pot
-After that you'll find the updated *.po file in the directory above. Open this file with your prefered texteditor and change the missing strings to your language. That's it. Please push this file in github or send it to my email address (You could find them in the code of extension.js) If you would test your language file before you send it to me you have to do the following things:
-msgfmt de.po -o locale/de/LC_MESSAGES/touchpad-indicator@orangeshirt.mo
-where 'de' is the language abbreviation of your translation. It is the same as for the .po file.
-Now you could restart gnome-shell with Alt+F2 and 'r' or logout and in. Touchpad-indicator now should be shown in your language.
+##Contribute
+- This repository is a based on the now out of date [gnome-shell-extension-touchpad-indicator](https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator) by [orangeshirt](https://github.com/orangeshirt).  
+- This repository exists only so that user contributions can be actively merged on to GNOME Shell Extension Website.  
+- You can help by reporting [Issues](https://github.com/user501254/TouchpadIndicator/issues) and submitting [Pull Requests](https://github.com/user501254/TouchpadIndicator/pulls) for new features, bug fixes and localization(which is highly incomplete).
 
 
-7 FAQ
+##License
+Touchpad Indicator GNOME Shell Extension is distributed under the terms of the **[GNU General Public License, version 2 (GPL-2.0)](http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)**.
 
-Currently there is no FAQ
+Summary (from http://oss-watch.ac.uk/resources/gpl):
+>- copy and distribute the program’s unmodified source code (Section 1)
+>- modify the program’s source code and distribute the modified source (Section 2)
+>- distribute compiled versions of the program, both modified and unmodified (Section 3) provided that:
+>  - all distributed copies (modified or not) carry a copyright notice and exclusion of warranty (Section 1 and 2)  
+>  - all modified copies are distributed under the GPL v2 (Section 2)  
+>  - all compiled versions of the program are accompanied by the relevant source code, or a viable offer to make the relevant source
+code available (Section 3)
