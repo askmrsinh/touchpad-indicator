@@ -34,16 +34,16 @@ function XInput(devices) {
 };
 
 XInput.prototype = {
-    _init: function(devices) {
+    _init: function (devices) {
         logging('XInput._init(' + devices + ')');
         this.devices = devices;
         this.ids = this._get_ids();
         this.is_there_device = this._is_there_device();
-        logging('XInput._init(): Found Device - ' + 
+        logging('XInput._init(): Found Device - ' +
             this.is_there_device.toString() + ' ' + this.ids);
     },
 
-    _get_ids: function() {
+    _get_ids: function () {
         var tpids = new Array();
         let y = 0;
         let all_ids = this._get_all_ids();
@@ -56,35 +56,34 @@ XInput.prototype = {
         return tpids;
     },
 
-    _get_all_ids: function() {
+    _get_all_ids: function () {
         var devids = new Array();
         let lines = Lib.execute_sync('xinput --list');
         if (lines) {
             lines = lines[1].toString().split('\n');
-	        let y = 0;
+            let y = 0;
             for (let line = 0; line < lines.length; line++) {
-                if (lines[line].indexOf('pointer')!=-1) {
-                     devids[y] = lines[line].toString().split('=')[1].
-                            split('[')[0].split('\t')[0];
-                     y++;
+                if (lines[line].indexOf('pointer') != -1) {
+                    devids[y] = lines[line].toString().split('=')[1].split('[')[0].split('\t')[0];
+                    y++;
                 }
             }
         }
         return devids;
     },
 
-    _is_device: function(id) {
+    _is_device: function (id) {
         let comp = Lib.execute_sync('xinput --list-props ' + id.toString());
         return this._search_device(comp[1]);
     },
 
-    _is_there_device: function() {
+    _is_there_device: function () {
         if (this.ids.length > 0)
             return true;
         return false;
     },
 
-    _search_device: function(where) {
+    _search_device: function (where) {
         if (where) {
             where = where.toString().toLowerCase();
             for (let tpid = 0; tpid < this.devices.length; tpid++) {
@@ -97,33 +96,33 @@ XInput.prototype = {
         return false;
     },
 
-    _set_device_enabled: function(id) {
-        logging('XInput._set_device_enabled() id: '+id.toString());
+    _set_device_enabled: function (id) {
+        logging('XInput._set_device_enabled() id: ' + id.toString());
         return Lib.execute_async('xinput set-prop ' + id.toString()
             + ' "Device Enabled" 1');
     },
 
-    _set_device_disabled: function(id) {
-        logging('XInput._set_device_disabled() id: '+id.toString());
+    _set_device_disabled: function (id) {
+        logging('XInput._set_device_disabled() id: ' + id.toString());
         return Lib.execute_async('xinput set-prop ' + id.toString()
             + ' "Device Enabled" 0');
     },
 
-    _disable_all_devices: function() {
+    _disable_all_devices: function () {
         for (let id = 0; id < this.ids.length; id++) {
             this._set_device_disabled(this.ids[id]);
         }
         return !this._all_devices_enabled();
     },
 
-    _enable_all_devices: function() {
+    _enable_all_devices: function () {
         for (let id = 0; id < this.ids.length; id++) {
             this._set_device_enabled(this.ids[id]);
         }
         return this._all_devices_enabled();
     },
 
-    _switch_all_devices: function(state) {
+    _switch_all_devices: function (state) {
         for (let id = 0; id < this.ids.length; id++) {
             if (state) {
                 this._set_device_enabled(this.ids[id]);
@@ -134,7 +133,7 @@ XInput.prototype = {
         return this._all_devices_enabled();
     },
 
-    _is_device_enabled: function(id) {
+    _is_device_enabled: function (id) {
         logging('XInput._is_device_enabled()');
         var lines = Lib.execute_sync('xinput --list-props ' + id.toString());
         if (lines) {
@@ -143,7 +142,7 @@ XInput.prototype = {
                 if (lines[line].toString().toLowerCase().indexOf(
                         'device enabled') != -1) {
                     if (lines[line].toString().split(':')[1].indexOf('1')
-                            != -1) {
+                        != -1) {
                         return true;
                     }
                 }
@@ -152,7 +151,7 @@ XInput.prototype = {
         return false;
     },
 
-    _all_devices_enabled: function() {
+    _all_devices_enabled: function () {
         if (!this.is_there_device) {
             return false;
         }

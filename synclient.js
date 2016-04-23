@@ -39,7 +39,7 @@ function Synclient(gsettings) {
 };
 
 Synclient.prototype = {
-    _init: function(gsettings) {
+    _init: function (gsettings) {
         logging('Synclient._init()');
         this.gsettings = gsettings;
         this.synclient_status = false;
@@ -49,7 +49,7 @@ Synclient.prototype = {
         this.synclient_in_use = this._is_synclient_in_use();
     },
 
-    _is_synclient_in_use: function() {
+    _is_synclient_in_use: function () {
         if (!USE_SYNCLIENT) {
             logging('Synclient._is_synclient_in_use(): synclient manually '
                 + 'disabled');
@@ -66,8 +66,8 @@ Synclient.prototype = {
         }
         for (let x = 0; x < this.output.length; x++) {
             if (typeof(this.output[x]) == "object" &&
-                    this.output[x].length > 0) {
-                 if (!(this.output[x].toString().indexOf(
+                this.output[x].length > 0) {
+                if (!(this.output[x].toString().indexOf(
                         "Couldn't find synaptics properties") == -1)) {
                     logging('Synclient._is_synclient_in_use(): no properties '
                         + 'found');
@@ -86,12 +86,12 @@ Synclient.prototype = {
         return false;
     },
 
-    _is_synclient_still_in_use: function() {
+    _is_synclient_still_in_use: function () {
         this.synclient_in_use = this._is_synclient_in_use();
         return this.synclient_in_use;
     },
 
-    _watch: function() {
+    _watch: function () {
         if (!this.stop && !this.wait) {
             this.output = Lib.execute_sync('synclient -l');
             if (this.output) {
@@ -119,18 +119,18 @@ Synclient.prototype = {
         }
     },
 
-    _call_watch: function() {
+    _call_watch: function () {
         this.wait = false;
         this._watch();
     },
 
-    _wait: function() {
+    _wait: function () {
         this.wait = true;
         this.timeout = Mainloop.timeout_add(1000, Lang.bind(
             this, this._call_watch));
     },
 
-    _cancel: function() {
+    _cancel: function () {
         logging('Synclient._cancel()');
         this.stop = true;
         this.wait = false;
@@ -141,7 +141,7 @@ Synclient.prototype = {
         }
     },
 
-    _disable: function() {
+    _disable: function () {
         logging('Synclient._disable()');
         this._cancel();
         if (Lib.execute_async('synclient TouchpadOff=1')) {
@@ -152,7 +152,7 @@ Synclient.prototype = {
             return true;
     },
 
-    _enable: function() {
+    _enable: function () {
         logging('Synclient._enable()');
         this._cancel();
         if (Lib.execute_async('synclient TouchpadOff=0')) {
@@ -163,7 +163,7 @@ Synclient.prototype = {
             return false;
     },
 
-    _switch: function(state) {
+    _switch: function (state) {
         if (state) {
             return this._enable();
         } else {
