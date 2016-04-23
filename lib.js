@@ -33,29 +33,29 @@ const _ = Gettext.gettext;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 
-const StoragePath = '.local/share/gnome-shell/extensions/'+
-                        Me.metadata.uuid.toString();
+const StoragePath = '.local/share/gnome-shell/extensions/' +
+    Me.metadata.uuid.toString();
 GLib.mkdir_with_parents(StoragePath, parseInt('0775', 8));
 
 // Debug Mode Settings
 var DEBUG = false; // overwritten by settings
 const FORCE_DEBUG = false;
 var DEBUG_TO_FILE = false; // overwritten by settings
-var DEBUG_INFO = 'Extension '+ Me.metadata.name.toString() +': ';
+var DEBUG_INFO = 'Extension ' + Me.metadata.name.toString() + ': ';
 var DEBUG_LOG_FILE = GLib.build_filenamev([StoragePath,
-   'touchpad-indicator.log']);
+    'touchpad-indicator.log']);
 if (GLib.file_test(DEBUG_LOG_FILE, GLib.FileTest.EXISTS) === false)
     GLib.file_set_contents(DEBUG_LOG_FILE, "");
-    
+
 
 let LOGS = "";
 
 // Possible Devices
-const TOUCHPADS = new Array('touchpad','glidepoint','fingersensingpad',
-                            'bcm5974','trackpad','smartpad');
+const TOUCHPADS = new Array('touchpad', 'glidepoint', 'fingersensingpad',
+    'bcm5974', 'trackpad', 'smartpad');
 var ALL_TOUCHPADS = TOUCHPADS.slice();
-const TRACKPOINTS = new Array('trackpoint','accu point','trackstick',
-                              'touchstyk','pointing stick','dualpoint stick');
+const TRACKPOINTS = new Array('trackpoint', 'accu point', 'trackstick',
+    'touchstyk', 'pointing stick', 'dualpoint stick');
 const FINGER_TOUCHES = Array('finger touch');
 const TOUCHSCREENS = Array('touchscreen', 'maxtouch');
 const PENS = Array('pen stylus', 'pen eraser');
@@ -109,13 +109,16 @@ function logging(message, debug, debug_to_file) {
 };
 
 function format_time(d) {
-    function pad(n) { return n < 10 ? '0' + n : n; }
-    return d.getUTCFullYear()+'-'
-        + pad(d.getUTCMonth()+1)+'-'
-        + pad(d.getUTCDate())+'T'
-        + pad(d.getUTCHours())+':'
-        + pad(d.getUTCMinutes())+':'
-        + pad(d.getUTCSeconds())+'Z';
+    function pad(n) {
+        return n < 10 ? '0' + n : n;
+    }
+
+    return d.getUTCFullYear() + '-'
+        + pad(d.getUTCMonth() + 1) + '-'
+        + pad(d.getUTCDate()) + 'T'
+        + pad(d.getUTCHours()) + ':'
+        + pad(d.getUTCMinutes()) + ':'
+        + pad(d.getUTCSeconds()) + 'Z';
 };
 
 function execute_sync(command) {
@@ -260,7 +263,7 @@ function list_mouses(skip_excluded) {
                             ALL_OTHERS[oth].toString()) == -1)) {
                         hits++;
                         logging('Lib.list_mouses(): Other device to ignore'
-                            + ' found: '+ where[x].toString());
+                            + ' found: ' + where[x].toString());
                         break;
                     }
                 }
@@ -287,7 +290,7 @@ function watch_mouse() {
 
 function load_excluded_mouses(excluded_mouses) {
     ALL_OTHERS = OTHERS.slice();
-    for(var key in excluded_mouses) {
+    for (var key in excluded_mouses) {
         if (excluded_mouses[key])
             ALL_OTHERS[ALL_OTHERS.length] = key.toString().toLowerCase();
     }
