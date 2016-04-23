@@ -7,7 +7,7 @@
     "3.18",
     "3.20"
   ],
-  "url": "https://github.com/user501254/TouchpadIndicator",
+  "url": "https://user501254.github.io/TouchpadIndicator/",
   "uuid": "touchpad-indicator@orangeshirt",
   "settings-schema": "org.gnome.shell.extensions.touchpad-indicator@orangeshirt",
   "version": 25
