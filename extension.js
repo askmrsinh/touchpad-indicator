@@ -61,7 +61,7 @@ if (currentArray[0] == 3 && currentArray[1] < 5) {
     var TP_ICON_DISABLED = 'touchpad-disabled-symbolic';
 } else {
     // Gnome Shell 3.7 and higher
-    var NOTIFICATION_ICON_SIZE = MessageTray.Notification.prototype.ICON_SIZE;
+    var NOTIFICATION_ICON_SIZE = MessageTray.Source.prototype.SOURCE_ICON_SIZE;
     var TP_ICON = 'input-touchpad-symbolic';
     var TP_ICON_DISABLED = 'touchpad-disabled-symbolic';
 }
