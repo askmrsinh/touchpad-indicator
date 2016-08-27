@@ -47,7 +47,7 @@
         <description>Turns trackpoint automatically on or off if a mouse is (un)plugged.</description>
     </key>
     <key type="b" name="show-notifications">
-        <default>true</default>
+        <default>false</default>
         <summary>Show notification</summary>
         <description>Show notifications if the touchpad or the trackpoint is automatically switched on or off.</description>
     </key>
