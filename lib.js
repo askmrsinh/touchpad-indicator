@@ -57,7 +57,7 @@ var ALL_TOUCHPADS = TOUCHPADS.slice();
 const TRACKPOINTS = new Array('trackpoint', 'accu point', 'trackstick',
     'touchstyk', 'pointing stick', 'dualpoint stick');
 const FINGER_TOUCHES = Array('finger touch');
-const TOUCHSCREENS = Array('touchscreen', 'maxtouch', 'touch digitizer');
+const TOUCHSCREENS = Array('touchscreen', 'maxtouch', 'touch digitizer', 'touch system');
 const PENS = Array('pen stylus', 'pen eraser');
 const OTHERS = new Array();
 var ALL_OTHERS = OTHERS.slice();
