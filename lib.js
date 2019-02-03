@@ -24,6 +24,7 @@
  */
 
 
+const ByteArray = imports.byteArray;
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 
@@ -74,11 +75,18 @@ const SETTINGS_SCHEMA = 'org.gnome.shell.extensions.touchpad-indicator';
 const TOUCHPAD_SETTINGS_SCHEMA =
     'org.gnome.desktop.peripherals.touchpad';
 
+function handle_unit8array(data) {
+    if (data instanceof Uint8Array) {
+        return ByteArray.toString(data);
+    } else {
+        return data.toString();
+    }
+}
 
 function get_logs() {
     let logtxt;
     try {
-        logtxt = GLib.file_get_contents(DEBUG_LOG_FILE)[1].toString();
+        logtxt = handle_unit8array(GLib.file_get_contents(DEBUG_LOG_FILE)[1]);
     } catch (err) {
         logtxt = _("Sorry could not read logfile!\n") + err;
     }
@@ -143,7 +151,7 @@ function list_mouse_devices() {
     logging('Lib.list_mouse_devices()');
     let comp = execute_sync('cat /proc/bus/input/devices');
     if (comp) {
-        let where = comp[1].toString().split("\n\n"),
+        let where = handle_unit8array(comp[1]).split("\n\n"),
             mouses = new Array(),
             name,
             hits = 0;

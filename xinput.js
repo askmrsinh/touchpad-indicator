@@ -24,10 +24,20 @@
  */
 
 
+const ByteArray = imports.byteArray;
+
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Me.imports.lib;
 
 let logging = Lib.logging;
+
+function handle_unit8array(data) {
+    if (data instanceof Uint8Array) {
+        return ByteArray.toString(data);
+    } else {
+        return data.toString();
+    }
+}
 
 function XInput(devices) {
     this._init(devices);
@@ -60,7 +70,7 @@ XInput.prototype = {
         var devids = new Array();
         let lines = Lib.execute_sync('xinput --list');
         if (lines) {
-            lines = lines[1].toString().split('\n');
+            lines = handle_unit8array(lines[1]).split('\n');
             let y = 0;
             for (let line = 0; line < lines.length; line++) {
                 if (lines[line].indexOf('pointer') != -1) {
@@ -85,7 +95,7 @@ XInput.prototype = {
 
     _search_device: function (where) {
         if (where) {
-            where = where.toString().toLowerCase();
+            where = handle_unit8array(where).toLowerCase();
             for (let tpid = 0; tpid < this.devices.length; tpid++) {
                 if (!(where.indexOf(
                         this.devices[tpid].toString().toLowerCase()) == -1)) {
@@ -137,7 +147,7 @@ XInput.prototype = {
         logging('XInput._is_device_enabled()');
         var lines = Lib.execute_sync('xinput --list-props ' + id.toString());
         if (lines) {
-            lines = lines[1].toString().split('\n');
+            lines = handle_unit8array(lines[1]).split('\n');
             for (let line = 0; line < lines.length; line++) {
                 if (lines[line].toString().toLowerCase().indexOf(
                         'device enabled') != -1) {
