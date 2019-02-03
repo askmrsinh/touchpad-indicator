@@ -442,7 +442,7 @@ function aboutText(box) {
     txt2.set_padding(50, 20);
     box.add(txt2);
     let txt3 = new Gtk.Label({halign: Gtk.Align.CENTER, valign: Gtk.Align.START});
-    txt3.set_markup("<a href=\"http://user501254.github.io/TouchpadIndicator/\" title=\"https://user501254.github.io/TouchpadIndicator/\">Webpage</a>");
+    txt3.set_markup("<a href=\"https://user501254.github.io/TouchpadIndicator/\" title=\"https://user501254.github.io/TouchpadIndicator/\">Webpage</a>");
     txt3.set_justify(Gtk.Justification.CENTER);
     txt3.set_padding(10, 20);
     box.add(txt3);
