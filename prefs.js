@@ -410,7 +410,7 @@ function createText(text) {
 };
 
 function addLinkToBox(text, link, box) {
-    txt = new Gtk.LinkButton({label: text, uri: link});
+    let txt = new Gtk.LinkButton({label: text, uri: link});
     box.add(txt);
 }
 
