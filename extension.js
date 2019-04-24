@@ -27,6 +27,7 @@ const St = imports.gi.St;
 const Main = imports.ui.main;
 const Clutter = imports.gi.Clutter;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 const MessageTray = imports.ui.messageTray;
 const Mainloop = imports.mainloop;
@@ -46,25 +47,9 @@ const XInput = Me.imports.xinput;
 const Synclient = Me.imports.synclient;
 
 //Icons
-var TP_ICON = 'input-touchpad';
-var TP_ICON_DISABLED = 'touchpad-disabled';
-
-//Workaround...
-let currentArray = Conf.PACKAGE_VERSION.split('.');
-if (currentArray[0] == 3 && currentArray[1] < 5) {
-    // Gnome Shell 3.3 or 3.4
-    var NOTIFICATION_ICON_SIZE = MessageTray.Source.prototype.ICON_SIZE;
-} else if (currentArray[0] == 3 && currentArray[1] < 7) {
-    // Gnome Shell 3.5 or 3.6
-    var NOTIFICATION_ICON_SIZE = MessageTray.NOTIFICATION_ICON_SIZE;
-    var TP_ICON = 'input-touchpad-symbolic';
-    var TP_ICON_DISABLED = 'touchpad-disabled-symbolic';
-} else {
-    // Gnome Shell 3.7 and higher
-    var NOTIFICATION_ICON_SIZE = MessageTray.Source.prototype.SOURCE_ICON_SIZE;
-    var TP_ICON = 'input-touchpad-symbolic';
-    var TP_ICON_DISABLED = 'touchpad-disabled-symbolic';
-}
+var NOTIFICATION_ICON_SIZE = 48;
+var TP_ICON = 'input-touchpad-symbolic';
+var TP_ICON_DISABLED = 'touchpad-disabled-symbolic';
 
 const StoragePath = Lib.StoragePath;
 GLib.mkdir_with_parents(StoragePath, parseInt('0775', 8));
@@ -105,32 +90,21 @@ function logging(message) {
 
 let msg_source;
 
-const Source = new Lang.Class({
-    Name: 'TouchpadIndicatorSource',
-    Extends: MessageTray.Source,
-
-    _init: function () {
-        this.parent(_("Touchpad Indicator"));
-        // Workaround vor Gnome Shell 3.4 and lower
-        if (currentArray[0] == 3 && currentArray[1] < 5) {
-            let icon = new St.Icon({
-                icon_name: TP_ICON,
-                icon_size: NOTIFICATION_ICON_SIZE
-            });
-            this._setSummaryIcon(icon);
-        }
-        this.connect('destroy', Lang.bind(this, function () {
+class TouchpadIndicatorSource extends MessageTray.Source{
+    _init() {
+        super._init(_("Touchpad Indicator"));
+        super.connect('destroy', Lang.bind(this, function () {
             msg_source = null;
         }));
-    },
+    }
 
-    createIcon: function (size) {
+    createIcon(size) {
         return new St.Icon({
             icon_name: TP_ICON,
             icon_size: size
         });
-    },
-});
+    }
+};
 
 
 function notify(device, title, text) {
@@ -140,7 +114,7 @@ function notify(device, title, text) {
     // must call after destroying previous notification,
     // or msg_source will be cleared
     if (!msg_source) {
-        msg_source = new Source();
+        msg_source = new TouchpadIndicatorSource();
         Main.messageTray.add(msg_source);
     }
     if (!title)
@@ -149,13 +123,9 @@ function notify(device, title, text) {
         icon_name: TP_ICON,
         icon_size: NOTIFICATION_ICON_SIZE
     });
-    if (currentArray[0] == 3 && currentArray[1] < 7) {
-        device._notification = new MessageTray.Notification(msg_source, title,
-            text, {icon: icon});
-    } else {
-        device._notification = new MessageTray.Notification(msg_source, title,
-            text);
-    }
+
+    device._notification = new MessageTray.Notification(msg_source, title, text);
+
     device._notification.setUrgency(MessageTray.Urgency.LOW);
     device._notification.setTransient(true);
     device._notification.connect('destroy', function () {
@@ -226,22 +196,18 @@ PopupMenuItem.prototype = {
     __proto__: PopupMenu.PopupBaseMenuItem.prototype,
 
     _init: function (text, tag, callback) {
-        PopupMenu.PopupBaseMenuItem.prototype._init.call(this);
-        this.label = new St.Label({
+        this.baseMenuItem = new PopupMenu.PopupBaseMenuItem();
+        this.baseMenuItem.label = new St.Label({
             text: text,
             style_class: 'touchpad-menu-label'
         });
-        if (currentArray[0] == 3 && currentArray[1] < 9) {
-            // Gnome Shell 3.4 - 3.8
-            this.addActor(this.label);
-        } else {
-            // Gnome Shell 3.9 and higher
-            this.actor.add(this.label);
-        }
+
+        this.baseMenuItem.actor.add(this.baseMenuItem.label);
+
         if (tag)
-            this.tag = tag;
+            this.baseMenuItem.tag = tag;
         if (callback)
-            this.connect('activate', callback);
+            this.baseMenuItem.connect('activate', callback);
     }
 };
 
@@ -254,19 +220,18 @@ PopupSwitchMenuItem.prototype = {
     __proto__: PopupMenu.PopupSwitchMenuItem.prototype,
 
     _init: function (label, tag, state, callback) {
-        PopupMenu.PopupSwitchMenuItem.prototype._init.call(this, label, state);
-        this.tag = tag;
-        this.connect('toggled', callback);
+        this.switchMenuItem = new PopupMenu.PopupSwitchMenuItem(label, state);
+        this.switchMenuItem.tag = tag;
+        this.switchMenuItem.connect('toggled', callback);
     }
 };
 
 
-const touchpadIndicatorButton = new Lang.Class({
-    Name: 'TouchpadIndicator.TouchpadIndicator',
-    Extends: PanelMenu.Button,
+var touchpadIndicatorButton = GObject.registerClass(
+    class  TouchpadIndicator extends PanelMenu.Button {
 
-    _init: function () {
-        this.parent(0.0, _("Touchpad Indicator"));
+    _init() {
+        super._init(0.0, _("Touchpad Indicator"));
         this.touchpadIcon = new St.Icon({
             icon_name: TP_ICON,
             style_class: 'system-status-icon'
@@ -355,15 +320,15 @@ const touchpadIndicatorButton = new Lang.Class({
         this._penItem = new PopupSwitchMenuItem(_("Pen"), 4,
             this.pen._all_devices_enabled(), onMenuSelect);
 
-        this.menu.addMenuItem(this._touchpadItem);
+        this.menu.addMenuItem(this._touchpadItem.switchMenuItem);
         if (this.trackpoint.is_there_device)
-            this.menu.addMenuItem(this._trackpointItem);
+            this.menu.addMenuItem(this._trackpointItem.switchMenuItem);
         if (this.touchscreen.is_there_device)
-            this.menu.addMenuItem(this._touchscreenItem);
+            this.menu.addMenuItem(this._touchscreenItem.switchMenuItem);
         if (this.fingertouch.is_there_device)
-            this.menu.addMenuItem(this._fingertouchItem);
+            this.menu.addMenuItem(this._fingertouchItem.switchMenuItem);
         if (this.pen.is_there_device)
-            this.menu.addMenuItem(this._penItem);
+            this.menu.addMenuItem(this._penItem.switchMenuItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         this.menu.addSettingsAction(_("Touchpad Preferences"),
@@ -373,7 +338,7 @@ const touchpadIndicatorButton = new Lang.Class({
                 Lib.execute_async(
                     'gnome-shell-extension-prefs ' + Me.uuid)
             }));
-        this.menu.addMenuItem(this._SettingsItem);
+        this.menu.addMenuItem(this._SettingsItem.baseMenuItem);
 
         this._onChangeIcon();
         this._connect_signals();
@@ -381,9 +346,9 @@ const touchpadIndicatorButton = new Lang.Class({
         if (switch_method_changed)
             this.gsettings.set_enum('switchmethod', this._CONF_switchMethod);
         this._showPanelIcon(this._CONF_showPanelIcon);
-    },
+    }
 
-    _loadConfig: function () {
+    _loadConfig() {
         this._CONF_firstTime = this.gsettings.get_boolean('first-time');
         this._CONF_touchpadEnabled = this.gsettings.get_boolean(
             'touchpad-enabled');
@@ -411,32 +376,32 @@ const touchpadIndicatorButton = new Lang.Class({
             'excluded-mouses'));
         this._CONF_showPanelIcon = this.gsettings.get_boolean(
             'show-panelicon');
-    },
+    }
 
-    _onChangeIcon: function () {
+    _onChangeIcon() {
         logging('touchpadIndicatorButton._onChangeIcon()');
         if (!this._CONF_touchpadEnabled) {
             this.touchpadIcon.icon_name = TP_ICON_DISABLED;
         } else {
             this.touchpadIcon.icon_name = TP_ICON;
         }
-    },
+    }
 
-    _panelIconChanged: function () {
+    _panelIconChanged() {
         this._loadConfig();
         this._showPanelIcon(this._CONF_showPanelIcon);
-    },
+    }
 
-    _showPanelIcon: function (value) {
+    _showPanelIcon(value) {
         // show or hide the Icon in the Main Panel
         if (value) {
             this.actor.show();
         } else {
             this.actor.hide();
         }
-    },
+    }
 
-    _adjustSwitchPosition: function () {
+    _adjustSwitchPosition() {
         logging('touchpadIndicatorButton._adjustSwitchPosition()');
         PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
             this._touchpadItem, this._CONF_touchpadEnabled);
@@ -448,9 +413,9 @@ const touchpadIndicatorButton = new Lang.Class({
             this._fingertouchItem, this._CONF_fingertouchEnabled);
         PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(
             this._penItem, this._CONF_penEnabled);
-    },
+    }
 
-    _onChangeSwitchMethod: function () {
+    _onChangeSwitchMethod() {
         logging('touchpadIndicatorButton._onChangeSwitchMethod()');
         let touchpad_enabled = this._CONF_touchpadEnabled;
         let old_method = this._CONF_switchMethod;
@@ -467,9 +432,9 @@ const touchpadIndicatorButton = new Lang.Class({
                 break;
         }
         this._switch_touchpad(touchpad_enabled);
-    },
+    }
 
-    _onMousePlugged: function () {
+    _onMousePlugged() {
         logging('touchpadIndicatorButton._onMousePlugged()');
         if (this._CONF_autoSwitchTouchpad ||
             (this._CONF_autoSwitchTrackpoint &&
@@ -560,23 +525,23 @@ const touchpadIndicatorButton = new Lang.Class({
             if (notify)
                 this._notify(false, content);
         }
-    },
+    }
 
-    _load_excluded_mouses: function () {
+    _load_excluded_mouses() {
         ALL_OTHERS = Lib.load_excluded_mouses(this._CONF_excludedMouses);
-    },
+    }
 
-    _excluded_mouses_changed: function () {
+    _excluded_mouses_changed() {
         this._loadConfig();
         this._load_excluded_mouses();
-    },
+    }
 
-    _notify: function (title, content) {
+    _notify(title, content) {
         if (this._CONF_showNotifications)
             notify(this, title, content);
-    },
+    }
 
-    _is_device_enabled: function () {
+    _is_device_enabled() {
         logging('touchpadIndicatorButton._is_device_enabled()');
         hits = 0;
         if (METHOD.GCONF == this._CONF_switchMethod ||
@@ -630,9 +595,9 @@ const touchpadIndicatorButton = new Lang.Class({
                 + 'enabled Device)');
             return false;
         }
-    },
+    }
 
-    _confirm: function (doIt) {
+    _confirm(doIt) {
         if (!this._is_device_enabled()) {
             new ConfirmDialog(doIt, function () {
                 touchpadIndicator._adjustSwitchPosition();
@@ -640,15 +605,15 @@ const touchpadIndicatorButton = new Lang.Class({
         } else {
             doIt();
         }
-    },
+    }
 
-    _switch_touchpad: function (state) {
+    _switch_touchpad(state) {
         logging('touchpadIndicatorButton._switch_touchpad(' + state.toString()
             + ')');
         this.gsettings.set_boolean('touchpad-enabled', state);
-    },
+    }
 
-    _touchpad_changed: function () {
+    _touchpad_changed() {
         logging('touchpadIndicatorButton._touchpad_changed()');
         this._loadConfig();
         let state;
@@ -672,15 +637,15 @@ const touchpadIndicatorButton = new Lang.Class({
                 break;
         }
         this._onChangeIcon();
-        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._touchpadItem, state);
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._touchpadItem.switchMenuItem, state);
         if (state != this._CONF_touchpadEnabled) {
             logging('touchpadIndicatorButton._touchpad_changed() - Error');
             this.gsettings.set_boolean('touchpad-enabled', state);
         }
-    },
+    }
 
 
-    _possible_touchpad_changed: function () {
+    _possible_touchpad_changed() {
         logging('touchpadIndicatorButton._possible_touchpad_changed()');
         this._loadConfig();
         let enabled = this._CONF_touchpadEnabled;
@@ -694,72 +659,72 @@ const touchpadIndicatorButton = new Lang.Class({
         this.touchpadXinput = new XInput.XInput(ALL_TOUCHPADS);
         if (this.touchpadXinput.is_there_device && !enabled)
             this._switch_touchpad(false);
-    },
+    }
 
-    _switch_trackpoint: function (state) {
+    _switch_trackpoint(state) {
         logging('touchpadIndicatorButton._switch_trackpoint(' + state.toString()
             + ')');
         this.gsettings.set_boolean('trackpoint-enabled', state);
-    },
+    }
 
-    _trackpoint_changed: function () {
+    _trackpoint_changed() {
         logging('touchpadIndicatorButton._trackpoint_changed()');
         this._loadConfig();
         let state = this.trackpoint._switch_all_devices(
             this._CONF_trackpointEnabled);
-        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._trackpointItem, state);
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._trackpointItem.switchMenuItem, state);
         if (state != this._CONF_trackpointEnabled)
             this.gsettings.set_boolean('trackpoint-enabled', state);
-    },
+    }
 
-    _switch_touchscreen: function (state) {
+    _switch_touchscreen(state) {
         logging('touchpadIndicatorButton._switch_touchscreen(' + state.toString()
             + ')');
         this.gsettings.set_boolean('touchscreen-enabled', state);
-    },
+    }
 
-    _touchscreen_changed: function () {
+    _touchscreen_changed() {
         logging('touchpadIndicatorButton._touchscreen_changed()');
         this._loadConfig();
         let state = this.touchscreen._switch_all_devices(
             this._CONF_touchscreenEnabled);
-        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._touchscreenItem, state);
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._touchscreenItem.switchMenuItem, state);
         if (state != this._CONF_touchscreenEnabled)
             this.gsettings.set_boolean('touchscreen-enabled', state);
-    },
+    }
 
-    _switch_fingertouch: function (state) {
+    _switch_fingertouch(state) {
         logging('touchpadIndicatorButton._switch_fingertouch(' + state.toString()
             + ')');
         this.gsettings.set_boolean('fingertouch-enabled', state);
-    },
+    }
 
-    _fingertouch_changed: function () {
+    _fingertouch_changed() {
         logging('touchpadIndicatorButton._fingertouch_changed()');
         this._loadConfig();
         let state = this.fingertouch._switch_all_devices(
             this._CONF__fingertouchEnabled);
-        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._fingertouchItem, state);
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._fingertouchItem.switchMenuItem, state);
         if (state != this._CONF__fingertouchEnabled)
             this.gsettings.set_boolean('fingertouch-enabled', state);
-    },
+    }
 
-    _switch_pen: function (state) {
+    _switch_pen(state) {
         logging('touchpadIndicatorButton._switch_pen(' + state.toString()
             + ')');
         this.gsettings.set_boolean('pen-enabled', state);
-    },
+    }
 
-    _pen_changed: function () {
+    _pen_changed() {
         logging('touchpadIndicatorButton._pen_changed()');
         this._loadConfig();
         let state = this.pen._switch_all_devices(this._CONF_penEnabled);
-        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._penItem, state);
+        PopupMenu.PopupSwitchMenuItem.prototype.setToggleState.call(this._penItem.switchMenuItem, state);
         if (state != this._CONF_penEnabled)
             this.gsettings.set_boolean('pen-enabled', state);
-    },
+    }
 
-    _connect_signals: function () {
+    _connect_signals() {
         this.signal_firstTime = this.gsettings.connect(
             "changed::first-time", Lang.bind(this, this._loadConfig));
         this.signal_touchpadEnabled = this.gsettings.connect(
@@ -808,9 +773,9 @@ const touchpadIndicatorButton = new Lang.Class({
             onMousePlugged);
         if (this._CONF_switchMethod == METHOD.SYNCLIENT)
             this.synclient._watch();
-    },
+    }
 
-    _disconnect_signals: function () {
+    _disconnect_signals() {
         this.gsettings.disconnect(this.signal_firstTime);
         this.gsettings.disconnect(this.signal_touchpadEnabled);
         this.gsettings.disconnect(this.signal_trackpointEnabled);
@@ -911,11 +876,8 @@ function onMousePlugged(filemonitor, file, other_file, event_type) {
 function init(metadata) {
     logging('init()');
     Convenience.initTranslations('touchpad-indicator@orangeshirt');
-    // Only for Gnome-Shell 3.5 and higher use own icons
-    if (currentArray[0] == 3 && currentArray[1] > 4) {
-        let theme = imports.gi.Gtk.IconTheme.get_default();
-        theme.append_search_path(metadata.path + '/icons');
-    }
+    let theme = imports.gi.Gtk.IconTheme.get_default();
+    theme.append_search_path(metadata.path + '/icons');
 };
 
 function enable() {
