@@ -543,7 +543,7 @@ var touchpadIndicatorButton = GObject.registerClass(
 
     _is_device_enabled() {
         logging('touchpadIndicatorButton._is_device_enabled()');
-        hits = 0;
+        let hits = 0;
         if (METHOD.GCONF == this._CONF_switchMethod ||
             METHOD.SYNCLIENT == this._CONF_switchMethod) {
             if (this._CONF_touchpadEnabled) {
