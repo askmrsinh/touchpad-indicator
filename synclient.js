@@ -107,8 +107,11 @@ Synclient.prototype = {
                 if (this.synclient_status == this.touchpad_off) {
                     this._wait();
                 } else {
-                    var parts = this.touchpad_off.split("= ");
-                    var state = !to_boolean(parts[1]);
+                    let parts = this.touchpad_off.split("= ");
+                    let state = true;
+                    if (parts[1] === '1') {
+                        state = false;
+                    }
                     logging('Synclient._watch: Touchpad state changed to '
                         + state.toString());
                     this.gsettings.set_boolean('touchpad-enabled', state);
