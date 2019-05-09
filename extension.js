@@ -19,6 +19,10 @@ var touchpadIndicatorButton = GObject.registerClass(
             hbox.add_child(icon);
             hbox.add_child(PopupMenu.arrowIcon(St.Side.BOTTOM));
             this.add_child(hbox);
+            
+            this.menu.addSettingsAction('Mouse & Touchpad Preferences',
+                'gnome-mouse-panel.desktop');
+
             this.actor.show();
         }
     }
@@ -28,7 +32,7 @@ function init() {
 }
 
 function enable() {
-    _indicator = new touchpadIndicatorButton;
+    let _indicator = new touchpadIndicatorButton;
     Main.panel.addToStatusArea('touchpad-indicator', _indicator);
 }
 
