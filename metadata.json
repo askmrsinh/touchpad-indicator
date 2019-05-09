@@ -1,0 +1,8 @@
+{
+    "name": "Touchpad Indicator",
+    "description": "WIP GNOME Shell 3.32 support",
+    "uuid": "touchpad-indicator@orangeshirt",
+    "shell-version": [
+        "3.32.0"
+    ]
+}
