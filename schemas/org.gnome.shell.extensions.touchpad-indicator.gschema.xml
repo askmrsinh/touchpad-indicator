@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="touchpad-indicator@orangeshirt">
+    <enum id='org.gnome.shell.extensions.touchpad-indicator.switchmethod'>
+        <value value="0" nick="gconf"/>
+        <value value="1" nick="synclient"/>
+        <value value="2" nick="xinput"/>
+    </enum>
+    <schema path="/org/gnome/shell/extensions/touchpad-indicator/" id="org.gnome.shell.extensions.touchpad-indicator">
+        <key type="b" name="show-panelicon">
+            <default>true</default>
+            <summary>Show Icon in Main Panel</summary>
+            <description>Show or hide the icon in the panel</description>
+        </key>
+    </schema>
+</schemalist>
