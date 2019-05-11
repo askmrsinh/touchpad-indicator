@@ -1,0 +1,30 @@
+{
+    "rules": {
+        "camelcase": [
+            "error",
+            {
+                "properties": "never",
+                "allow": ["^vfunc_"]
+            }
+        ],
+        "no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "_$"
+            }
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "prefer-arrow-callback": "error"
+    },
+    "globals": {
+        "global": false,
+        "_": false,
+        "C_": false,
+        "N_": false,
+        "ngettext": false
+    }
+}

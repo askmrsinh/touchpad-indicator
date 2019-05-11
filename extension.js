@@ -118,16 +118,19 @@ var TouchpadIndicator = GObject.registerClass(
     }
 );
 
+// eslint-disable-next-line no-unused-vars
 function init() {
 }
 
 let _indicator;
 
+// eslint-disable-next-line no-unused-vars
 function enable() {
     _indicator = new TouchpadIndicator;
     Main.panel.addToStatusArea('touchpad-indicator', _indicator);
 }
 
+// eslint-disable-next-line no-unused-vars
 function disable() {
     _indicator.destroy();
 }

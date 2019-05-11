@@ -1,0 +1,16 @@
+{
+    "rules": {
+        "indent": [
+            "error",
+            4,
+            {
+                "ignoredNodes": [
+                    "CallExpression > ArrowFunctionExpression",
+                    "CallExpression[callee.object.name=GObject][callee.property.name=registerClass] > ClassExpression:first-child"
+                ],
+                "CallExpression": { "arguments": "first" },
+                "MemberExpression": "off"
+            }
+        ]
+   }
+}
