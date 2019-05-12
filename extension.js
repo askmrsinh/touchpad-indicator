@@ -4,6 +4,7 @@ const Mainloop = imports.mainloop;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+const MessageTray = imports.ui.messageTray;
 const ExtensionUtils = imports.misc.extensionUtils;
 
 const SCHEMA_EXTENSION = 'org.gnome.shell.extensions.touchpad-indicator';
@@ -44,6 +45,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             'gnome-mouse-panel.desktop');
 
         this.actor.show();
+        this._notify('input-touchpad-symbolic', 'Touchpad Indicator',
+            'Touchpad Indicator _init() done.');
     }
 
     _buildItemExtended(string, initialValue, writable, onSet) {
@@ -113,6 +116,35 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             return true;
         default:
             global.log(`Sorry, we are out of ${keyValue.constructor}.`);
+        }
+    }
+
+    _notify(iconName, title, text) {
+        if (this._notification)
+            this._notification.destroy();
+
+        this._ensureSource();
+
+        let gicon = new Gio.ThemedIcon({ name: iconName });
+        this._notification = new MessageTray.Notification(this._source, title,
+            text, { gicon: gicon });
+        this._notification.setUrgency(MessageTray.Urgency.LOW);
+        this._notification.setTransient(true);
+        this._notification.connect('destroy', () => {
+            this._notification = null;
+        });
+        this._source.notify(this._notification);
+    }
+
+    _ensureSource() {
+        if (!this._source) {
+            this._source = new MessageTray.Source('Touchpad Indicator',
+                'touchpad-indicator');
+
+            this._source.connect('destroy', () => {
+                this._source = null;
+            });
+            Main.messageTray.add(this._source);
         }
     }
 });
