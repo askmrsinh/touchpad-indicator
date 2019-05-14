@@ -1,3 +1,29 @@
+/* TouchpadIndicator - Touchpad management GNOME Shell Extension.
+ * Orignal work Copyright (C) 2011-2013 Armin Köhler <orangeshirt at web.de>
+ * Modifcations Copyright (C) 2019 Ashesh Singh <user501254 at gmail.com>
+ *
+ * This file is part of TouchpadIndicator, a fork of Armin Köhler's
+ * 'gnome-shell-extension-touchpad-indicator' project which is licensed GPLv2.
+ * Orignal source code is available at https://git.io/fjVec.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to:
+ * The Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor
+ * Boston, MA 02110-1301, USA.
+ */
+
+
 const { Gio, GLib, GObject, St } = imports.gi;
 const Mainloop = imports.mainloop;
 
@@ -6,6 +32,9 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const MessageTray = imports.ui.messageTray;
 const ExtensionUtils = imports.misc.extensionUtils;
+
+const Me = ExtensionUtils.getCurrentExtension();
+const Lib = Me.imports.lib;
 
 const SCHEMA_EXTENSION = 'org.gnome.shell.extensions.touchpad-indicator';
 const SCHEMA_TOUCHPAD = 'org.gnome.desktop.peripherals.touchpad';
@@ -43,6 +72,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         this.menu.addSettingsAction('Mouse & Touchpad Preferences',
             'gnome-mouse-panel.desktop');
+        this.menu.addAction('Indicator Preferences', () => {
+            Lib.executeCmdAsync(`gnome-shell-extension-prefs ${Me.uuid}`);
+        });
 
         this.actor.show();
         this._notify('input-touchpad-symbolic', 'Touchpad Indicator',
