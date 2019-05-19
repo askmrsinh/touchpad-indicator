@@ -40,6 +40,7 @@ const SCHEMA_EXTENSION = 'org.gnome.shell.extensions.touchpad-indicator';
 const SCHEMA_TOUCHPAD = 'org.gnome.desktop.peripherals.touchpad';
 
 const KEY_ALWAYS_SHOW = 'show-panelicon';
+const TPD_SEND_EVENTS = 'send-events';
 
 var TouchpadIndicator = GObject.registerClass(
 class TouchpadIndicatorButton extends PanelMenu.Button {
@@ -57,15 +58,19 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.add_child(hbox);
 
         this._extSettings = ExtensionUtils.getSettings(SCHEMA_EXTENSION);
-        this._extSettings.connect(`changed::${KEY_ALWAYS_SHOW}`,
+        this._keyAlwaysShowSignal = this._extSettings.connect(
+            `changed::${KEY_ALWAYS_SHOW}`,
             this._queueSyncMenuVisibility.bind(this));
 
-        this._tpdSettings = new Gio.Settings({
-            schema_id: SCHEMA_TOUCHPAD
-        });
+        this._tpdSettings = new Gio.Settings({ schema_id: SCHEMA_TOUCHPAD });
+        this._tpdSendEventsSignal = this._tpdSettings.connect(
+            `changed::${TPD_SEND_EVENTS}`,
+            this._queueSyncTouchpadEnable.bind(this));
 
-        let touchpad = this._buildItem('Touchpad', SCHEMA_TOUCHPAD,
-            'send-events');
+        this._queueSyncTouchpadEnable('touchpad-enabled');
+
+        let touchpad = this._buildItem('Touchpad', this._extSettings,
+            'touchpad-enabled');
         this.menu.addMenuItem(touchpad);
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -93,19 +98,18 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         return widget;
     }
 
-    _buildItem(string, schema, key) {
-        let settings = new Gio.Settings({ schema_id: schema });
+    _buildItem(string, settings, key) {
         settings.connect(`changed::${key}`, () => {
-            widget.setToggleState(this._isEnabled(settings.get_value(key)));
+            widget.setToggleState(settings.get_boolean(key));
+            this._queueSyncTouchpadEnable(key);
             this._queueSyncMenuVisibility();
         });
 
         let widget = this._buildItemExtended(string,
-            this._isEnabled(settings.get_value(key)),
+            settings.get_boolean(key),
             settings.is_writable(key),
             (enabled) => {
-                let value = this._isEnabled(enabled);
-                settings.set_value(key, value);
+                settings.set_boolean(key, enabled);
             });
         return widget;
     }
@@ -137,13 +141,14 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             return (keyValue ?
                 new GLib.Variant('s', 'enabled') :
                 new GLib.Variant('s', 'disabled'));
+        case String:
+            return (keyValue !== 'enabled' ? false : true);
         case GLib.Variant:
             if (keyValue.is_of_type(new GLib.VariantType('s'))) {
-                return (keyValue.get_string()[0] !== 'enabled' ?
-                    false : true);
+                return (keyValue.get_string()[0] !== 'enabled' ? false : true);
             }
             if (keyValue.is_of_type(new GLib.VariantType('b'))) {
-                return keyValue.get_boolean();
+                return (keyValue.get_boolean());
             }
             return true;
         default:
@@ -179,6 +184,32 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             Main.messageTray.add(this._source);
         }
     }
+
+    _queueSyncTouchpadEnable(key) {
+        switch (key) {
+        // Touchpad enabled/disabled through SCHEMA_EXTENSION
+        case 'touchpad-enabled':
+            if (this._extSettings.get_boolean('touchpad-enabled')) {
+                this._tpdSettings.set_string(TPD_SEND_EVENTS, 'enabled');
+            } else {
+                this._tpdSettings.set_string(TPD_SEND_EVENTS, 'disabled');
+            }
+            break;
+        // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
+        default:
+            if (this._tpdSettings.get_string(TPD_SEND_EVENTS) !== 'enabled') {
+                this._extSettings.set_boolean('touchpad-enabled', false);
+            } else {
+                this._extSettings.set_boolean('touchpad-enabled', true);
+            }
+        }
+
+    }
+
+    _disconnectSignals() {
+        this._extSettings.disconnect(this._keyAlwaysShowSignal);
+        this._tpdSettings.disconnect(this._tpdSendEventsSignal);
+    }
 });
 
 // eslint-disable-next-line no-unused-vars
@@ -195,5 +226,6 @@ function enable() {
 
 // eslint-disable-next-line no-unused-vars
 function disable() {
+    _indicator._disconnectSignals();
     _indicator.destroy();
 }

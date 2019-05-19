@@ -11,5 +11,8 @@
             <summary>Show Icon in Main Panel</summary>
             <description>Show or hide the icon in the panel</description>
         </key>
+        <key type="b" name="touchpad-enabled">
+            <default>true</default>
+        </key>
     </schema>
 </schemalist>
