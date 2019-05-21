@@ -24,7 +24,7 @@
  */
 
 
-const { Gio, GLib, GObject, St } = imports.gi;
+const { Gio, GLib, GObject, Meta, Shell, St } = imports.gi;
 const Mainloop = imports.mainloop;
 
 const Main = imports.ui.main;
@@ -82,8 +82,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         });
 
         this.actor.show();
-        this._notify('input-touchpad-symbolic', 'Touchpad Indicator',
-            'Touchpad Indicator _init() done.');
+        //this._notify('input-touchpad-symbolic', 'Touchpad Indicator',
+        //    'Touchpad Indicator _init() done.');
+        this._addKeybinding();
     }
 
     _buildItemExtended(string, initialValue, writable, onSet) {
@@ -206,6 +207,23 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
     }
 
+    _toggleTouchpad() {
+        this._extSettings.set_boolean(
+            'touchpad-enabled',
+            !this._extSettings.get_boolean('touchpad-enabled'));
+    }
+
+    _addKeybinding() {
+        this._removeKeybinding();
+        Main.wm.addKeybinding('shortcut', this._extSettings,
+            Meta.KeyBindingFlags.NONE,
+            Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
+            this._toggleTouchpad.bind(this));
+    }
+
+    _removeKeybinding() {
+        Main.wm.removeKeybinding('shortcut');
+    }
     _disconnectSignals() {
         this._extSettings.disconnect(this._keyAlwaysShowSignal);
         this._tpdSettings.disconnect(this._tpdSendEventsSignal);
@@ -227,5 +245,6 @@ function enable() {
 // eslint-disable-next-line no-unused-vars
 function disable() {
     _indicator._disconnectSignals();
+    _indicator._removeKeybinding();
     _indicator.destroy();
 }

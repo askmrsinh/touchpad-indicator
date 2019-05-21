@@ -14,5 +14,8 @@
         <key type="b" name="touchpad-enabled">
             <default>true</default>
         </key>
+        <key type="as" name="shortcut">
+            <default><![CDATA[['<Ctrl><Super><Alt>t']]]></default>
+        </key>
     </schema>
 </schemalist>
