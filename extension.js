@@ -36,14 +36,17 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.lib;
 
+//schema
 const SCHEMA_EXTENSION = 'org.gnome.shell.extensions.touchpad-indicator';
 const SCHEMA_TOUCHPAD = 'org.gnome.desktop.peripherals.touchpad';
 
+//keys
+const KEY_ALWAYS_SHOW = 'show-panelicon';
+const KEY_SEND_EVENTS = 'send-events';
+
+//icons
 const ICON_ENABLED = 'input-touchpad-symbolic';
 const ICON_DISABLED = 'touchpad-disabled-symbolic';
-
-const KEY_ALWAYS_SHOW = 'show-panelicon';
-const TPD_SEND_EVENTS = 'send-events';
 
 var TouchpadIndicator = GObject.registerClass(
 class TouchpadIndicatorButton extends PanelMenu.Button {
@@ -67,7 +70,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         this._tpdSettings = new Gio.Settings({ schema_id: SCHEMA_TOUCHPAD });
         this._tpdSendEventsSignal = this._tpdSettings.connect(
-            `changed::${TPD_SEND_EVENTS}`,
+            `changed::${KEY_SEND_EVENTS}`,
             this._queueSyncTouchpadEnable.bind(this));
 
         this._queueSyncTouchpadEnable('touchpad-enabled');
@@ -194,16 +197,16 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // Touchpad enabled/disabled through SCHEMA_EXTENSION
         case 'touchpad-enabled':
             if (this._extSettings.get_boolean('touchpad-enabled')) {
-                this._tpdSettings.set_string(TPD_SEND_EVENTS, 'enabled');
+                this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
                 this.icon.icon_name = ICON_ENABLED;
             } else {
-                this._tpdSettings.set_string(TPD_SEND_EVENTS, 'disabled');
+                this._tpdSettings.set_string(KEY_SEND_EVENTS, 'disabled');
                 this.icon.icon_name = ICON_DISABLED;
             }
             break;
         // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
         default:
-            if (this._tpdSettings.get_string(TPD_SEND_EVENTS) !== 'enabled') {
+            if (this._tpdSettings.get_string(KEY_SEND_EVENTS) !== 'enabled') {
                 this._extSettings.set_boolean('touchpad-enabled', false);
                 this.icon.icon_name = ICON_DISABLED;
             } else {
