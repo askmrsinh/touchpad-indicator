@@ -39,6 +39,9 @@ const Lib = Me.imports.lib;
 const SCHEMA_EXTENSION = 'org.gnome.shell.extensions.touchpad-indicator';
 const SCHEMA_TOUCHPAD = 'org.gnome.desktop.peripherals.touchpad';
 
+const ICON_ENABLED = 'input-touchpad-symbolic';
+const ICON_DISABLED = 'touchpad-disabled-symbolic';
+
 const KEY_ALWAYS_SHOW = 'show-panelicon';
 const TPD_SEND_EVENTS = 'send-events';
 
@@ -46,16 +49,16 @@ var TouchpadIndicator = GObject.registerClass(
 class TouchpadIndicatorButton extends PanelMenu.Button {
     _init() {
         super._init(0.0, 'Touchpad Indicator');
-        let hbox = new St.BoxLayout({
+        this.hbox = new St.BoxLayout({
             style_class: 'panel-status-menu-box'
         });
-        let icon = new St.Icon({
-            icon_name: 'input-touchpad-symbolic',
+        this.icon = new St.Icon({
+            icon_name: ICON_ENABLED,
             style_class: 'system-status-icon'
         });
-        hbox.add_child(icon);
-        hbox.add_child(PopupMenu.arrowIcon(St.Side.BOTTOM));
-        this.add_child(hbox);
+        this.hbox.add_child(this.icon);
+        this.hbox.add_child(PopupMenu.arrowIcon(St.Side.BOTTOM));
+        this.add_child(this.hbox);
 
         this._extSettings = ExtensionUtils.getSettings(SCHEMA_EXTENSION);
         this._keyAlwaysShowSignal = this._extSettings.connect(
@@ -192,16 +195,20 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         case 'touchpad-enabled':
             if (this._extSettings.get_boolean('touchpad-enabled')) {
                 this._tpdSettings.set_string(TPD_SEND_EVENTS, 'enabled');
+                this.icon.icon_name = ICON_ENABLED;
             } else {
                 this._tpdSettings.set_string(TPD_SEND_EVENTS, 'disabled');
+                this.icon.icon_name = ICON_DISABLED;
             }
             break;
         // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
         default:
             if (this._tpdSettings.get_string(TPD_SEND_EVENTS) !== 'enabled') {
                 this._extSettings.set_boolean('touchpad-enabled', false);
+                this.icon.icon_name = ICON_DISABLED;
             } else {
                 this._extSettings.set_boolean('touchpad-enabled', true);
+                this.icon.icon_name = ICON_ENABLED;
             }
         }
 
