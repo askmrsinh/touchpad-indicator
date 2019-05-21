@@ -207,22 +207,21 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
     }
 
-    _toggleTouchpad() {
+    _toggleTouchpadEnable() {
         this._extSettings.set_boolean(
             'touchpad-enabled',
             !this._extSettings.get_boolean('touchpad-enabled'));
     }
 
     _addKeybinding() {
-        this._removeKeybinding();
-        Main.wm.addKeybinding('shortcut', this._extSettings,
+        Main.wm.addKeybinding('toggle-touchpad', this._extSettings,
             Meta.KeyBindingFlags.NONE,
-            Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
-            this._toggleTouchpad.bind(this));
+            Shell.ActionMode.ALL,
+            this._toggleTouchpadEnable.bind(this));
     }
 
     _removeKeybinding() {
-        Main.wm.removeKeybinding('shortcut');
+        Main.wm.removeKeybinding('toggle-touchpad');
     }
     _disconnectSignals() {
         this._extSettings.disconnect(this._keyAlwaysShowSignal);
