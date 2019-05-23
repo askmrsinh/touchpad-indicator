@@ -89,8 +89,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         });
 
         this.actor.show();
-        //this._notify('input-touchpad-symbolic', 'Touchpad Indicator',
-        //    'Touchpad Indicator _init() done.');
+
         this._addKeybinding();
     }
 
@@ -111,6 +110,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             widget.setToggleState(settings.get_boolean(key));
             this._queueSyncTouchpadEnable(key);
             this._queueSyncMenuVisibility();
+            this._makeNotification();
         });
 
         let widget = this._buildItemExtended(string,
