@@ -42,6 +42,7 @@ const SCHEMA_TOUCHPAD = 'org.gnome.desktop.peripherals.touchpad';
 
 //keys
 const KEY_ALWAYS_SHOW = 'show-panelicon';
+const KEY_TPD_ENABLED = 'touchpad-enabled';
 const KEY_SEND_EVENTS = 'send-events';
 
 //icons
@@ -73,10 +74,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             `changed::${KEY_SEND_EVENTS}`,
             this._queueSyncTouchpadEnable.bind(this));
 
-        this._queueSyncTouchpadEnable('touchpad-enabled');
+        this._queueSyncTouchpadEnable(KEY_TPD_ENABLED);
 
         let touchpad = this._buildItem('Touchpad', this._extSettings,
-            'touchpad-enabled');
+            KEY_TPD_ENABLED);
         this.menu.addMenuItem(touchpad);
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -116,7 +117,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             settings.get_boolean(key),
             settings.is_writable(key),
             (enabled) => {
-                settings.set_boolean(key, enabled);
+                if (settings.get_boolean(key) !== enabled)
+                    settings.set_boolean(key, enabled);
             });
         return widget;
     }
@@ -193,34 +195,51 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _queueSyncTouchpadEnable(key) {
+        // TODO: Check further for recursion, reduce complexity
+        let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
+        let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
         switch (key) {
         // Touchpad enabled/disabled through SCHEMA_EXTENSION
-        case 'touchpad-enabled':
-            if (this._extSettings.get_boolean('touchpad-enabled')) {
+        case KEY_TPD_ENABLED:
+            if ((valTpdEnabled === true) && (valSendEvents !== 'enabled')) {
                 this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
                 this.icon.icon_name = ICON_ENABLED;
-            } else {
+            }
+            if ((valTpdEnabled === false) && (valSendEvents !== 'disabled')) {
                 this._tpdSettings.set_string(KEY_SEND_EVENTS, 'disabled');
                 this.icon.icon_name = ICON_DISABLED;
             }
             break;
         // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
         default:
-            if (this._tpdSettings.get_string(KEY_SEND_EVENTS) !== 'enabled') {
-                this._extSettings.set_boolean('touchpad-enabled', false);
+            if ((valSendEvents !== 'enabled') && (valTpdEnabled !== false)) {
+                this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
                 this.icon.icon_name = ICON_DISABLED;
-            } else {
-                this._extSettings.set_boolean('touchpad-enabled', true);
+            }
+            if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
+                this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
                 this.icon.icon_name = ICON_ENABLED;
             }
         }
+    }
 
+    _makeNotification() {
+        let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
+        let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
+
+        if (valSendEvents !== 'disabled' && valTpdEnabled) {
+            this._notify('dialog-information', `Touchpad Indicator ${Me.uuid}`,
+                'Touchpad Enabled');
+        } else {
+            this._notify('dialog-information', `Touchpad Indicator ${Me.uuid}`,
+                'Touchpad Disabled');
+        }
     }
 
     _toggleTouchpadEnable() {
         this._extSettings.set_boolean(
-            'touchpad-enabled',
-            !this._extSettings.get_boolean('touchpad-enabled'));
+            KEY_TPD_ENABLED,
+            !this._extSettings.get_boolean(KEY_TPD_ENABLED));
     }
 
     _addKeybinding() {
