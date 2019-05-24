@@ -75,6 +75,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._queueSyncTouchpadEnable.bind(this));
 
         this._queueSyncTouchpadEnable(KEY_TPD_ENABLED);
+        this._updateIcon();
 
         let touchpad = this._buildItem('Touchpad', this._extSettings,
             KEY_TPD_ENABLED);
@@ -111,6 +112,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._queueSyncTouchpadEnable(key);
             this._queueSyncMenuVisibility();
             this._makeNotification();
+            this._updateIcon();
         });
 
         let widget = this._buildItemExtended(string,
@@ -203,22 +205,18 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         case KEY_TPD_ENABLED:
             if ((valTpdEnabled === true) && (valSendEvents !== 'enabled')) {
                 this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
-                this.icon.icon_name = ICON_ENABLED;
             }
             if ((valTpdEnabled === false) && (valSendEvents !== 'disabled')) {
                 this._tpdSettings.set_string(KEY_SEND_EVENTS, 'disabled');
-                this.icon.icon_name = ICON_DISABLED;
             }
             break;
         // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
         default:
             if ((valSendEvents !== 'enabled') && (valTpdEnabled !== false)) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
-                this.icon.icon_name = ICON_DISABLED;
             }
             if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
-                this.icon.icon_name = ICON_ENABLED;
             }
         }
     }
@@ -252,6 +250,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _removeKeybinding() {
         Main.wm.removeKeybinding('toggle-touchpad');
     }
+
+    _updateIcon() {
+        let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
+        this.icon.icon_name = valTpdEnabled ? ICON_ENABLED : ICON_DISABLED;
+    }
+
     _disconnectSignals() {
         this._extSettings.disconnect(this._keyAlwaysShowSignal);
         this._tpdSettings.disconnect(this._tpdSendEventsSignal);
