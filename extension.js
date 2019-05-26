@@ -91,7 +91,22 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         this.actor.show();
 
+        this._tpdSettings.connect(
+            `changed::${KEY_SEND_EVENTS}`,
+            this._logSKeyChange.bind(this));
+        this._extSettings.connect(
+            `changed::${KEY_TPD_ENABLED}`,
+            this._logEKeyChange.bind(this));
+
         this._addKeybinding();
+    }
+
+    _logSKeyChange() {
+        global.log(Me.uuid, 'Extension Key Changed');
+    }
+
+    _logEKeyChange() {
+        global.log(Me.uuid, 'System Key Changed');
     }
 
     _buildItemExtended(string, initialValue, writable, onSet) {
