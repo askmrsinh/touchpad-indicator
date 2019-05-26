@@ -41,9 +41,10 @@ const SCHEMA_EXTENSION = 'org.gnome.shell.extensions.touchpad-indicator';
 const SCHEMA_TOUCHPAD = 'org.gnome.desktop.peripherals.touchpad';
 
 //keys
-const KEY_ALWAYS_SHOW = 'show-panelicon';
-const KEY_TPD_ENABLED = 'touchpad-enabled';
 const KEY_SEND_EVENTS = 'send-events';
+const KEY_ALWAYS_SHOW = 'show-panelicon';
+const KEY_NOTIFS_SHOW = 'show-notifications';
+const KEY_TPD_ENABLED = 'touchpad-enabled';
 
 //icons
 const ICON_ENABLED = 'input-touchpad-symbolic';
@@ -72,13 +73,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._tpdSettings = new Gio.Settings({ schema_id: SCHEMA_TOUCHPAD });
         this._tpdSendEventsSignal = this._tpdSettings.connect(
             `changed::${KEY_SEND_EVENTS}`,
-            this._queueSyncTouchpadEnable.bind(this));
+            this._queueSyncPointingDevice.bind(this));
 
-        this._queueSyncTouchpadEnable(KEY_TPD_ENABLED);
+        this._queueSyncPointingDevice(KEY_TPD_ENABLED);
         this._updateIcon();
 
-        let touchpad = this._buildItem('Touchpad', this._extSettings,
-            KEY_TPD_ENABLED);
+        let touchpad = this._buildItem('Touchpad', KEY_TPD_ENABLED);
         this.menu.addMenuItem(touchpad);
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -106,21 +106,21 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         return widget;
     }
 
-    _buildItem(string, settings, key) {
-        settings.connect(`changed::${key}`, () => {
-            widget.setToggleState(settings.get_boolean(key));
-            this._queueSyncTouchpadEnable(key);
+    _buildItem(string, key) {
+        this._extSettings.connect(`changed::${key}`, () => {
+            widget.setToggleState(this._extSettings.get_boolean(key));
+            this._queueSyncPointingDevice(key);
             this._queueSyncMenuVisibility();
             this._makeNotification();
             this._updateIcon();
         });
 
         let widget = this._buildItemExtended(string,
-            settings.get_boolean(key),
-            settings.is_writable(key),
+            this._extSettings.get_boolean(key),
+            this._extSettings.is_writable(key),
             (enabled) => {
-                if (settings.get_boolean(key) !== enabled)
-                    settings.set_boolean(key, enabled);
+                if (this._extSettings.get_boolean(key) !== enabled)
+                    this._extSettings.set_boolean(key, enabled);
             });
         return widget;
     }
@@ -196,41 +196,55 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
     }
 
-    _queueSyncTouchpadEnable(key) {
+    _queueSyncPointingDevice(key) {
         // TODO: Check further for recursion, reduce complexity
         let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
         let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
         switch (key) {
         // Touchpad enabled/disabled through SCHEMA_EXTENSION
         case KEY_TPD_ENABLED:
-            if ((valTpdEnabled === true) && (valSendEvents !== 'enabled')) {
-                this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
-            }
-            if ((valTpdEnabled === false) && (valSendEvents !== 'disabled')) {
-                this._tpdSettings.set_string(KEY_SEND_EVENTS, 'disabled');
-            }
+            this._setTouchpadEnable(valTpdEnabled, valSendEvents);
             break;
         // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
         default:
-            if ((valSendEvents !== 'enabled') && (valTpdEnabled !== false)) {
-                this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
-            }
-            if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
-                this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
-            }
+            this._setSendEvents(valTpdEnabled, valSendEvents);
+        }
+    }
+
+    _setTouchpadEnable(valTpdEnabled, valSendEvents) {
+        if ((valTpdEnabled === true) && (valSendEvents !== 'enabled')) {
+            this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
+            return;
+        }
+        if ((valTpdEnabled === false) && (valSendEvents !== 'disabled')) {
+            this._tpdSettings.set_string(KEY_SEND_EVENTS, 'disabled');
+        }
+    }
+
+    _setSendEvents(valTpdEnabled, valSendEvents) {
+        if ((valSendEvents !== 'enabled') && (valTpdEnabled !== false)) {
+            this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
+            return;
+        }
+        if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
+            this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
         }
     }
 
     _makeNotification() {
-        let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
-        let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
+        if (this._extSettings.get_boolean(KEY_NOTIFS_SHOW)) {
+            let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
+            let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
 
-        if (valSendEvents !== 'disabled' && valTpdEnabled) {
-            this._notify('dialog-information', `Touchpad Indicator ${Me.uuid}`,
-                'Touchpad Enabled');
-        } else {
-            this._notify('dialog-information', `Touchpad Indicator ${Me.uuid}`,
-                'Touchpad Disabled');
+            if (valSendEvents !== 'disabled' && valTpdEnabled) {
+                this._notify('dialog-information',
+                    `Touchpad Indicator ${Me.uuid}`,
+                    'Touchpad Enabled');
+            } else {
+                this._notify('dialog-information',
+                    `Touchpad Indicator ${Me.uuid}`,
+                    'Touchpad Disabled');
+            }
         }
     }
 
