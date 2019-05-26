@@ -8,12 +8,27 @@
     <schema path="/org/gnome/shell/extensions/touchpad-indicator/" id="org.gnome.shell.extensions.touchpad-indicator">
         <key type="b" name="show-panelicon">
             <default>true</default>
-            <summary>Show Icon in Main Panel</summary>
-            <description>Show or hide the icon in the panel</description>
         </key>
+        <key type="b" name="show-notifications">
+            <default>true</default>
+        </key>
+        <!--  -->
         <key type="b" name="touchpad-enabled">
             <default>true</default>
         </key>
+        <key type="b" name="trackpoint-enabled">
+            <default>true</default>
+        </key>
+        <key type="b" name="touchscreen-enabled">
+            <default>true</default>
+        </key>
+        <key type="b" name="fingertouch-enabled">
+            <default>true</default>
+        </key>
+        <key type="b" name="pen-enabled">
+            <default>true</default>
+        </key>
+        <!--  -->
         <key type="as" name="toggle-touchpad">
             <default><![CDATA[['<Ctrl><Super><Alt>t']]]></default>
         </key>
