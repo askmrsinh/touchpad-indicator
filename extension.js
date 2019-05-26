@@ -78,6 +78,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._queueSyncPointingDevice(KEY_TPD_ENABLED);
         this._updateIcon();
 
+        this._enabledSignals = [];
+
         let touchpad = this._buildItem('Touchpad', KEY_TPD_ENABLED);
         this.menu.addMenuItem(touchpad);
 
@@ -122,13 +124,15 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _buildItem(string, key) {
-        this._extSettings.connect(`changed::${key}`, () => {
+        let signal = this._extSettings.connect(`changed::${key}`, () => {
             widget.setToggleState(this._extSettings.get_boolean(key));
             this._queueSyncPointingDevice(key);
             this._queueSyncMenuVisibility();
             this._makeNotification();
             this._updateIcon();
         });
+
+        this._enabledSignals.push(signal);
 
         let widget = this._buildItemExtended(string,
             this._extSettings.get_boolean(key),
@@ -212,6 +216,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _queueSyncPointingDevice(key) {
+        global.log(Me.uuid, '_queueSyncPointingDevice');
         // TODO: Check further for recursion, reduce complexity
         let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
         let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
@@ -227,6 +232,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _setTouchpadEnable(valTpdEnabled, valSendEvents) {
+        global.log(Me.uuid, '_setTouchpadEnable');
         if ((valTpdEnabled === true) && (valSendEvents !== 'enabled')) {
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
             return;
@@ -237,6 +243,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _setSendEvents(valTpdEnabled, valSendEvents) {
+        global.log(Me.uuid, '_setSendEvents');
         if ((valSendEvents !== 'enabled') && (valTpdEnabled !== false)) {
             this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
             return;
@@ -286,6 +293,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _disconnectSignals() {
+        for (let i = 0; i < this._enabledSignals.length; i++) {
+            this._extSettings.disconnect(this._enabledSignals[i]);
+        }
         this._extSettings.disconnect(this._keyAlwaysShowSignal);
         this._tpdSettings.disconnect(this._tpdSendEventsSignal);
     }
