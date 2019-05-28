@@ -6,6 +6,10 @@
         <value value="2" nick="xinput"/>
     </enum>
     <schema path="/org/gnome/shell/extensions/touchpad-indicator/" id="org.gnome.shell.extensions.touchpad-indicator">
+        <key name="switchmethod" enum="org.gnome.shell.extensions.touchpad-indicator.switchmethod">
+            <default>'xinput'</default>
+        </key>
+        <!--  -->
         <key type="b" name="show-panelicon">
             <default>true</default>
         </key>
@@ -27,6 +31,13 @@
         </key>
         <key type="b" name="pen-enabled">
             <default>true</default>
+        </key>
+        <!--  -->
+        <key type="b" name="autoswitch-touchpad">
+            <default>false</default>
+        </key>
+        <key type="b" name="autoswitch-trackpoint">
+            <default>false</default>
         </key>
         <!--  -->
         <key type="as" name="toggle-touchpad">

@@ -46,7 +46,7 @@ const TOUCHSCREENS = ['touchscreen', 'maxtouch', 'touch digitizer', 'touch syste
 const FINGERTOUCHES = ['finger touch'];
 const PENS = ['pen stylus', 'pen eraser'];
 const OTHERS = [];
-const ALL_TYPES = {
+var ALL_TYPES = {
     'touchpad': TOUCHPADS,
     'trackpoint': TRACKPOINTS,
     'touchscreen': TOUCHSCREENS,
