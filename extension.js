@@ -66,6 +66,19 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.hbox.add_child(PopupMenu.arrowIcon(St.Side.BOTTOM));
         this.add_child(this.hbox);
 
+        this.xinputIsUsable = Lib.executeCmdSync('xinput --list');
+
+        if (this.xinputIsUsable[0] !== true) {
+            global.log(Me.uuid,
+                'TouchpadIndicator._init(): Can`t find Xinput');
+            this._extSettings.set_boolean('autoswitch-trackpoint', false);
+        } else {
+            global.log(Me.uuid,
+                'TouchpadIndicator._init(): Xinput is installed');
+        }
+
+        this.touchpadXinput = new XInput.XInput(Lib.ALL_TYPES['touchpad']);
+
         this._extSettings = ExtensionUtils.getSettings(SCHEMA_EXTENSION);
         this._keyAlwaysShowSignal = this._extSettings.connect(
             `changed::${KEY_ALWAYS_SHOW}`,
@@ -82,19 +95,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             if (this._tpdSettings.get_string('send-events') !== 'enabled')
                 this._tpdSettings.set_string('send-events', 'enabled');
         }
-
-        this.xinputIsUsable = Lib.executeCmdSync('xinput --list');
-
-        if (this.xinputIsUsable[0] !== true) {
-            global.log(Me.uuid,
-                'TouchpadIndicator._init(): Can`t find Xinput');
-            this._extSettings.set_boolean('autoswitch-trackpoint', false);
-        } else {
-            global.log(Me.uuid,
-                'TouchpadIndicator._init(): Xinput is installed');
-        }
-
-        this.touchpadXinput = new XInput.XInput(Lib.ALL_TYPES['touchpad']);
 
         this._queueSyncPointingDevice(KEY_TPD_ENABLED);
         this._updateIcon();
@@ -159,8 +159,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._extSettings.get_boolean(key),
             this._extSettings.is_writable(key),
             (enabled) => {
-                if (this._extSettings.get_boolean(key) !== enabled)
+                if (this._extSettings.get_boolean(key) !== enabled) {
+                    global.log(Me.uuid, 'enabled', this._extSettings.get_boolean(key));
                     this._extSettings.set_boolean(key, enabled);
+                }
             });
         return widget;
     }
@@ -248,7 +250,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             break;
         // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
         default:
-            this._setSendEvents(valTpdEnabled, valSendEvents);
+            this._onsetSendEvents(valTpdEnabled, valSendEvents);
             if (this._switchMethod === Lib.METHOD.XINPUT) {
                 this._setXinputReset(
                     this._extSettings.get_boolean(KEY_TPD_ENABLED)
@@ -266,11 +268,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         switch (this._switchMethod) {
         case Lib.METHOD.GCONF:
             global.log(Me.uuid, 'Lib.METHOD.GCONF');
-            this._setTouchpadEnable(valTpdEnabled, valSendEvents);
+            this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
             break;
         case Lib.METHOD.XINPUT:
             global.log(Me.uuid, 'Lib.METHOD.XINPUT');
-            this._setTouchpadEnable(valTpdEnabled, valSendEvents);
+            this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
             this.touchpadXinput._switchAllDevices(valTpdEnabled);
             if ((valTpdEnabled === false) && !this.touchpadXinput.isPresent) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
@@ -283,19 +285,21 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         //       Remember to enable all devices when extension is disabled.
     }
 
-    _setSendEvents(valTpdEnabled, valSendEvents) {
-        global.log(Me.uuid, '_setSendEvents');
+    _onsetSendEvents(valTpdEnabled, valSendEvents) {
+        global.log(Me.uuid, '_onsetSendEvents');
         if ((valSendEvents !== 'enabled') && (valTpdEnabled !== false)) {
+            global.log(Me.uuid, '_onsetSendEvents:false');
             this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
             return;
         }
         if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
+            global.log(Me.uuid, '_onsetSendEvents:true');
             this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
         }
     }
 
-    _setTouchpadEnable(valTpdEnabled, valSendEvents) {
-        global.log(Me.uuid, '_setTouchpadEnable');
+    _onsetTouchpadEnable(valTpdEnabled, valSendEvents) {
+        global.log(Me.uuid, '_onsetTouchpadEnable');
         if ((valTpdEnabled === true) && (valSendEvents !== 'enabled')) {
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
             return;
