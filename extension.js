@@ -79,6 +79,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         this.touchpadXinput = new XInput.XInput(Lib.ALL_TYPES['touchpad']);
 
+        if (this._switchMethod !== Lib.METHOD.XINPUT) {
+            this.touchpadXinput._enableAllDevices();
+        }
+
         this._extSettings = ExtensionUtils.getSettings(SCHEMA_EXTENSION);
         this._tpdSettings = new Gio.Settings({ schema_id: SCHEMA_TOUCHPAD });
 
@@ -321,15 +325,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
     }
 
-    _setXinputReset(valTpdEnabled) {
-        global.log(Me.uuid, '_setXinputReset');
-        if (valTpdEnabled) {
-            this.touchpadXinput._enableAllDevices();
-        } else {
-            this.touchpadXinput._disableAllDevices();
-        }
-    }
-
     _makeNotification() {
         if (this._extSettings.get_boolean(KEY_NOTIFS_SHOW)) {
             let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
@@ -376,6 +371,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._extSettings.disconnect(this._keyAlwaysShowSignal);
         this._tpdSettings.disconnect(this._tpdSendEventsSignal);
     }
+
+    // Make sure to enable related config when extension is disabled
+    _resetConfig() {
+        global.log(Me.uuid, '_resetPointingDevices');
+        this.touchpadXinput._enableAllDevices();
+    }
 });
 
 // eslint-disable-next-line no-unused-vars
@@ -394,5 +395,6 @@ function enable() {
 function disable() {
     _indicator._disconnectSignals();
     _indicator._removeKeybinding();
+    _indicator._resetConfig();
     _indicator.destroy();
 }
