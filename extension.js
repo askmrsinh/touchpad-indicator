@@ -46,6 +46,7 @@ const KEY_SEND_EVENTS = 'send-events';
 const KEY_ALWAYS_SHOW = 'show-panelicon';
 const KEY_NOTIFS_SHOW = 'show-notifications';
 const KEY_TPD_ENABLED = 'touchpad-enabled';
+const KEY_SWCH_METHOD = 'switchmethod';
 
 //icons
 const ICON_ENABLED = 'input-touchpad-symbolic';
@@ -79,10 +80,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         this.touchpadXinput = new XInput.XInput(Lib.ALL_TYPES['touchpad']);
 
-        if (this._switchMethod !== Lib.METHOD.XINPUT) {
-            this.touchpadXinput._enableAllDevices();
-        }
-
         this._extSettings = ExtensionUtils.getSettings(SCHEMA_EXTENSION);
         this._tpdSettings = new Gio.Settings({ schema_id: SCHEMA_TOUCHPAD });
 
@@ -93,6 +90,17 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             `changed::${KEY_TPD_ENABLED}`,
             this._logEKeyChange.bind(this));
 
+        this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
+
+        if (this._switchMethod !== Lib.METHOD.XINPUT) {
+            this.touchpadXinput._enableAllDevices();
+        }
+
+        if (this._switchMethod !== Lib.METHOD.GCONF) {
+            if (this._tpdSettings.get_string(KEY_SEND_EVENTS) !== 'enabled')
+                this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
+        }
+
         this._keyAlwaysShowSignal = this._extSettings.connect(
             `changed::${KEY_ALWAYS_SHOW}`,
             this._queueSyncMenuVisibility.bind(this));
@@ -100,12 +108,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             `changed::${KEY_SEND_EVENTS}`,
             this._queueSyncPointingDevice.bind(this));
 
-        this._switchMethod = this._extSettings.get_enum('switchmethod');
-
-        if (this._switchMethod !== Lib.METHOD.GCONF) {
-            if (this._tpdSettings.get_string('send-events') !== 'enabled')
-                this._tpdSettings.set_string('send-events', 'enabled');
-        }
+        this._keySwitchMthdSignal = this._extSettings.connect(
+            `changed::${KEY_SWCH_METHOD}`,
+            this._switchMethodChanged.bind(this));
 
         this._queueSyncPointingDevice(KEY_TPD_ENABLED);
         this._updateIcon();
@@ -242,6 +247,22 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
     }
 
+    _switchMethodChanged() {
+        global.log(Me.uuid, '_switchMethodChanged');
+
+        let oldSwitchMthd = this._switchMethod;
+
+        this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
+        global.log(Me.uuid, '_switchMethodChanged',
+            oldSwitchMthd, this._switchMethod);
+
+        if (this._switchMethod !== Lib.METHOD.XINPUT) {
+            this.touchpadXinput._enableAllDevices();
+        }
+
+        this._queueSyncPointingDevice(KEY_TPD_ENABLED);
+    }
+
     _queueSyncPointingDevice(key) {
         global.log(Me.uuid, '_queueSyncPointingDevice');
         // TODO: Check further for recursion, reduce complexity
@@ -251,6 +272,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         let isInSync = this._checkGconfSync(valTpdEnabled, valSendEvents);
         global.log(Me.uuid, `_queueSyncPointingDevice - isInSync: ${isInSync}`);
 
+        // TODO: Don't return if switch method changed from GCONF to XINPUT
         if (isInSync) {
             return;
         }
@@ -296,8 +318,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             }
             break;
         }
-        // TODO: Avoid setting keys multiple times.
-        //       Remember to enable all devices when extension is disabled.
     }
 
     _onsetSendEvents(valTpdEnabled, valSendEvents) {
@@ -316,10 +336,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _onsetTouchpadEnable(valTpdEnabled, valSendEvents) {
         global.log(Me.uuid, '_onsetTouchpadEnable');
         if ((valTpdEnabled === true) && (valSendEvents !== 'enabled')) {
+            global.log(Me.uuid, '_onsetTouchpadEnable:enabled');
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
             return;
         }
         if ((valTpdEnabled === false) && (valSendEvents !== 'disabled')) {
+            global.log(Me.uuid, '_onsetTouchpadEnable:disabled');
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'disabled');
             return;
         }
@@ -368,6 +390,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         for (let i = 0; i < this._enabledSignals.length; i++) {
             this._extSettings.disconnect(this._enabledSignals[i]);
         }
+        this._tpdSettings.disconnect(this._keySwitchMthdSignal);
         this._extSettings.disconnect(this._keyAlwaysShowSignal);
         this._tpdSettings.disconnect(this._tpdSendEventsSignal);
     }
