@@ -80,11 +80,18 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.touchpadXinput = new XInput.XInput(Lib.ALL_TYPES['touchpad']);
 
         this._extSettings = ExtensionUtils.getSettings(SCHEMA_EXTENSION);
+        this._tpdSettings = new Gio.Settings({ schema_id: SCHEMA_TOUCHPAD });
+
+        this._tpdSettings.connect(
+            `changed::${KEY_SEND_EVENTS}`,
+            this._logSKeyChange.bind(this));
+        this._extSettings.connect(
+            `changed::${KEY_TPD_ENABLED}`,
+            this._logEKeyChange.bind(this));
+
         this._keyAlwaysShowSignal = this._extSettings.connect(
             `changed::${KEY_ALWAYS_SHOW}`,
             this._queueSyncMenuVisibility.bind(this));
-
-        this._tpdSettings = new Gio.Settings({ schema_id: SCHEMA_TOUCHPAD });
         this._tpdSendEventsSignal = this._tpdSettings.connect(
             `changed::${KEY_SEND_EVENTS}`,
             this._queueSyncPointingDevice.bind(this));
@@ -113,13 +120,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         });
 
         this.actor.show();
-
-        this._tpdSettings.connect(
-            `changed::${KEY_SEND_EVENTS}`,
-            this._logSKeyChange.bind(this));
-        this._extSettings.connect(
-            `changed::${KEY_TPD_ENABLED}`,
-            this._logEKeyChange.bind(this));
 
         this._addKeybinding();
     }
