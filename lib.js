@@ -104,7 +104,8 @@ function readLog(filepath) {
 function logger(event, filepath) {
     let timestamp = new Date(new Date().getTime()).toISOString();
     let message = `${timestamp}    ${event}\n`;
-    global.log(LOG_PREFIX + message);
+    //global.log(LOG_PREFIX + message);
+    global.log(Me.uuid, event);
     if (filepath) {
         let messages = readLog(filepath)[1] + message;
         writeLog(filepath, messages);

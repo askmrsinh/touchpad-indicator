@@ -243,22 +243,35 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // TODO: Check further for recursion, reduce complexity
         let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
         let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
+
+        let isInSync = this._checkGconfSync(valTpdEnabled, valSendEvents);
+        global.log(Me.uuid, `_queueSyncPointingDevice - isInSync: ${isInSync}`);
+
+        if (isInSync) {
+            return;
+        }
+
         switch (key) {
         // Touchpad enabled/disabled through SCHEMA_EXTENSION
         case KEY_TPD_ENABLED:
+            global.log(Me.uuid, '_queueSyncPointingDevice: KEY_TPD_ENABLED');
             this._syncTouchpad(valTpdEnabled, valSendEvents);
             break;
         // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
         default:
+            global.log(Me.uuid, '_queueSyncPointingDevice: default');
             this._onsetSendEvents(valTpdEnabled, valSendEvents);
-            if (this._switchMethod === Lib.METHOD.XINPUT) {
-                this._setXinputReset(
-                    this._extSettings.get_boolean(KEY_TPD_ENABLED)
-                );
-                return;
-            }
             // TODO: What if user switches touchpad in system setting
             //       when switchmehod is not GCONF?
+        }
+    }
+    _checkGconfSync(valTpdEnabled, valSendEvents) {
+        global.log(Me.uuid, '_checkGconfSync', valTpdEnabled, valSendEvents);
+        if (((valTpdEnabled === true) && (valSendEvents === 'enabled')) ||
+            ((valTpdEnabled === false) && (valSendEvents === 'disabled'))) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -279,9 +292,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             }
             break;
         }
-        // TODO: Add variable to check settings sync log error in case
-        //       something failes.
-        //       Avoid setting keys multiple times.
+        // TODO: Avoid setting keys multiple times.
         //       Remember to enable all devices when extension is disabled.
     }
 
