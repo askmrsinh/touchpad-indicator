@@ -125,11 +125,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _logSKeyChange() {
-        global.log(Me.uuid, 'Extension Key Changed');
+        global.log(Me.uuid, 'System Key Changed');
     }
 
     _logEKeyChange() {
-        global.log(Me.uuid, 'System Key Changed');
+        global.log(Me.uuid, 'Extension Key Changed');
     }
 
     _buildItemExtended(string, initialValue, writable, onSet) {
