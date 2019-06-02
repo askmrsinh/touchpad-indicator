@@ -90,13 +90,15 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._logSKeyChange.bind(this));
 
         this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
+        this._switchMethodChanged = false;
 
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
             this.touchpadXinput._enableAllDevices();
         }
 
         if (this._switchMethod !== Lib.METHOD.GCONF) {
-            if (this._tpdSettings.get_string(KEY_SEND_EVENTS) !== 'enabled')
+            if (this._tpdSettings.get_string(KEY_SEND_EVENTS) !== 'enabled' &&
+                this._extSettings.get_boolean(KEY_TPD_ENABLED) === true)
                 this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
         }
 
@@ -109,7 +111,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         this._keySwitchMthdSignal = this._extSettings.connect(
             `changed::${KEY_SWCH_METHOD}`,
-            this._switchMethodChanged.bind(this));
+            this._syncSwitchMethod.bind(this));
 
         this._queueSyncPointingDevice(KEY_TPD_ENABLED);
         this._updateIcon();
@@ -225,14 +227,15 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
     }
 
-    _switchMethodChanged() {
+    _syncSwitchMethod() {
         global.log(Me.uuid, '_switchMethodChanged');
 
-        let oldSwitchMthd = this._switchMethod;
+        let oldSwitchMethod = this._switchMethod;
 
         this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
+        this._switchMethodChanged = true;
         global.log(Me.uuid, '_switchMethodChanged',
-            oldSwitchMthd, this._switchMethod);
+            oldSwitchMethod, this._switchMethod);
 
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
             this.touchpadXinput._enableAllDevices();
@@ -241,35 +244,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._queueSyncPointingDevice(KEY_TPD_ENABLED);
     }
 
-    _queueSyncPointingDevice(key) {
-        global.log(Me.uuid, '_queueSyncPointingDevice');
-
-        // TODO: Check further for recursion, reduce complexity
-        let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
-        let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
-
-        let isInSync = this._checkGconfSync(valTpdEnabled, valSendEvents);
-        global.log(Me.uuid, `_queueSyncPointingDevice - isInSync: ${isInSync}`);
-
-        // TODO: Don't return if switch method changed from GCONF to XINPUT
-        if (isInSync) {
-            return;
-        }
-
-        switch (key) {
-        // Touchpad enabled/disabled through SCHEMA_EXTENSION
-        case KEY_TPD_ENABLED:
-            global.log(Me.uuid, '_queueSyncPointingDevice: KEY_TPD_ENABLED');
-            this._syncTouchpad(valTpdEnabled, valSendEvents);
-            break;
-        // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
-        default:
-            global.log(Me.uuid, '_queueSyncPointingDevice: default');
-            this._onsetSendEvents(valTpdEnabled, valSendEvents);
-            // TODO: What if user switches touchpad in system setting
-            //       when switchmehod is not GCONF?
-        }
-    }
     _checkGconfSync(valTpdEnabled, valSendEvents) {
         global.log(Me.uuid, '_checkGconfSync', valTpdEnabled, valSendEvents);
 
@@ -285,7 +259,43 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
     }
 
-    _syncTouchpad(valTpdEnabled, valSendEvents) {
+    _queueSyncPointingDevice(key) {
+        global.log(Me.uuid, '_queueSyncPointingDevice');
+
+        // TODO: Check further for recursion, reduce complexity
+        let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
+        let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
+
+        let isGconfInSync = this._checkGconfSync(valTpdEnabled, valSendEvents);
+        global.log(Me.uuid,
+            `_queueSyncPointingDevice - isInSync: ${isGconfInSync}`);
+        global.log(Me.uuid,
+            `_queueSyncPointingDevice - this._switchMethodChanged: ${this._switchMethodChanged}`);
+
+        if (isGconfInSync && (this._switchMethodChanged === false)) {
+            return;
+        }
+
+        switch (key) {
+        // Touchpad enabled/disabled through SCHEMA_EXTENSION
+        case KEY_TPD_ENABLED:
+            global.log(Me.uuid, '_queueSyncPointingDevice: KEY_TPD_ENABLED');
+            this._syncTouchpad(valTpdEnabled, valSendEvents, isGconfInSync);
+            break;
+        // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
+        default:
+            global.log(Me.uuid, '_queueSyncPointingDevice: default');
+            this._onsetSendEvents(valTpdEnabled, valSendEvents);
+            // TODO: What if user switches touchpad in system setting
+            //       when switchmehod is not GCONF?
+        }
+
+        if (this._switchMethodChanged === true) {
+            this._switchMethodChanged = false;
+        }
+    }
+
+    _syncTouchpad(valTpdEnabled, valSendEvents, isGconfInSync) {
         global.log(Me.uuid, '_syncTouchpad');
 
         switch (this._switchMethod) {
@@ -295,7 +305,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             break;
         case Lib.METHOD.XINPUT:
             global.log(Me.uuid, '_syncTouchpad: Lib.METHOD.XINPUT');
-            this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
+            if (isGconfInSync === false) {
+                this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
+            }
             this.touchpadXinput._switchAllDevices(valTpdEnabled);
             if ((valTpdEnabled === false) && !this.touchpadXinput.isPresent) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
@@ -314,6 +326,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
         if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
             global.log(Me.uuid, '_onsetSendEvents: true');
+            // Reset if touchpad was externally enabled through gsettings
+            // and extension switchmethod is other than gconf
+            if (this._switchMethod !== Lib.METHOD.GCONF) {
+                this.touchpadXinput._enableAllDevices();
+            }
             this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
         }
     }
