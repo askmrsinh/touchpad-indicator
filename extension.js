@@ -131,6 +131,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         this.actor.show();
 
+        this._watchDevInput = Lib.watchDevInput();
+        this._watchDevInputSignal = this.watchDevInput.connect('changed',
+            this._onDevicePlugged.bind(this));
+
         this._addKeybinding();
     }
 
@@ -390,7 +394,24 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             ICON_ENABLED : 'touchpad-disabled-symbolic';
     }
 
+    _onDevicePlugged(filemonitor, file, otherFile, eventType) {
+        global.log(Me.uuid,
+            `_onDevicePlugged ${file.get_path()} eventType - ${eventType}`);
+
+        // TODO: Handle mutiple mouse devices plugged in.
+        //       Add autoswitch check.
+        if (file.get_path().indexOf('mouse') !== -1) {
+            if (eventType === 3) {
+                this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
+            } else if (eventType === 2) {
+                this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
+            }
+        }
+    }
+
     _disconnectSignals() {
+        this._watchDevInput.disconnect(this._watchDevInputSignal);
+        this._watchDevInput.cancel();
         for (let i = 0; i < this._enabledSignals.length; i++) {
             this._extSettings.disconnect(this._enabledSignals[i]);
         }
