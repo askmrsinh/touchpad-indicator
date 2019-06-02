@@ -394,7 +394,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         for (let i = 0; i < this._enabledSignals.length; i++) {
             this._extSettings.disconnect(this._enabledSignals[i]);
         }
-        this._tpdSettings.disconnect(this._keySwitchMthdSignal);
+        this._extSettings.disconnect(this._keySwitchMthdSignal);
         this._extSettings.disconnect(this._keyAlwaysShowSignal);
         this._tpdSettings.disconnect(this._tpdSendEventsSignal);
     }
