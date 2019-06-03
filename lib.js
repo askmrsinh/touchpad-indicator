@@ -146,7 +146,7 @@ function makePointingDevice(pointingDeviceLines) {
         let pointingDevice = {};
         pointingDevice.name = pointingDeviceLines[1].split('"')[1];
         pointingDevice.phys = pointingDeviceLines[2].split('=')[1];
-        pointingDevice.type = 'other/mouse';
+        pointingDevice.type = 'mouse'; //default
         for (let type in ALL_TYPES) {
             if (ALL_TYPES[type].some((v) => {
                 return (pointingDevice.name.toLowerCase().indexOf(v) >= 0);
