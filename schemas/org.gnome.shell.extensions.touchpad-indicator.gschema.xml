@@ -34,7 +34,7 @@
         </key>
         <!--  -->
         <key type="b" name="autoswitch-touchpad">
-            <default>false</default>
+            <default>true</default>
         </key>
         <key type="b" name="autoswitch-trackpoint">
             <default>false</default>

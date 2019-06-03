@@ -239,6 +239,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
         this._switchMethodChanged = true;
         global.log(Me.uuid, '_switchMethodChanged',
+            this._switchMethodChanged);
+        global.log(Me.uuid, '_switchMethodChanged',
             oldSwitchMethod, this._switchMethod);
 
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
@@ -271,12 +273,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
 
         let isGconfInSync = this._checkGconfSync(valTpdEnabled, valSendEvents);
-        global.log(Me.uuid,
-            `_queueSyncPointingDevice - isInSync: ${isGconfInSync}`);
-        global.log(Me.uuid,
-            `_queueSyncPointingDevice - this._switchMethodChanged: ${this._switchMethodChanged}`);
 
         if (isGconfInSync && (this._switchMethodChanged === false)) {
+            global.log(Me.uuid,
+                'queueSyncPointingDevice - Already in Sync, return.');
             return;
         }
 
@@ -401,11 +401,37 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // TODO: Handle mutiple mouse devices plugged in.
         //       Add autoswitch check.
         if (file.get_path().indexOf('mouse') !== -1) {
-            if (eventType === 3) {
-                this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
-            } else if (eventType === 2) {
-                this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
+            if ((eventType > 1) && (eventType < 4)) {
+                this._onMouseDevicePlugged(eventType);
             }
+        }
+    }
+
+    _onMouseDevicePlugged(eventType) {
+        global.log(Me.uuid, '_onMouseDevicePlugged');
+
+        if (this._extSettings.get_boolean('autoswitch-touchpad')) {
+            let pointingDevices = Lib.listPointingDevices()[1];
+            let mouseDevices = pointingDevices.filter(p => p.type === 'mouse');
+            let mouseCount = mouseDevices.length;
+
+            global.log(Me.uuid,
+                `_onMouseDevicePlugged - mouseCount is ${mouseCount}`);
+
+            // no mouse device(s) is/are plugged in
+            if (eventType === 2 && mouseCount === 0 &&
+                !this._extSettings.get_boolean(KEY_TPD_ENABLED)) {
+                this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
+                return;
+            }
+            // mouse device(s) is/are plugged in
+            if (eventType === 3 && mouseCount !== 0 &&
+                this._extSettings.get_boolean(KEY_TPD_ENABLED)) {
+                this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
+                return;
+            }
+            // TODO: Watch autoswitch-* key cahnges.
+            //       Call on init?
         }
     }
 
