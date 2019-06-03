@@ -132,7 +132,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.actor.show();
 
         this._watchDevInput = Lib.watchDevInput();
-        this._watchDevInputSignal = this.watchDevInput.connect('changed',
+        this._watchDevInputSignal = this._watchDevInput.connect('changed',
             this._onDevicePlugged.bind(this));
 
         this._addKeybinding();
