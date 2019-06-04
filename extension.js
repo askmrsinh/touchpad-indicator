@@ -258,11 +258,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         let bothDisabled = ((valTpdEnabled === false) &&
             (valSendEvents === 'disabled'));
 
-        if (bothEnabled || bothDisabled) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bothEnabled || bothDisabled);
     }
 
     _queueSyncPointingDevice(key) {
