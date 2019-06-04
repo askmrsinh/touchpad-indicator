@@ -164,7 +164,7 @@ function listPointingDevices() {
     let comp = executeCmdSync('cat /proc/bus/input/devices');
     let allDeviceChunks = comp[1].split('\n\n');
     for (let x = 0; x < allDeviceChunks.length; x++) {
-        if (!(allDeviceChunks[x].indexOf('mouse') === -1)) {
+        if (allDeviceChunks[x].indexOf('mouse') !== -1) {
             let pointingDeviceLines = allDeviceChunks[x].split('\n');
             let pointingDevice = makePointingDevice(pointingDeviceLines);
             if (pointingDevice !== undefined) {

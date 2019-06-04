@@ -64,14 +64,14 @@ Synclient.prototype = {
         for (let x = 0; x < this.output.length; x++) {
             if (typeof (this.output[x]) == 'object' &&
                 this.output[x].length > 0) {
-                if (!(this.output[x].toString().indexOf(
-                    "Couldn't find synaptics properties") === -1)) {
+                if (this.output[x].toString().indexOf(
+                    "Couldn't find synaptics properties") !== -1) {
                     logging('Synclient._isSynclientInUse(): no properties '
                         + 'found');
                     return false;
                 }
-                if (!(this.output[x].toString().indexOf(
-                    'TouchpadOff') === -1)) {
+                if (this.output[x].toString().indexOf(
+                    'TouchpadOff') !== -1) {
                     logging('Synclient._isSynclientInUse(): synclient '
                         + 'found and ready to use');
                     return true;
@@ -94,7 +94,7 @@ Synclient.prototype = {
             if (this.output) {
                 let lines = this.output[1].toString().split('\n');
                 for (let x = 0; x < lines.length; x++) {
-                    if (!(lines[x].indexOf('TouchpadOff') === -1)) {
+                    if (lines[x].indexOf('TouchpadOff') !== -1) {
                         this.touchpad_off = lines[x];
                         break;
                     }

@@ -86,8 +86,8 @@ XInput.prototype = {
         if (where) {
             where = where.toLowerCase();
             for (let tpid = 0; tpid < this.devices.length; tpid++) {
-                if (!(where.indexOf(
-                    this.devices[tpid].toString().toLowerCase()) === -1)) {
+                if (where.indexOf(
+                    this.devices[tpid].toString().toLowerCase()) !== -1) {
                     return true;
                 }
             }
