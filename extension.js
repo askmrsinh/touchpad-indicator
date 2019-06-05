@@ -82,6 +82,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._extSettings = ExtensionUtils.getSettings(SCHEMA_EXTENSION);
         this._tpdSettings = new Gio.Settings({ schema_id: SCHEMA_TOUCHPAD });
 
+        // Purely for logging and debugging
         this._extSettings.connect(
             `changed::${KEY_TPD_ENABLED}`,
             this._logEKeyChange.bind(this));
@@ -102,6 +103,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
         }
 
+        // Touchpad related change signals
         this._keyAlwaysShowSignal = this._extSettings.connect(
             `changed::${KEY_ALWAYS_SHOW}`,
             this._queueSyncMenuVisibility.bind(this));
@@ -109,13 +111,18 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             `changed::${KEY_SEND_EVENTS}`,
             this._queueSyncPointingDevice.bind(this));
 
+        // Switch Method change signal
         this._keySwitchMthdSignal = this._extSettings.connect(
             `changed::${KEY_SWCH_METHOD}`,
             this._syncSwitchMethod.bind(this));
 
+        // Emulate that a mouse is currently plugged in
+        this._onMouseDevicePlugged(2);
+
         this._queueSyncPointingDevice(KEY_TPD_ENABLED);
         this._updateIcon();
 
+        // To store all change signals on *-enabled extension keys
         this._enabledSignals = [];
 
         let touchpad = this._buildItem('Touchpad', KEY_TPD_ENABLED);
@@ -155,6 +162,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             widget.connect('toggled', item => {
                 onSet(item.state);
             });
+            // TODO: Warn/Confirm if user is disabling the last pointing device.
         return widget;
     }
 
@@ -270,6 +278,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         let isGconfInSync = this._checkGconfSync(valTpdEnabled, valSendEvents);
 
+        // NOTE: When switch method is other than gconf (ie. xinput, synclient)
+        //       let system's touchpad settings (`send-events` key) work on top
+        //       of the switch method's touchpad enabling/disabling mechanism.
         if (isGconfInSync && (this._switchMethodChanged === false)) {
             global.log(Me.uuid,
                 'queueSyncPointingDevice - Already in Sync, return.');
@@ -277,17 +288,15 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
 
         switch (key) {
-        // Touchpad enabled/disabled through SCHEMA_EXTENSION
+        // Touchpad enabled/disabled through SCHEMA_EXTENSION 'touchpad-enabled'
         case KEY_TPD_ENABLED:
             global.log(Me.uuid, '_queueSyncPointingDevice: KEY_TPD_ENABLED');
             this._syncTouchpad(valTpdEnabled, valSendEvents, isGconfInSync);
             break;
-        // Touchpad enabled/disabled through SCHEMA_TOUCHPAD
+        // Touchpad enabled/disabled through SCHEMA_TOUCHPAD 'send-events'
         default:
             global.log(Me.uuid, '_queueSyncPointingDevice: default');
             this._onsetSendEvents(valTpdEnabled, valSendEvents);
-            // TODO: What if user switches touchpad in system setting
-            //       when switchmehod is not GCONF?
         }
 
         if (this._switchMethodChanged === true) {
@@ -298,6 +307,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _syncTouchpad(valTpdEnabled, valSendEvents, isGconfInSync) {
         global.log(Me.uuid, '_syncTouchpad');
 
+        // NOTE: When extension's `touchpad-enabled` key is changed, always
+        //       sync this change on to the system's `send-events` key, then
+        //       procceed to enable/disable touchpad through the current
+        //       switch method (if need be).
         switch (this._switchMethod) {
         case Lib.METHOD.GCONF:
             global.log(Me.uuid, '_syncTouchpad: Lib.METHOD.GCONF');
@@ -319,15 +332,20 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _onsetSendEvents(valTpdEnabled, valSendEvents) {
         global.log(Me.uuid, '_onsetSendEvents');
 
+        // `send-events` is OFF / not ON; `touchpad-enabled` is ON
+        //  set `touchpad-enabled` to OFF
         if ((valSendEvents !== 'enabled') && (valTpdEnabled !== false)) {
             global.log(Me.uuid, '_onsetSendEvents: false');
             this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
             return;
         }
+
+        // `send-events` is ON; `touchpad-enabled` is OFF
+        //  set `touchpad-enabled` to ON
         if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
             global.log(Me.uuid, '_onsetSendEvents: true');
             // Reset if touchpad was externally enabled through gsettings
-            // and extension switchmethod is other than gconf
+            // and extension switch method is other than gconf.
             if (this._switchMethod !== Lib.METHOD.GCONF) {
                 this.touchpadXinput._enableAllDevices();
             }
@@ -338,11 +356,16 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _onsetTouchpadEnable(valTpdEnabled, valSendEvents) {
         global.log(Me.uuid, '_onsetTouchpadEnable');
 
+        // `touchpad-enabled` is ON; `send-events` is OFF / not ON;
+        //  set `send-events` to ON
         if ((valTpdEnabled === true) && (valSendEvents !== 'enabled')) {
             global.log(Me.uuid, '_onsetTouchpadEnable: enabled');
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
             return;
         }
+
+        // `touchpad-enabled` is OFF; `send-events` is ON / not OFF;
+        //  set `send-events` to OFF
         if ((valTpdEnabled === false) && (valSendEvents !== 'disabled')) {
             global.log(Me.uuid, '_onsetTouchpadEnable: disabled');
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'disabled');
@@ -393,8 +416,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         global.log(Me.uuid,
             `_onDevicePlugged ${file.get_path()} eventType - ${eventType}`);
 
-        // TODO: Handle mutiple mouse devices plugged in.
-        //       Add autoswitch check.
         if (file.get_path().indexOf('mouse') !== -1) {
             if ((eventType > 1) && (eventType < 4)) {
                 this._onMouseDevicePlugged(eventType);
@@ -426,7 +447,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 return;
             }
             // TODO: Watch autoswitch-* key cahnges.
-            //       Call on init?
+            //       Conser autoswitch-* key was set to 'false' while touchpad
+            //       is disabled and then user unplugs the mouse.
         }
     }
 
@@ -445,6 +467,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _resetConfig() {
         global.log(Me.uuid, '_resetPointingDevices');
         this.touchpadXinput._enableAllDevices();
+        // TODO: Set `send-events` to 'enabled' if its not?
     }
 });
 
