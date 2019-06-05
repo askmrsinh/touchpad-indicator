@@ -346,7 +346,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         if ((valTpdEnabled === false) && (valSendEvents !== 'disabled')) {
             global.log(Me.uuid, '_onsetTouchpadEnable: disabled');
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'disabled');
-            return;
         }
     }
 
@@ -355,7 +354,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
             let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
 
-            if (valSendEvents !== 'disabled' && valTpdEnabled) {
+            if (valSendEvents === 'enabled' && valTpdEnabled) {
                 this._notify('dialog-information',
                     `Touchpad Indicator ${Me.uuid}`,
                     'Touchpad Enabled');
