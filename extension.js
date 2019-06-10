@@ -426,6 +426,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _onMouseDevicePlugged(eventType) {
         global.log(Me.uuid, '_onMouseDevicePlugged');
 
+        // TODO: Check auto switch behaviour on resume from sleep, restart.
         if (this._extSettings.get_boolean('autoswitch-touchpad')) {
             let pointingDevices = Lib.listPointingDevices()[1];
             let mouseDevices = pointingDevices.filter(p => p.type === 'mouse');
@@ -444,10 +445,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             if (eventType === 3 && mouseCount !== 0 &&
                 this._extSettings.get_boolean(KEY_TPD_ENABLED)) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
-                return;
             }
             // TODO: Watch autoswitch-* key cahnges.
-            //       Conser autoswitch-* key was set to 'false' while touchpad
+            //       Consider autoswitch-* key was set to 'false' while touchpad
             //       is disabled and then user unplugs the mouse.
         }
     }
