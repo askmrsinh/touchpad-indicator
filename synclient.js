@@ -27,16 +27,16 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Me.imports.lib;
 
 // Disable Synclient manually to prevent errors
-var USE_SYNCLIENT = true;
+const USE_SYNCLIENT = true;
 
 let logging = Lib.logger;
 
-function Synclient(gsettings) {
-    this._init(gsettings);
-}
+class Synclient {
+    constructor(gsettings) {
+        this._init(gsettings);
+    }
 
-Synclient.prototype = {
-    _init: function (gsettings) {
+    _init(gsettings) {
         logging('Synclient._init()');
         this.gsettings = gsettings;
         this.synclient_status = false;
@@ -44,9 +44,9 @@ Synclient.prototype = {
         this.watch = false;
         this.timeout = false;
         this.synclientInUse = this._isSynclientInUse();
-    },
+    }
 
-    _isSynclientInUse: function () {
+    _isSynclientInUse() {
         if (!USE_SYNCLIENT) {
             logging('Synclient._isSynclientInUse(): synclient manually '
                 + 'disabled');
@@ -64,14 +64,12 @@ Synclient.prototype = {
         for (let x = 0; x < this.output.length; x++) {
             if (typeof (this.output[x]) == 'object' &&
                 this.output[x].length > 0) {
-                if (this.output[x].toString().indexOf(
-                    "Couldn't find synaptics properties") !== -1) {
+                if (this.output[x].toString().includes("Couldn't find synaptics properties")) {
                     logging('Synclient._isSynclientInUse(): no properties '
                         + 'found');
                     return false;
                 }
-                if (this.output[x].toString().indexOf(
-                    'TouchpadOff') !== -1) {
+                if (this.output[x].toString().includes('TouchpadOff')) {
                     logging('Synclient._isSynclientInUse(): synclient '
                         + 'found and ready to use');
                     return true;
@@ -81,20 +79,20 @@ Synclient.prototype = {
         logging('Synclient._isSynclientInUse(): unknown situation - '
             + 'Return false');
         return false;
-    },
+    }
 
-    _isSynclientStillInUse: function () {
+    _isSynclientStillInUse() {
         this.synclientInUse = this._isSynclientInUse();
         return this.synclientInUse;
-    },
+    }
 
-    _watch: function () {
+    _watch() {
         if (!this.stop && !this.wait) {
             this.output = Lib.executeCmdSync('synclient -l');
             if (this.output) {
                 let lines = this.output[1].toString().split('\n');
                 for (let x = 0; x < lines.length; x++) {
-                    if (lines[x].indexOf('TouchpadOff') !== -1) {
+                    if (lines[x].includes('TouchpadOff')) {
                         this.touchpad_off = lines[x];
                         break;
                     }
@@ -117,19 +115,19 @@ Synclient.prototype = {
                 }
             }
         }
-    },
+    }
 
-    _callWatch: function () {
+    _callWatch() {
         this.wait = false;
         this._watch();
-    },
+    }
 
-    _wait: function () {
+    _wait() {
         this.wait = true;
         this.timeout = Lib.addTimeout(1000, this._callWatch.bind(this));
-    },
+    }
 
-    _cancel: function () {
+    _cancel() {
         logging('Synclient._cancel()');
         this.stop = true;
         this.wait = false;
@@ -138,9 +136,9 @@ Synclient.prototype = {
             Lib.removeSource(this.timeout);
             this.timeout = false;
         }
-    },
+    }
 
-    _disable: function () {
+    _disable() {
         logging('Synclient._disable()');
         this._cancel();
         if (Lib.executeCmdAsync('synclient TouchpadOff=1')) {
@@ -149,9 +147,9 @@ Synclient.prototype = {
             return false;
         } else
             return true;
-    },
+    }
 
-    _enable: function () {
+    _enable() {
         logging('Synclient._enable()');
         this._cancel();
         if (Lib.executeCmdAsync('synclient TouchpadOff=0')) {
@@ -160,13 +158,14 @@ Synclient.prototype = {
             return true;
         } else
             return false;
-    },
+    }
 
-    _switch: function (state) {
+    _switch(state) {
         if (state) {
             return this._enable();
         } else {
             return this._disable();
         }
     }
-};
+}
+

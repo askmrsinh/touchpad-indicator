@@ -27,25 +27,25 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Me.imports.lib;
 
 // for consistency
-var USE_XINPUT = true;
+const USE_XINPUT = true;
 
 let logging = Lib.logger;
 
-function XInput(devices) {
-    this._init(devices);
-}
+class XInput {
+    constructor(devices) {
+        this._init(devices);
+    }
 
-XInput.prototype = {
-    _init: function (devices) {
+    _init(devices) {
         logging(`XInput._init(${devices})`);
         this.devices = devices;
         this.ids = this._getIds();
         this.isPresent = this._isPresent();
         logging(`XInput._init(): Found Device - ${
             this.isPresent.toString()} ${this.ids}`);
-    },
+    }
 
-    _getIds: function () {
+    _getIds() {
         let tpids = [];
         let y = 0;
         let allIds = this._getAllIds();
@@ -56,72 +56,71 @@ XInput.prototype = {
             }
         }
         return tpids;
-    },
+    }
 
-    _getAllIds: function () {
+    _getAllIds() {
         let devids = [];
         let comp = Lib.executeCmdSync('xinput --list');
         if (comp[0]) {
             let lines = comp[1].split('\n');
             let line = 0;
             //assuming that 'pointer' lines always appear fist & together
-            while (lines[line].indexOf('pointer') !== -1) {
+            while (lines[line].includes('pointer')) {
                 devids.push(lines[line].split('id=')[1].split('\t')[0]);
                 line++;
             }
         }
         return devids;
-    },
+    }
 
-    _isDevice: function (id) {
+    _isDevice(id) {
         let comp = Lib.executeCmdSync(`xinput --list-props ${id.toString()}`);
         return this._searchDevice(comp[1]);
-    },
+    }
 
-    _isPresent: function () {
+    _isPresent() {
         return this.ids.length > 0;
-    },
+    }
 
-    _searchDevice: function (where) {
+    _searchDevice(where) {
         if (where) {
             where = where.toLowerCase();
             for (let tpid = 0; tpid < this.devices.length; tpid++) {
-                if (where.indexOf(
-                    this.devices[tpid].toString().toLowerCase()) !== -1) {
+                if (where.includes(this.devices[tpid].toString().toLowerCase())) {
                     return true;
                 }
             }
         }
         return false;
-    },
+    }
 
-    _setDeviceEnabled: function (id) {
+    _setDeviceEnabled(id) {
         logging(`XInput._setDeviceEnabled() id: ${id.toString()}`);
         return Lib.executeCmdAsync(`xinput set-prop ${id.toString()
         } "Device Enabled" 1`);
-    },
+    }
 
-    _setDeviceDisabled: function (id) {
+    _setDeviceDisabled(id) {
         logging(`XInput._setDeviceDisabled() id: ${id.toString()}`);
         return Lib.executeCmdAsync(`xinput set-prop ${id.toString()
         } "Device Enabled" 0`);
-    },
+    }
 
-    _disableAllDevices: function () {
+    _disableAllDevices() {
         for (let id = 0; id < this.ids.length; id++) {
             this._setDeviceDisabled(this.ids[id]);
         }
         return !this._allDevicesEnabled();
-    },
+    }
 
-    _enableAllDevices: function () {
+    _enableAllDevices() {
         for (let id = 0; id < this.ids.length; id++) {
             this._setDeviceEnabled(this.ids[id]);
         }
         return this._allDevicesEnabled();
-    },
+    }
 
-    _switchAllDevices: function (state) {
+    _switchAllDevices(state) {
         for (let id = 0; id < this.ids.length; id++) {
             if (state) {
                 this._setDeviceEnabled(this.ids[id]);
@@ -130,27 +129,25 @@ XInput.prototype = {
             }
         }
         return this._allDevicesEnabled();
-    },
+    }
 
-    _isDeviceEnabled: function (id) {
+    _isDeviceEnabled(id) {
         logging('XInput._isDeviceEnabled()');
         let lines = Lib.executeCmdSync(`xinput --list-props ${id.toString()}`);
         if (lines) {
             lines = lines[1].split('\n');
             for (let line = 0; line < lines.length; line++) {
-                if (lines[line].toString().toLowerCase().indexOf(
-                    'device enabled') !== -1) {
-                    if (lines[line].toString().split(':')[1].indexOf('1')
-                        !== -1) {
+                if (lines[line].toString().toLowerCase().includes('device enabled')) {
+                    if (lines[line].toString().split(':')[1].includes('1')) {
                         return true;
                     }
                 }
             }
         }
         return false;
-    },
+    }
 
-    _allDevicesEnabled: function () {
+    _allDevicesEnabled() {
         if (!this.isPresent) {
             return false;
         }
@@ -161,5 +158,5 @@ XInput.prototype = {
         }
         return true;
     }
-};
+}
 
