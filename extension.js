@@ -36,6 +36,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Lib = Me.imports.lib;
 const XInput = Me.imports.xinput;
+const Synclient = Me.imports.synclient;
 
 //schema
 const SCHEMA_EXTENSION = 'org.gnome.shell.extensions.touchpad-indicator';
@@ -68,17 +69,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.hbox.add_child(PopupMenu.arrowIcon(St.Side.BOTTOM));
         this.add_child(this.hbox);
 
-        this.xinputIsUsable = Lib.executeCmdSync('xinput --list');
-
-        if (this.xinputIsUsable[0] !== true) {
-            logging('TouchpadIndicator._init(): Can`t find Xinput');
-            this._extSettings.set_boolean('autoswitch-trackpoint', false);
-        } else {
-            logging('TouchpadIndicator._init(): Xinput is installed');
-        }
-
-        this.touchpadXinput = new XInput.XInput(Lib.ALL_TYPES['touchpad']);
-
         this._extSettings = ExtensionUtils.getSettings(SCHEMA_EXTENSION);
         this._tpdSettings = new Gio.Settings({ schema_id: SCHEMA_TOUCHPAD });
 
@@ -90,8 +80,38 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             `changed::${KEY_SEND_EVENTS}`,
             this._logSKeyChange.bind(this));
 
+
+        // SYNCLIENT related
+        this.synclient = new Synclient.Synclient(this._extSettings);
+
+        if (this.synclient.synclientInUse !== true) {
+            logging('TouchpadIndicator._init(): Can`t find Synclient');
+            this._extSettings.set_enum('switchmethod', Lib.METHOD.GCONF);
+        } else {
+            logging('TouchpadIndicator._init(): Synclient is installed');
+        }
+
+
+        // XINPUT related
+        this.xinputIsUsable = Lib.executeCmdSync('xinput --list');
+
+        if (this.xinputIsUsable[0] !== true) {
+            logging('TouchpadIndicator._init(): Can`t find Xinput');
+            this._extSettings.set_boolean('autoswitch-trackpoint', false);
+        } else {
+            logging('TouchpadIndicator._init(): Xinput is installed');
+        }
+
+        this.touchpadXinput = new XInput.XInput(Lib.ALL_TYPES['touchpad']);
+
+        // Switch method to start with
         this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
         this._switchMethodChanged = false;
+
+        // Resets
+        if (this._switchMethod !== Lib.METHOD.SYNCLIENT) {
+            this.synclient._enable();
+        }
 
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
             this.touchpadXinput._enableAllDevices();
@@ -323,6 +343,16 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
             }
             break;
+        case Lib.METHOD.SYNCLIENT:
+            logging('_syncTouchpad: Lib.METHOD.SYNCLIENT');
+            if (isGconfInSync === false) {
+                this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
+            }
+            this.synclient._switch(valTpdEnabled);
+            if ((valTpdEnabled === false) && !this.synclient.synclientInUse) {
+                this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
+            }
+            break;
         }
     }
 
@@ -345,6 +375,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             // and extension switch method is other than gconf.
             if (this._switchMethod !== Lib.METHOD.GCONF) {
                 this.touchpadXinput._enableAllDevices();
+                this.synclient._enable();
             }
             this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
         }
@@ -462,6 +493,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _resetConfig() {
         logging('_resetPointingDevices');
         this.touchpadXinput._enableAllDevices();
+        this.synclient._enable();
         // TODO: Set `send-events` to 'enabled' if its not?
     }
 });
