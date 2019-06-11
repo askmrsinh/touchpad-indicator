@@ -184,5 +184,5 @@ function removeSource(...args) {
 }
 
 function addTimeout(...args) {
-    return GLib.timeout_add(...args);
+    return GLib.timeout_add(GLib.PRIORITY_DEFAULT, ...args);
 }
