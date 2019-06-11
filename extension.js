@@ -349,7 +349,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
             }
             this.synclient._switch(valTpdEnabled);
-            if ((valTpdEnabled === false) && !this.synclient.synclientInUse) {
+            if ((valTpdEnabled === false) && !this.synclient.synclientStatus) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
             }
             break;

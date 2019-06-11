@@ -60,14 +60,14 @@ class Synclient {
             return false;
         }
         for (let x = 0; x < this.output.length; x++) {
-            if (typeof (this.output[x]) == 'object' &&
+            if (typeof (this.output[x]) == 'string' &&
                 this.output[x].length > 0) {
-                if (this.output[x].toString().includes("Couldn't find synaptics properties")) {
+                if (this.output[x].includes("Couldn't find synaptics properties")) {
                     logging('Synclient._isSynclientInUse(): no properties '
                         + 'found');
                     return false;
                 }
-                if (this.output[x].toString().includes('TouchpadOff')) {
+                if (this.output[x].includes('TouchpadOff')) {
                     logging('Synclient._isSynclientInUse(): synclient '
                         + 'found and ready to use');
                     return true;
@@ -82,19 +82,17 @@ class Synclient {
     _disable() {
         logging('Synclient._disable()');
         if (Lib.executeCmdAsync('synclient TouchpadOff=1')) {
-            this.synclientStatus = false;
-            return false;
+            this.synclientStatus = true;
         } else
-            return true;
+            this.synclientStatus = false;
     }
 
     _enable() {
         logging('Synclient._enable()');
         if (Lib.executeCmdAsync('synclient TouchpadOff=0')) {
-            this.synclientStatus = false;
-            return true;
+            this.synclientStatus = true;
         } else
-            return false;
+            this.synclientStatus = false;
     }
 
     _switch(state) {
