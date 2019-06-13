@@ -29,7 +29,9 @@ const Lib = Me.imports.lib;
 // Disable Synclient manually to prevent errors
 const USE_SYNCLIENT = true;
 
-let logging = Lib.logger;
+function logging(event) {
+    Lib.logger(`Synclient.${event}`);
+}
 
 class Synclient {
     constructor() {
@@ -65,7 +67,7 @@ class Synclient {
     }
 
     _disable() {
-        logging('Synclient._disable()');
+        logging('_disable()');
         if (Lib.executeCmdAsync('synclient TouchpadOff=1')) {
             this.tpdOff = true;
         } else
@@ -73,7 +75,7 @@ class Synclient {
     }
 
     _enable() {
-        logging('Synclient._enable()');
+        logging('_enable()');
         if (Lib.executeCmdAsync('synclient TouchpadOff=0')) {
             this.tpdOff = true;
         } else

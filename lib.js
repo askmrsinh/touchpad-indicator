@@ -35,7 +35,7 @@ const SCHEMA_TOUCHPAD = 'org.gnome.desktop.peripherals.touchpad';
 
 // Debug Mode Settings
 const LOG_FILEPATH = GLib.build_filenamev([Me.path, 'touchpad-indicator.log']);
-const LOG_PREFIX = `[${Me.uuid}]` + ': ';
+const LOG_PREFIX = `[${Me.uuid}] `;
 var DEBUG = false;
 var DEBUG_TO_FILE = false;
 
@@ -103,7 +103,7 @@ function readLog(filepath) {
 
 function logger(event, filepath) {
     let timestamp = new Date(new Date().getTime()).toISOString();
-    let message = `${timestamp}\t${event}`;
+    let message = `${timestamp} ${event}`;
     global.log(LOG_PREFIX + message);
     if (filepath) {
         let messages = readLog(filepath)[1] + message;

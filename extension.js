@@ -52,7 +52,9 @@ const KEY_TPD_ENABLED = 'touchpad-enabled';
 //icons
 const ICON_ENABLED = 'input-touchpad-symbolic';
 
-let logging = Lib.logger;
+function logging(event) {
+    Lib.logger(`TouchpadIndicator.${event}`);
+}
 
 var TouchpadIndicator = GObject.registerClass(
 class TouchpadIndicatorButton extends PanelMenu.Button {
@@ -88,7 +90,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             logging('_init(): Can`t use Synclient');
             this._extSettings.set_enum('switchmethod', Lib.METHOD.GCONF);
         } else {
-            logging('TouchpadIndicator._init(): Synclient is installed');
+            logging('_init(): Synclient OK.');
         }
 
 
@@ -96,10 +98,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.xinputIsUsable = Lib.executeCmdSync('xinput --list');
 
         if (this.xinputIsUsable[0] !== true) {
-            logging('TouchpadIndicator._init(): Can`t find Xinput');
+            logging('_init(): Can`t use Xinput');
             this._extSettings.set_boolean('autoswitch-trackpoint', false);
         } else {
-            logging('TouchpadIndicator._init(): Xinput is installed');
+            logging('_init(): Xinput OK.');
         }
 
         this.touchpadXinput = new XInput.XInput(Lib.ALL_TYPES['touchpad']);

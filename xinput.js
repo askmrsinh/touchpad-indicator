@@ -29,7 +29,9 @@ const Lib = Me.imports.lib;
 // for consistency
 const USE_XINPUT = true;
 
-let logging = Lib.logger;
+function logging(event) {
+    Lib.logger(`XInput.${event}`);
+}
 
 class XInput {
     constructor(devices) {
@@ -37,11 +39,11 @@ class XInput {
     }
 
     _init(devices) {
-        logging(`XInput._init(${devices})`);
+        logging(`_init(${devices})`);
         this.devices = devices;
         this.ids = this._getIds();
         this.isPresent = this._isPresent();
-        logging(`XInput._init(): Found Device - ${
+        logging(`_init(): Found Device - ${
             this.isPresent.toString()} ${this.ids}`);
     }
 
@@ -95,13 +97,13 @@ class XInput {
     }
 
     _setDeviceEnabled(id) {
-        logging(`XInput._setDeviceEnabled() id: ${id.toString()}`);
+        logging(`_setDeviceEnabled() id: ${id.toString()}`);
         return Lib.executeCmdAsync(`xinput set-prop ${id.toString()
         } "Device Enabled" 1`);
     }
 
     _setDeviceDisabled(id) {
-        logging(`XInput._setDeviceDisabled() id: ${id.toString()}`);
+        logging(`_setDeviceDisabled() id: ${id.toString()}`);
         return Lib.executeCmdAsync(`xinput set-prop ${id.toString()
         } "Device Enabled" 0`);
     }
@@ -132,7 +134,7 @@ class XInput {
     }
 
     _isDeviceEnabled(id) {
-        logging('XInput._isDeviceEnabled()');
+        logging('_isDeviceEnabled()');
         let lines = Lib.executeCmdSync(`xinput --list-props ${id.toString()}`);
         if (lines) {
             lines = lines[1].split('\n');
