@@ -45,24 +45,24 @@ class Synclient {
     }
 
     _isUsable() {
-        let comp = Lib.executeCmdSync('synclient -l');
         if (!USE_SYNCLIENT) {
-            logging('_isSynclientInUse(): synclient manually disabled');
+            logging('_isUsable(): synclient manually disabled');
             return false;
         }
 
+        let comp = Lib.executeCmdSync('synclient -l');
         if (comp[1].includes('TouchpadOff')) {
-            logging('_isSynclientInUse(): synclient found and ready to use');
+            logging('_isUsable(): synclient found and ready to use');
             return true;
         } else if (comp[1].includes("Couldn't find synaptics properties")) {
-            logging('_isSynclientInUse(): no properties found');
+            logging('_isUsable(): no properties found');
             return false;
         } else if (comp[1] === '') {
-            logging('_isSynclientInUse(): synclient not found');
+            logging('_isUsable(): synclient not found');
             return false;
         }
 
-        logging('_isSynclientInUse(): unknown situation - Return false');
+        logging('_isUsable(): unknown situation - Return false');
         return false;
     }
 
@@ -83,6 +83,7 @@ class Synclient {
     }
 
     _switch(state) {
+        logging(`_switch: ${state}`);
         if (state) {
             return this._enable();
         } else {

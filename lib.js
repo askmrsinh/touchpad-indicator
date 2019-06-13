@@ -58,7 +58,7 @@ var ALL_TOUCHPADS = TOUCHPADS.slice();
 var ALL_OTHERS = OTHERS.slice();
 
 // Methods to enable or disable the touchpad
-const METHOD = { GCONF: 0, SYNCLIENT: 1, XINPUT: 2 };
+var METHOD = { GCONF: 0, SYNCLIENT: 1, XINPUT: 2 };
 
 
 function createLogFile(filepath) {
@@ -148,8 +148,8 @@ function makePointingDevice(pointingDeviceLines) {
         pointingDevice.phys = pointingDeviceLines[2].split('=')[1];
         pointingDevice.type = 'mouse'; //default
         for (let type in ALL_TYPES) {
-            if (ALL_TYPES[type].some((v) => {
-                return (pointingDevice.name.toLowerCase().indexOf(v) >= 0);
+            if (ALL_TYPES[type].some((t) => {
+                return (pointingDevice.name.toLowerCase().indexOf(t) >= 0);
             })) {
                 pointingDevice.type = type;
                 break;
