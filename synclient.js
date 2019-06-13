@@ -32,67 +32,52 @@ const USE_SYNCLIENT = true;
 let logging = Lib.logger;
 
 class Synclient {
-    constructor(gsettings) {
-        this._init(gsettings);
+    constructor() {
+        this._init();
     }
 
-    _init(gsettings) {
-        logging('Synclient._init()');
-        this.gsettings = gsettings;
-        this.synclientStatus = false;
-        this.timeout = false;
-        this.synclientInUse = this._isSynclientInUse();
+    _init() {
+        logging('_init()');
+        this.tpdOff = false;
+        this.isUsable = this._isUsable();
     }
 
-    _isSynclientInUse() {
+    _isUsable() {
+        let comp = Lib.executeCmdSync('synclient -l');
         if (!USE_SYNCLIENT) {
-            logging('Synclient._isSynclientInUse(): synclient manually '
-                + 'disabled');
+            logging('_isSynclientInUse(): synclient manually disabled');
             return false;
         }
-        this.output = Lib.executeCmdSync('synclient -l');
-        if (!this.output) {
-            logging('Synclient._isSynclientInUse(): synclient not found');
+
+        if (comp[1].includes('TouchpadOff')) {
+            logging('_isSynclientInUse(): synclient found and ready to use');
+            return true;
+        } else if (comp[1].includes("Couldn't find synaptics properties")) {
+            logging('_isSynclientInUse(): no properties found');
+            return false;
+        } else if (comp[1] === '') {
+            logging('_isSynclientInUse(): synclient not found');
             return false;
         }
-        if (!this.output[0]) {
-            logging('Synclient._isSynclientInUse(): synclient not found');
-            return false;
-        }
-        for (let x = 0; x < this.output.length; x++) {
-            if (typeof (this.output[x]) == 'string' &&
-                this.output[x].length > 0) {
-                if (this.output[x].includes("Couldn't find synaptics properties")) {
-                    logging('Synclient._isSynclientInUse(): no properties '
-                        + 'found');
-                    return false;
-                }
-                if (this.output[x].includes('TouchpadOff')) {
-                    logging('Synclient._isSynclientInUse(): synclient '
-                        + 'found and ready to use');
-                    return true;
-                }
-            }
-        }
-        logging('Synclient._isSynclientInUse(): unknown situation - '
-            + 'Return false');
+
+        logging('_isSynclientInUse(): unknown situation - Return false');
         return false;
     }
 
     _disable() {
         logging('Synclient._disable()');
         if (Lib.executeCmdAsync('synclient TouchpadOff=1')) {
-            this.synclientStatus = true;
+            this.tpdOff = true;
         } else
-            this.synclientStatus = false;
+            this.tpdOff = false;
     }
 
     _enable() {
         logging('Synclient._enable()');
         if (Lib.executeCmdAsync('synclient TouchpadOff=0')) {
-            this.synclientStatus = true;
+            this.tpdOff = true;
         } else
-            this.synclientStatus = false;
+            this.tpdOff = false;
     }
 
     _switch(state) {

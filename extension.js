@@ -82,10 +82,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
 
         // SYNCLIENT related
-        this.synclient = new Synclient.Synclient(this._extSettings);
+        this.synclient = new Synclient.Synclient();
 
-        if (this.synclient.synclientInUse !== true) {
-            logging('TouchpadIndicator._init(): Can`t find Synclient');
+        if (this.synclient.isUsable !== true) {
+            logging('_init(): Can`t use Synclient');
             this._extSettings.set_enum('switchmethod', Lib.METHOD.GCONF);
         } else {
             logging('TouchpadIndicator._init(): Synclient is installed');
@@ -349,7 +349,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
             }
             this.synclient._switch(valTpdEnabled);
-            if ((valTpdEnabled === false) && !this.synclient.synclientStatus) {
+            if ((valTpdEnabled === false) && !this.synclient.tpdOff) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
             }
             break;
