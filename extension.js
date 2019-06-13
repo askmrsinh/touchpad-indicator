@@ -48,6 +48,10 @@ const KEY_SWCH_METHOD = 'switchmethod';
 const KEY_ALWAYS_SHOW = 'show-panelicon';
 const KEY_NOTIFS_SHOW = 'show-notifications';
 const KEY_TPD_ENABLED = 'touchpad-enabled';
+const KEY_TPT_ENABLED = 'trackpoint-enabled';
+const KEY_TSN_ENABLED = 'touchscreen-enabled';
+const KEY_FTH_ENABLED = 'fingertouch-enabled';
+const KEY_PEN_ENABLED = 'pen-enabled';
 
 //icons
 const ICON_ENABLED = 'input-touchpad-symbolic';
@@ -59,7 +63,7 @@ function logging(event) {
 var TouchpadIndicator = GObject.registerClass(
 class TouchpadIndicatorButton extends PanelMenu.Button {
     _init() {
-        logging(`_init`);
+        logging('_init');
         super._init(0.0, 'Touchpad Indicator');
         this.hbox = new St.BoxLayout({
             style_class: 'panel-status-menu-box'
@@ -86,7 +90,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         // SYNCLIENT related
         this.synclient = new Synclient.Synclient();
-
         if (this.synclient.isUsable !== true) {
             logging('_init(): Can`t use Synclient');
             this._extSettings.set_enum('switchmethod', Lib.METHOD.GCONF);
@@ -99,6 +102,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.xinput = new XInput.XInput();
         if (this.xinput.isUsable !== true) {
             logging('_init(): Can`t use Xinput');
+            this._extSettings.set_enum('switchmethod', Lib.METHOD.GCONF);
             this._extSettings.set_boolean('autoswitch-trackpoint', false);
         } else {
             logging('_init(): Xinput OK.');
@@ -107,6 +111,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // Switch method to start with
         this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
         this._switchMethodChanged = false;
+
+        logging(`_init(): Switch method is ${this._switchMethod}`);
 
         // Resets
         if (this._switchMethod !== Lib.METHOD.SYNCLIENT) {
@@ -147,6 +153,23 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         let touchpad = this._buildItem('Touchpad', KEY_TPD_ENABLED);
         this.menu.addMenuItem(touchpad);
+
+        if (this.xinput._isPresent('trackpoint')) {
+            let trackpoint = this._buildItem('Trackpoint', KEY_TPT_ENABLED);
+            this.menu.addMenuItem(trackpoint);
+        }
+        if (this.xinput._isPresent('touchscreen')) {
+            let touchscreen = this._buildItem('Touchscreen', KEY_TSN_ENABLED);
+            this.menu.addMenuItem(touchscreen);
+        }
+        if (this.xinput._isPresent('fingertouch')) {
+            let fingertouch = this._buildItem('Fingertouch', KEY_FTH_ENABLED);
+            this.menu.addMenuItem(fingertouch);
+        }
+        if (this.xinput._isPresent('pen')) {
+            let pen = this._buildItem('Pen', KEY_PEN_ENABLED);
+            this.menu.addMenuItem(pen);
+        }
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
@@ -191,7 +214,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             widget.setToggleState(this._extSettings.get_boolean(key));
             this._queueSyncPointingDevice(key);
             this._queueSyncMenuVisibility();
-            this._makeNotification();
+            this._makeNotification(string);
             this._updateIcon();
         });
 
@@ -266,8 +289,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
         this._switchMethodChanged = true;
-        logging(`_switchMethodChanged: ${this._switchMethodChanged}`);
-        logging(`_switchMethodChanged: ${oldSwitchMethod}, ${this._switchMethod}`);
+        logging(`_switchMethodChanged: old ${oldSwitchMethod}`);
+        logging(`_switchMethodChanged: new ${this._switchMethod}`);
 
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
             this.xinput._enableByType('touchpad');
@@ -299,12 +322,33 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // NOTE: When switch method is other than gconf (ie. xinput, synclient)
         //       let system's touchpad settings (`send-events` key) work on top
         //       of the switch method's touchpad enabling/disabling mechanism.
-        if (isGconfInSync && (this._switchMethodChanged === false)) {
+        if ((key === KEY_TPD_ENABLED) &&
+            isGconfInSync && (this._switchMethodChanged === false)) {
             logging('_queueSyncPointingDevice - Already in sync, return.');
             return;
         }
 
         switch (key) {
+        case KEY_PEN_ENABLED:
+            logging('_queueSyncPointingDevice: KEY_PEN_ENABLED');
+            this.xinput._switchByType(
+                'pen', this._extSettings.get_boolean(KEY_PEN_ENABLED));
+            break;
+        case KEY_FTH_ENABLED:
+            logging('_queueSyncPointingDevice: KEY_FTH_ENABLED');
+            this.xinput._switchByType(
+                'fingertouch', this._extSettings.get_boolean(KEY_FTH_ENABLED));
+            break;
+        case KEY_TSN_ENABLED:
+            logging('_queueSyncPointingDevice: KEY_TSN_ENABLED');
+            this.xinput._switchByType(
+                'touchscreen', this._extSettings.get_boolean(KEY_TSN_ENABLED));
+            break;
+        case KEY_TPT_ENABLED:
+            logging('_queueSyncPointingDevice: KEY_TPT_ENABLED');
+            this.xinput._switchByType(
+                'trackpoint', this._extSettings.get_boolean(KEY_TPT_ENABLED));
+            break;
         // Touchpad enabled/disabled through SCHEMA_EXTENSION 'touchpad-enabled'
         case KEY_TPD_ENABLED:
             logging('_queueSyncPointingDevice: KEY_TPD_ENABLED');
@@ -402,19 +446,21 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
     }
 
-    _makeNotification() {
+    _makeNotification(forType) {
         if (this._extSettings.get_boolean(KEY_NOTIFS_SHOW)) {
             let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
             let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
 
+            // TODO: Refactor to show notifcations only when device(s) is/are
+            //       automatically enabled/disbaled.
             if (valSendEvents === 'enabled' && valTpdEnabled) {
                 this._notify('dialog-information',
                     `Touchpad Indicator ${Me.uuid}`,
-                    'Touchpad Enabled');
+                    `${forType} Enabled`);
             } else {
                 this._notify('dialog-information',
                     `Touchpad Indicator ${Me.uuid}`,
-                    'Touchpad Disabled');
+                    `${forType} Disabled`);
             }
         }
     }

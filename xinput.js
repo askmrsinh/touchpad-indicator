@@ -83,8 +83,8 @@ class XInput {
         let id = pointingDeviceLine.split('id=')[1].split('\t')[0];
         let name = Lib.executeCmdSync(`xinput --list --name-only ${id}`)[1];
         for (let type in Lib.ALL_TYPES) {
-            if (Lib.ALL_TYPES[type].some((v) => {
-                return (name.toLowerCase().indexOf(v) >= 0);
+            if (Lib.ALL_TYPES[type].some((t) => {
+                return (name.toLowerCase().indexOf(t) >= 0);
             })) {
                 pointingDevice.id = id;
                 pointingDevice.type = type;
@@ -103,24 +103,12 @@ class XInput {
     }
 
     _enableByType(deviceType) {
-        let ids = [];
-        let filteredPointingDevices = this.pointingDevices.filter((d) => {
-            return (d.type === deviceType);
-        });
-        for (let i = 0; i < filteredPointingDevices.length; i++) {
-            ids.push(filteredPointingDevices[i].id);
-        }
+        let ids = this._filterIdsByType(deviceType);
         return this._enable(ids);
     }
 
     _disableByType(deviceType) {
-        let ids = [];
-        let filteredPointingDevices = this.pointingDevices.filter((d) => {
-            return (d.type === deviceType);
-        });
-        for (let i = 0; i < filteredPointingDevices.length; i++) {
-            ids.push(filteredPointingDevices[i].id);
-        }
+        let ids = this._filterIdsByType(deviceType);
         return this._disable(ids);
     }
 
@@ -145,5 +133,23 @@ class XInput {
         for (let i = 0; i < ids.length; ++i) {
             Lib.executeCmdAsync(`xinput set-prop ${ids[i]} "Device Enabled" 0`);
         }
+    }
+
+    _filterIdsByType (deviceType) {
+        let ids = [];
+        let filteredPointingDevices = this.pointingDevices.filter((d) => {
+            return (d.type === deviceType);
+        });
+        for (let i = 0; i < filteredPointingDevices.length; i++) {
+            ids.push(filteredPointingDevices[i].id);
+        }
+        return ids;
+    }
+
+    _isPresent(deviceType) {
+        let ids = this._filterIdsByType(deviceType);
+        let isPresent = (ids.length > 0);
+        logging(`_isPresent(${deviceType}): ${isPresent}`);
+        return isPresent;
     }
 }
