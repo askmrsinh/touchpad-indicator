@@ -26,7 +26,7 @@
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Me.imports.lib;
 
-// for consistency
+// for consistency, does nothing.
 const USE_XINPUT = true;
 
 function logging(event) {

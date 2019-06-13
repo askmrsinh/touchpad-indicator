@@ -474,8 +474,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this._extSettings.get_boolean(KEY_TPD_ENABLED)) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
             }
-            // TODO: Watch autoswitch-* key cahnges.
-            //       Consider autoswitch-* key was set to 'false' while touchpad
+            // TODO: Consider autoswitch-* key was set to 'false' while touchpad
             //       is disabled and then user unplugs the mouse.
         }
     }

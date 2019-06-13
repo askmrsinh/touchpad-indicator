@@ -102,6 +102,7 @@ function readLog(filepath) {
 }
 
 function logger(event, filepath) {
+    // TODO: More structured logging.
     let timestamp = new Date(new Date().getTime()).toISOString();
     let message = `${timestamp} ${event}`;
     global.log(LOG_PREFIX + message);
