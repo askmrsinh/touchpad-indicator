@@ -34,131 +34,116 @@ function logging(event) {
 }
 
 class XInput {
-    constructor(devices) {
-        this._init(devices);
+    constructor() {
+        this._init();
     }
 
-    _init(devices) {
-        logging(`_init(${devices})`);
-        this.devices = devices;
-        this.ids = this._getIds();
-        this.isPresent = this._isPresent();
-        logging(`_init(): Found Device - ${
-            this.isPresent.toString()} ${this.ids}`);
+    _init() {
+        logging('_init()');
+        this.pointingDevices = this._listPointingDevices()[1];
+        this.isUsable = this._isUsable();
     }
 
-    _getIds() {
-        let tpids = [];
-        let y = 0;
-        let allIds = this._getAllIds();
-        for (let id = 0; id < allIds.length; id++) {
-            if (this._isDevice(allIds[id]) === true) {
-                tpids[y] = allIds[id];
-                y++;
-            }
-        }
-        return tpids;
-    }
-
-    _getAllIds() {
-        let devids = [];
+    _isUsable() {
         let comp = Lib.executeCmdSync('xinput --list');
-        if (comp[0]) {
-            let lines = comp[1].split('\n');
-            let line = 0;
-            //assuming that 'pointer' lines always appear fist & together
-            while (lines[line].includes('pointer')) {
-                devids.push(lines[line].split('id=')[1].split('\t')[0]);
-                line++;
-            }
+        if (comp[1]) {
+            logging('_isUsable(): xinput found and ready to use');
+            return true;
         }
-        return devids;
-    }
 
-    _isDevice(id) {
-        let comp = Lib.executeCmdSync(`xinput --list-props ${id.toString()}`);
-        return this._searchDevice(comp[1]);
-    }
-
-    _isPresent() {
-        return this.ids.length > 0;
-    }
-
-    _searchDevice(where) {
-        if (where) {
-            where = where.toLowerCase();
-            for (let tpid = 0; tpid < this.devices.length; tpid++) {
-                if (where.includes(this.devices[tpid].toString().toLowerCase())) {
-                    return true;
-                }
-            }
-        }
+        logging('_isUsable(): unknown situation - Return false');
         return false;
     }
 
-    _setDeviceEnabled(id) {
-        logging(`_setDeviceEnabled() id: ${id.toString()}`);
-        return Lib.executeCmdAsync(`xinput set-prop ${id.toString()
-        } "Device Enabled" 1`);
-    }
-
-    _setDeviceDisabled(id) {
-        logging(`_setDeviceDisabled() id: ${id.toString()}`);
-        return Lib.executeCmdAsync(`xinput set-prop ${id.toString()
-        } "Device Enabled" 0`);
-    }
-
-    _disableAllDevices() {
-        for (let id = 0; id < this.ids.length; id++) {
-            this._setDeviceDisabled(this.ids[id]);
-        }
-        return !this._allDevicesEnabled();
-    }
-
-    _enableAllDevices() {
-        for (let id = 0; id < this.ids.length; id++) {
-            this._setDeviceEnabled(this.ids[id]);
-        }
-        return this._allDevicesEnabled();
-    }
-
-    _switchAllDevices(state) {
-        for (let id = 0; id < this.ids.length; id++) {
-            if (state) {
-                this._setDeviceEnabled(this.ids[id]);
-            } else {
-                this._setDeviceDisabled(this.ids[id]);
-            }
-        }
-        return this._allDevicesEnabled();
-    }
-
-    _isDeviceEnabled(id) {
-        logging('_isDeviceEnabled()');
-        let lines = Lib.executeCmdSync(`xinput --list-props ${id.toString()}`);
-        if (lines) {
-            lines = lines[1].split('\n');
-            for (let line = 0; line < lines.length; line++) {
-                if (lines[line].toString().toLowerCase().includes('device enabled')) {
-                    if (lines[line].toString().split(':')[1].includes('1')) {
-                        return true;
-                    }
+    _listPointingDevices() {
+        let pointingDevices = [];
+        let comp = Lib.executeCmdSync('xinput --list');
+        let allDeviceLines = comp[1].split('\n');
+        let x = 0;
+        //assuming that 'pointer' lines always appear fist & together
+        while (allDeviceLines[x].includes('pointer')) {
+            if (allDeviceLines[x].indexOf('Virtual') === -1) {
+                let pointingDeviceLine = allDeviceLines[x];
+                let pointingDevice = this._makePointingDevice(pointingDeviceLine);
+                if (pointingDevice !== undefined) {
+                    pointingDevices.push(pointingDevice);
                 }
             }
+            x++;
         }
-        return false;
+        if (pointingDevices[0]) {
+            return [true, pointingDevices];
+        } else {
+            return [false, '    - No Pointing Devices detected.\n'];
+        }
     }
 
-    _allDevicesEnabled() {
-        if (!this.isPresent) {
-            return false;
-        }
-        for (let id = 0; id < this.ids.length; id++) {
-            if (this._isDeviceEnabled(this.ids[id]) === false) {
-                return false;
+    _makePointingDevice(pointingDeviceLine) {
+        let pointingDevice = {};
+        let id = pointingDeviceLine.split('id=')[1].split('\t')[0];
+        let name = Lib.executeCmdSync(`xinput --list --name-only ${id}`)[1];
+        for (let type in Lib.ALL_TYPES) {
+            if (Lib.ALL_TYPES[type].some((v) => {
+                return (name.toLowerCase().indexOf(v) >= 0);
+            })) {
+                pointingDevice.id = id;
+                pointingDevice.type = type;
+                pointingDevice.name = name;
+                return pointingDevice;
             }
         }
-        return true;
+        return;
+    }
+
+    _enableAll() {
+        for (let i = 0; i < this.pointingDevices.length; ++i) {
+            let id = this.pointingDevices[i].id;
+            Lib.executeCmdAsync(`xinput set-prop ${id} "Device Enabled" 1`);
+        }
+    }
+
+    _enableByType(deviceType) {
+        let ids = [];
+        let filteredPointingDevices = this.pointingDevices.filter((d) => {
+            return (d.type === deviceType);
+        });
+        for (let i = 0; i < filteredPointingDevices.length; i++) {
+            ids.push(filteredPointingDevices[i].id);
+        }
+        return this._enable(ids);
+    }
+
+    _disableByType(deviceType) {
+        let ids = [];
+        let filteredPointingDevices = this.pointingDevices.filter((d) => {
+            return (d.type === deviceType);
+        });
+        for (let i = 0; i < filteredPointingDevices.length; i++) {
+            ids.push(filteredPointingDevices[i].id);
+        }
+        return this._disable(ids);
+    }
+
+    _switchByType(deviceType, state) {
+        logging(`_switchByType(): ${deviceType}(s) set to ${state}`);
+        if (state) {
+            this._enableByType(deviceType);
+        } else {
+            this._disableByType(deviceType);
+        }
+    }
+
+    _enable(ids) {
+        logging(`_enable(${ids})`);
+        for (let i = 0; i < ids.length; ++i) {
+            Lib.executeCmdAsync(`xinput set-prop ${ids[i]} "Device Enabled" 1`);
+        }
+    }
+
+    _disable(ids) {
+        logging(`_disable(${ids})`);
+        for (let i = 0; i < ids.length; ++i) {
+            Lib.executeCmdAsync(`xinput set-prop ${ids[i]} "Device Enabled" 0`);
+        }
     }
 }
-

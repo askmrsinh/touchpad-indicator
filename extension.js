@@ -59,6 +59,7 @@ function logging(event) {
 var TouchpadIndicator = GObject.registerClass(
 class TouchpadIndicatorButton extends PanelMenu.Button {
     _init() {
+        logging(`_init`);
         super._init(0.0, 'Touchpad Indicator');
         this.hbox = new St.BoxLayout({
             style_class: 'panel-status-menu-box'
@@ -95,16 +96,13 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
 
         // XINPUT related
-        this.xinputIsUsable = Lib.executeCmdSync('xinput --list');
-
-        if (this.xinputIsUsable[0] !== true) {
+        this.xinput = new XInput.XInput();
+        if (this.xinput.isUsable !== true) {
             logging('_init(): Can`t use Xinput');
             this._extSettings.set_boolean('autoswitch-trackpoint', false);
         } else {
             logging('_init(): Xinput OK.');
         }
-
-        this.touchpadXinput = new XInput.XInput(Lib.ALL_TYPES['touchpad']);
 
         // Switch method to start with
         this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
@@ -116,7 +114,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
 
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
-            this.touchpadXinput._enableAllDevices();
+            this.xinput._enableAll();
         }
 
         if (this._switchMethod !== Lib.METHOD.GCONF) {
@@ -272,7 +270,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         logging(`_switchMethodChanged: ${oldSwitchMethod}, ${this._switchMethod}`);
 
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
-            this.touchpadXinput._enableAllDevices();
+            this.xinput._enableByType('touchpad');
         }
 
         this._queueSyncPointingDevice(KEY_TPD_ENABLED);
@@ -340,10 +338,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             if (isGconfInSync === false) {
                 this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
             }
-            this.touchpadXinput._switchAllDevices(valTpdEnabled);
-            if ((valTpdEnabled === false) && !this.touchpadXinput.isPresent) {
-                this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
-            }
+            this.xinput._switchByType('touchpad', valTpdEnabled);
+            // TODO: Check this condition.
+            // if ((valTpdEnabled === false) && !this.xinput.isPresent) {
+            //     this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
+            // }
             break;
         case Lib.METHOD.SYNCLIENT:
             logging('_syncTouchpad: Lib.METHOD.SYNCLIENT');
@@ -351,6 +350,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
             }
             this.synclient._switch(valTpdEnabled);
+            // TODO: Check this condition.
             if ((valTpdEnabled === false) && !this.synclient.tpdOff) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
             }
@@ -376,7 +376,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             // Reset if touchpad was externally enabled through gsettings
             // and extension switch method is other than gconf.
             if (this._switchMethod !== Lib.METHOD.GCONF) {
-                this.touchpadXinput._enableAllDevices();
+                this.xinput._enableByType('touchpad');
                 this.synclient._enable();
             }
             this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
@@ -494,7 +494,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _resetConfig() {
         logging('_resetConfig');
         this.synclient._enable();
-        this.touchpadXinput._enableAllDevices();
+        this.xinput._enableAll();
 
         this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
     }
