@@ -491,10 +491,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
     // Make sure to enable related config when extension is disabled
     _resetConfig() {
-        logging('_resetPointingDevices');
-        this.touchpadXinput._enableAllDevices();
+        logging('_resetConfig');
         this.synclient._enable();
-        // TODO: Set `send-events` to 'enabled' if its not?
+        this.touchpadXinput._enableAllDevices();
+
+        this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
     }
 });
 
@@ -512,6 +513,8 @@ function enable() {
 
 // eslint-disable-next-line no-unused-vars
 function disable() {
+    // NOTE: This is called when activating Lock Screen (eg. Super+L) besides
+    //       when explicitly disabling the extension eg. through Tweak Tool.
     _indicator._disconnectSignals();
     _indicator._removeKeybinding();
     _indicator._resetConfig();
