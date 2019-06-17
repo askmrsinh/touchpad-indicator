@@ -336,7 +336,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         //       let system's touchpad settings (`send-events` key) work on top
         //       of the switch method's touchpad enabling/disabling mechanism.
         if ((key === KEY_TPD_ENABLED) &&
-            isGconfInSync && (this._switchMethodChanged === false)) {
+            (this._switchMethodChanged === false) && isGconfInSync) {
+            // TODO: Check this on gnome-shell reload.
+            if (this.synclient.isUsable &&
+                (this._switchMethod !== Lib.METHOD.SYNCLIENT)) {
+                this.synclient._switch(valTpdEnabled);
+            }
             logging(`_queueSyncPointingDevice(${key}) - Already in sync.`);
             return;
         }
