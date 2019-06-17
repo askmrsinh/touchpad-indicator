@@ -109,12 +109,12 @@ class XInput {
     }
 
     _enableByType(deviceType) {
-        let ids = this._filterIdsByType(deviceType);
+        let ids = this._filterByType(deviceType).ids;
         return this._enable(ids);
     }
 
     _disableByType(deviceType) {
-        let ids = this._filterIdsByType(deviceType);
+        let ids = this._filterByType(deviceType).ids;
         return this._disable(ids);
     }
 
@@ -141,19 +141,21 @@ class XInput {
         }
     }
 
-    _filterIdsByType (deviceType) {
+    _filterByType (deviceType) {
         let ids = [];
+        let names = [];
         let filteredPointingDevices = this.pointingDevices.filter((d) => {
             return (d.type === deviceType);
         });
         for (let i = 0; i < filteredPointingDevices.length; i++) {
             ids.push(filteredPointingDevices[i].id);
+            names.push(filteredPointingDevices[i].name);
         }
-        return ids;
+        return { 'ids': ids, 'names': names };
     }
 
     _isPresent(deviceType) {
-        let ids = this._filterIdsByType(deviceType);
+        let ids = this._filterByType(deviceType).ids;
         let isPresent = (ids.length > 0);
         logging(`_isPresent(${deviceType}): ${isPresent}`);
         return isPresent;
