@@ -13,6 +13,24 @@
             <default>true</default>
         </key>
         <!--  -->
+        <key type="b" name="autoswitch-touchpad">
+            <default>true</default>
+        </key>
+        <key type="b" name="show-notifications">
+            <default>false</default>
+        </key>
+        <key type="as" name="toggle-touchpad">
+            <default><![CDATA[['<Ctrl><Super><Alt>t']]]></default>
+        </key>
+        <!-- -->
+        <key type="b" name="debug">
+            <default>false</default>
+        </key>
+        <key type="b" name="debug-to-file">
+            <default>true</default>
+        </key>
+        <!--  -->
+        <!-- *-enabled keys -->
         <key type="b" name="touchpad-enabled">
             <default>true</default>
         </key>
@@ -27,17 +45,6 @@
         </key>
         <key type="b" name="pen-enabled">
             <default>true</default>
-        </key>
-        <!--  -->
-        <key type="b" name="autoswitch-touchpad">
-            <default>true</default>
-        </key>
-        <key type="b" name="show-notifications">
-            <default>false</default>
-        </key>
-        <!--  -->
-        <key type="as" name="toggle-touchpad">
-            <default><![CDATA[['<Ctrl><Super><Alt>t']]]></default>
         </key>
     </schema>
 </schemalist>
