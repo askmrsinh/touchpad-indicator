@@ -80,6 +80,7 @@ function createLogFile(filepath) {
 }
 
 function writeLog(filepath, contents) {
+    filepath = (filepath !== undefined) ? filepath : LOG_FILEPATH;
     let isSuccess = false;
     try {
         isSuccess = GLib.file_set_contents(filepath, contents);
@@ -91,6 +92,7 @@ function writeLog(filepath, contents) {
 }
 
 function readLog(filepath) {
+    filepath = (filepath !== undefined) ? filepath : LOG_FILEPATH;
     let [isSuccess, contents] = [false, ''];
     try {
         [isSuccess, contents] = GLib.file_get_contents(filepath);
@@ -102,13 +104,19 @@ function readLog(filepath) {
 }
 
 function logger(event, filepath) {
+    // TODO: Fix log file exists check
+    filepath = (filepath !== undefined) ? filepath : LOG_FILEPATH;
+    let logFileExists = true;
+    if (DEBUG_TO_FILE && !logFileExists) {
+        createLogFile(filepath);
+    }
     // TODO: More structured logging.
     let timestamp = new Date(new Date().getTime()).toISOString();
     let message = `${timestamp} ${event}`;
     global.log(LOG_PREFIX + message);
-    if (filepath) {
+    if (DEBUG_TO_FILE && logFileExists) {
         let messages = readLog(filepath)[1] + message;
-        writeLog(filepath, messages);
+        writeLog(filepath, `${messages}\n`);
     }
 }
 

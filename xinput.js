@@ -92,8 +92,8 @@ class XInput {
                 // eslint-disable-next-line prefer-template
                 logging('_makePointingDevice(): Found ' + pointingDevice.type +
                         ',' +
-                        ' Id=' + pointingDevice.id +
-                        ' Name=' + pointingDevice.name);
+                        ' Id="' + pointingDevice.id + '"' +
+                        ' Name="' + pointingDevice.name + '"');
                 return pointingDevice;
             }
         }
@@ -101,6 +101,7 @@ class XInput {
     }
 
     _enableAll() {
+        logging('_enableAll()');
         for (let i = 0; i < this.pointingDevices.length; ++i) {
             let id = this.pointingDevices[i].id;
             Lib.executeCmdAsync(`xinput set-prop ${id} "Device Enabled" 1`);
