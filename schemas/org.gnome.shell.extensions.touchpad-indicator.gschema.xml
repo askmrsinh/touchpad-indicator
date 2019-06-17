@@ -7,13 +7,9 @@
     </enum>
     <schema path="/org/gnome/shell/extensions/touchpad-indicator/" id="org.gnome.shell.extensions.touchpad-indicator">
         <key name="switchmethod" enum="org.gnome.shell.extensions.touchpad-indicator.switchmethod">
-            <default>'xinput'</default>
+            <default>"gconf"</default>
         </key>
-        <!--  -->
         <key type="b" name="show-panelicon">
-            <default>true</default>
-        </key>
-        <key type="b" name="show-notifications">
             <default>true</default>
         </key>
         <!--  -->
@@ -36,7 +32,7 @@
         <key type="b" name="autoswitch-touchpad">
             <default>true</default>
         </key>
-        <key type="b" name="autoswitch-trackpoint">
+        <key type="b" name="show-notifications">
             <default>false</default>
         </key>
         <!--  -->
