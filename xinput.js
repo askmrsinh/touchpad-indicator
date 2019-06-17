@@ -87,7 +87,7 @@ class XInput {
                 return (name.toLowerCase().indexOf(t) >= 0);
             })) {
                 pointingDevice.id = id;
-                pointingDevice.name = name.slice(0, -1);
+                pointingDevice.name = name;
                 pointingDevice.type = type;
                 // eslint-disable-next-line prefer-template
                 logging('_makePointingDevice(): Found ' + pointingDevice.type +

@@ -134,7 +134,7 @@ function executeCmdSync(command) {
     let [isSuccess, stdOut] = [false, ''];
     try {
         [isSuccess, stdOut] = GLib.spawn_command_line_sync(command);
-        return [isSuccess, ByteArray.toString(stdOut)];
+        return [isSuccess, ByteArray.toString(stdOut).trim()];
     } catch (err) {
         logger(err.message.toString());
         return false;
