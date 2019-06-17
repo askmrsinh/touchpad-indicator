@@ -87,8 +87,13 @@ class XInput {
                 return (name.toLowerCase().indexOf(t) >= 0);
             })) {
                 pointingDevice.id = id;
+                pointingDevice.name = name.slice(0, -1);
                 pointingDevice.type = type;
-                pointingDevice.name = name;
+                // eslint-disable-next-line prefer-template
+                logging('_makePointingDevice(): Found ' + pointingDevice.type +
+                        ',' +
+                        ' Id=' + pointingDevice.id +
+                        ' Name=' + pointingDevice.name);
                 return pointingDevice;
             }
         }
