@@ -646,6 +646,7 @@ Author: Ashesh Singh
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
+                                    <property name="label">-</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -728,6 +729,7 @@ Author: Ashesh Singh
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
+                                    <property name="label">-</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -740,6 +742,7 @@ Author: Ashesh Singh
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
+                                    <property name="label">-</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -752,6 +755,7 @@ Author: Ashesh Singh
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
+                                    <property name="label">-</property>
                                     <property name="wrap">True</property>
                                     <property name="selectable">True</property>
                                   </object>
@@ -765,6 +769,7 @@ Author: Ashesh Singh
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
+                                    <property name="label">-</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -791,6 +796,7 @@ Author: Ashesh Singh
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
+                                    <property name="label">-</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -817,6 +823,7 @@ Author: Ashesh Singh
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
+                                    <property name="label">-</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -917,7 +924,7 @@ Author: Ashesh Singh
                         <property name="margin_right">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
-                        <property name="column_spacing">32</property>
+                        <property name="column_spacing">2</property>
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="visible">True</property>
@@ -979,7 +986,24 @@ Author: Ashesh Singh
                                   <packing>
                                     <property name="left_attach">0</property>
                                     <property name="top_attach">0</property>
-                                    <property name="height">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="label" translatable="yes">Log extension events in &lt;a href="https://wiki.archlinux.org/index.php/Systemd/Journal"&gt;systemd journal&lt;/a&gt;.</property>
+                                    <property name="use_markup">True</property>
+                                    <property name="wrap">True</property>
+                                    <property name="xalign">0</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">1</property>
                                   </packing>
                                 </child>
                               </object>
@@ -988,6 +1012,7 @@ Author: Ashesh Singh
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">0</property>
+                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -1010,6 +1035,35 @@ Author: Ashesh Singh
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">1</property>
+                            <property name="width">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">start</property>
+                            <property name="margin_top">6</property>
+                            <property name="icon_name">dialog-warning</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_top">12</property>
+                            <property name="label" translatable="yes">Please note that logging is resource intensive and can slow down performance. Keep logging disabled when not required.</property>
+                            <property name="use_markup">True</property>
+                            <property name="wrap">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">2</property>
                           </packing>
                         </child>
                       </object>
