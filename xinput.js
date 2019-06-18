@@ -145,14 +145,16 @@ class XInput {
     _filterByType (deviceType) {
         let ids = [];
         let names = [];
+        let drivers = [];
         let filteredPointingDevices = this.pointingDevices.filter((d) => {
             return (d.type === deviceType);
         });
         for (let i = 0; i < filteredPointingDevices.length; i++) {
             ids.push(filteredPointingDevices[i].id);
             names.push(filteredPointingDevices[i].name);
+            drivers.push(filteredPointingDevices[i].driver);
         }
-        return { 'ids': ids, 'names': names };
+        return { 'ids': ids, 'names': names, 'drivers': drivers };
     }
 
     _isPresent(deviceType) {
