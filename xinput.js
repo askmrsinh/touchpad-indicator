@@ -89,6 +89,7 @@ class XInput {
                 pointingDevice.id = id;
                 pointingDevice.name = name;
                 pointingDevice.type = type;
+                pointingDevice.driver = this._getDriver(pointingDevice.id);
                 // eslint-disable-next-line prefer-template
                 logging('_makePointingDevice(): Found ' + pointingDevice.type +
                         ',' +
@@ -159,5 +160,15 @@ class XInput {
         let isPresent = (ids.length > 0);
         logging(`_isPresent(${deviceType}): ${isPresent}`);
         return isPresent;
+    }
+
+    _getDriver(id) {
+        let properties = Lib.executeCmdSync(`xinput --list-props ${id}`)[1];
+        if (properties.includes('libinput')) {
+            return 'libinput';
+        } else if (properties.includes('Synaptics')) {
+            return 'Synaptics';
+        }
+        return 'other';
     }
 }
