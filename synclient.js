@@ -51,15 +51,15 @@ class Synclient {
         }
 
         let comp = Lib.executeCmdSync('synclient -l');
-        if (comp[1].includes('TouchpadOff')) {
-            logging('_isUsable(): synclient found and ready to use');
-            return true;
+        if ((comp[0] === false) || (comp[1] === undefined)) {
+            logging('_isUsable(): synclient not found');
+            return false;
         } else if (comp[1].includes("Couldn't find synaptics properties")) {
             logging('_isUsable(): no properties found');
             return false;
-        } else if (comp[1] === '') {
-            logging('_isUsable(): synclient not found');
-            return false;
+        } else if (comp[1].includes('TouchpadOff')) {
+            logging('_isUsable(): synclient found and ready to use');
+            return true;
         }
 
         logging('_isUsable(): unknown situation - Return false');
