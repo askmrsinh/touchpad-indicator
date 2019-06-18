@@ -192,11 +192,13 @@ var Settings = class TouchpadIndicatorSettings {
             this._builder.get_object('debug_to_file_checkbox').set_visible(true);
             this._builder.get_object('debug_to_file_checkbox').set_active(
                 this._settings.get_boolean('debug-to-file'));
+            // TODO: Read logs on set intervals and update buffer
             this._builder.get_object('log_text_buffer').set_text(Lib.readLog()[1], -1);
             this._builder.get_object('log_text_view').scroll_to_mark(
                 this._builder.get_object('log_text_buffer').get_insert(),
                 0.0, true, 0.5, 1
             );
+            this._builder.get_object('log_scrolled_window').set_visible(true);
         }
     }
 

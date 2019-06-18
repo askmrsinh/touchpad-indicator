@@ -408,19 +408,6 @@ Author: Ashesh Singh
                         <property name="margin_bottom">12</property>
                         <property name="column_spacing">32</property>
                         <child>
-                          <object class="GtkAccelLabel" id="toggle_touchpad_accel_label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="hexpand">False</property>
-                            <property name="label">&lt;tt&gt;Ctrl + Super + Alt + T&lt;/tt&gt;</property>
-                            <property name="use_markup">True</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -430,6 +417,18 @@ Author: Ashesh Singh
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="toggle_touchpad_label">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">&lt;tt&gt;Ctrl + Super + Alt + T&lt;/tt&gt;</property>
+                            <property name="use_markup">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
                             <property name="top_attach">0</property>
                           </packing>
                         </child>
@@ -994,7 +993,6 @@ Author: Ashesh Singh
                         <child>
                           <object class="GtkScrolledWindow" id="log_scrolled_window">
                             <property name="height_request">150</property>
-                            <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hexpand">True</property>
                             <property name="shadow_type">in</property>
