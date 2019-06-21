@@ -23,7 +23,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 const { Gio, GLib, GObject, Meta, Shell, St } = imports.gi;
 const Mainloop = imports.mainloop;
 

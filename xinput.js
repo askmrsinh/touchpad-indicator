@@ -1,10 +1,10 @@
-/*
- * Copyright 2011-2013 Armin Köhler <orangeshirt at web.de>
+/* TouchpadIndicator - Touchpad management GNOME Shell Extension.
+ * Orignal work Copyright (C) 2011-2013 Armin Köhler <orangeshirt at web.de>
+ * Modifcations Copyright (C) 2019 Ashesh Singh <user501254 at gmail.com>
  *
- * Thanks to Lorenzo Carbonell Cerezo and Miguel Angel Santamaría Rogado
- * which has written touchpad-indicator
- * (https://launchpad.net/touchpad-indicator) as python app and inspired
- * myself to write this extension for gnome-shell.
+ * This file is part of TouchpadIndicator, a fork of Armin Köhler's
+ * 'gnome-shell-extension-touchpad-indicator' project which is licensed GPLv2.
+ * Orignal source code is available at https://git.io/fjVec.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free

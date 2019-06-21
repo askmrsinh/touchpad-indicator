@@ -23,7 +23,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 const { Gio, Gtk } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;

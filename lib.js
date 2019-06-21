@@ -23,7 +23,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 const { Gio, GLib } = imports.gi;
 const ByteArray = imports.byteArray;
 
@@ -59,7 +58,6 @@ var ALL_OTHERS = OTHERS.slice();
 
 // Methods to enable or disable the touchpad
 var METHOD = { GCONF: 0, SYNCLIENT: 1, XINPUT: 2 };
-
 
 function createLogFile(filepath) {
     const PERMISSIONS_MODE = 0o755;
@@ -120,7 +118,6 @@ function logger(event, filepath) {
     }
 }
 
-
 function executeCmdAsync(command) {
     try {
         return GLib.spawn_command_line_async(command);
@@ -145,7 +142,6 @@ function watchDevInput() {
     let file = Gio.file_new_for_path('/dev/input');
     return file.monitor_directory(Gio.FileMonitorFlags.WATCH_MOUNTS, null);
 }
-
 
 function makePointingDevice(pointingDeviceLines) {
     //assuming that N: & P: always appear at lines 2 and 3 respectively
@@ -186,7 +182,6 @@ function listPointingDevices() {
         return [false, '    - No Pointing Devices detected.\n'];
     }
 }
-
 
 function removeSource(...args) {
     return GLib.source_remove(...args);
