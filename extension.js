@@ -308,6 +308,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
             this.xinput._enableByType('touchpad');
         }
+        if ((this._switchMethod !== Lib.METHOD.SYNCLIENT) &&
+            this.synclient.isUsable) {
+            this.synclient._enable();
+        }
 
         this._queueSyncPointingDevice(KEY_TPD_ENABLED);
     }
