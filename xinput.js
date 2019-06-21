@@ -30,7 +30,9 @@ const Lib = Me.imports.lib;
 const USE_XINPUT = true;
 
 function logging(event) {
-    Lib.logger(`XInput.${event}`);
+    if (Lib.DEBUG) {
+        Lib.logger(`XInput.${event}`);
+    }
 }
 
 class XInput {
@@ -92,9 +94,9 @@ class XInput {
                 pointingDevice.driver = this._getDriver(pointingDevice.id);
                 // eslint-disable-next-line prefer-template
                 logging('_makePointingDevice(): Found ' + pointingDevice.type +
-                        ',' +
-                        ' Id="' + pointingDevice.id + '"' +
-                        ' Name="' + pointingDevice.name + '"');
+                        ', Id="' + pointingDevice.id + '"' +
+                        ', Name="' + pointingDevice.name + '"' +
+                        ', Driver="' + pointingDevice.driver + '"');
                 return pointingDevice;
             }
         }
@@ -120,7 +122,7 @@ class XInput {
     }
 
     _switchByType(deviceType, state) {
-        logging(`_switchByType(): ${deviceType}(s) set to ${state}`);
+        logging(`_switchByType(${deviceType}, ${state})`);
         if (state) {
             this._enableByType(deviceType);
         } else {

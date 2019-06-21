@@ -56,13 +56,14 @@ const KEY_PEN_ENABLED = 'pen-enabled';
 const ICON_ENABLED = 'input-touchpad-symbolic';
 
 function logging(event) {
-    Lib.logger(`TouchpadIndicator.${event}`);
+    if (Lib.DEBUG) {
+        Lib.logger(`TouchpadIndicator.${event}`);
+    }
 }
 
 var TouchpadIndicator = GObject.registerClass(
 class TouchpadIndicatorButton extends PanelMenu.Button {
     _init() {
-        logging('_init()');
         super._init(0.0, 'Touchpad Indicator');
         this.hbox = new St.BoxLayout({
             style_class: 'panel-status-menu-box'
@@ -80,7 +81,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         // Purely for logging and debugging
         this._debug = this._extSettings.get_boolean('debug');
-        global.log('ashessin', this._debug);
         Lib.DEBUG = this._debug;
         this._keyDebugSignal = this._extSettings.connect(
             'changed::debug',
@@ -99,6 +99,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             `changed::${KEY_SEND_EVENTS}`,
             this._logSKeyChange.bind(this));
 
+        logging('_init()');
 
         // SYNCLIENT related
         this.synclient = new Synclient.Synclient();
@@ -108,7 +109,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         } else {
             logging('_init(): Synclient OK.');
         }
-
 
         // XINPUT related
         this.xinput = new XInput.XInput();
@@ -201,11 +201,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _logSKeyChange() {
-        logging('_logSKeyChange: System Key Changed');
+        logging('_logSKeyChange(): System Key Changed');
     }
 
     _logEKeyChange() {
-        logging('_logEKeyChange: Extension Key Changed');
+        logging('_logEKeyChange(): Extension Key Changed');
     }
 
     _buildItemExtended(string, initialValue, writable, onSet) {
@@ -237,7 +237,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._extSettings.is_writable(key),
             (enabled) => {
                 if (this._extSettings.get_boolean(key) !== enabled) {
-                    logging(`_buildItem - ${string} switch set to ${enabled}.`);
+                    logging(`_buildItem(): ${string} switch set to ${enabled}.`);
                     this._extSettings.set_boolean(key, enabled);
                 }
             });
@@ -295,14 +295,14 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _syncSwitchMethod() {
-        logging('_switchMethodChanged()');
+        logging('_syncSwitchMethod()');
 
         let oldSwitchMethod = this._switchMethod;
 
         this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
         this._switchMethodChanged = true;
-        logging(`_switchMethodChanged(): old ${oldSwitchMethod}`);
-        logging(`_switchMethodChanged(): new ${this._switchMethod}`);
+        logging(`_syncSwitchMethod(): old ${oldSwitchMethod}`);
+        logging(`_syncSwitchMethod(): new ${this._switchMethod}`);
 
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
             this.xinput._enableByType('touchpad');
@@ -338,46 +338,46 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // NOTE: When switch method is other than gconf (ie. xinput, synclient)
         //       let system's touchpad settings (`send-events` key) work on top
         //       of the switch method's touchpad enabling/disabling mechanism.
-        if ((key === KEY_TPD_ENABLED) &&
-            (this._switchMethodChanged === false) && isGconfInSync) {
+        if (!([KEY_PEN_ENABLED, KEY_FTH_ENABLED, KEY_TSN_ENABLED].includes(key))
+             && (this._switchMethodChanged === false) && isGconfInSync) {
             // TODO: Check this on gnome-shell reload.
             if (this.synclient.isUsable &&
                 (this._switchMethod !== Lib.METHOD.SYNCLIENT)) {
                 this.synclient._switch(valTpdEnabled);
             }
-            logging(`_queueSyncPointingDevice(${key}) - Already in sync.`);
+            logging(`_queueSyncPointingDevice(...) - Already in sync.`);
             return;
         }
 
         switch (key) {
         case KEY_PEN_ENABLED:
-            logging(`_queueSyncPointingDevice(${key}): KEY_PEN_ENABLED`);
+            logging(`_queueSyncPointingDevice(...): KEY_PEN_ENABLED`);
             this.xinput._switchByType(
                 'pen', this._extSettings.get_boolean(KEY_PEN_ENABLED));
             break;
         case KEY_FTH_ENABLED:
-            logging(`_queueSyncPointingDevice(${key}): KEY_FTH_ENABLED`);
+            logging(`_queueSyncPointingDevice(...): KEY_FTH_ENABLED`);
             this.xinput._switchByType(
                 'fingertouch', this._extSettings.get_boolean(KEY_FTH_ENABLED));
             break;
         case KEY_TSN_ENABLED:
-            logging(`_queueSyncPointingDevice(${key}): KEY_TSN_ENABLED`);
+            logging(`_queueSyncPointingDevice(...): KEY_TSN_ENABLED`);
             this.xinput._switchByType(
                 'touchscreen', this._extSettings.get_boolean(KEY_TSN_ENABLED));
             break;
         case KEY_TPT_ENABLED:
-            logging(`_queueSyncPointingDevice(${key}): KEY_TPT_ENABLED`);
+            logging(`_queueSyncPointingDevice(...): KEY_TPT_ENABLED`);
             this.xinput._switchByType(
                 'trackpoint', this._extSettings.get_boolean(KEY_TPT_ENABLED));
             break;
         // Touchpad enabled/disabled through SCHEMA_EXTENSION 'touchpad-enabled'
         case KEY_TPD_ENABLED:
-            logging(`_queueSyncPointingDevice(${key}): KEY_TPD_ENABLED`);
+            logging(`_queueSyncPointingDevice(...): KEY_TPD_ENABLED`);
             this._syncTouchpad(valTpdEnabled, valSendEvents, isGconfInSync);
             break;
         // Touchpad enabled/disabled through SCHEMA_TOUCHPAD 'send-events'
         default:
-            logging(`_queueSyncPointingDevice(${key}): default`);
+            logging(`_queueSyncPointingDevice(...): default`);
             this._onsetSendEvents(valTpdEnabled, valSendEvents);
         }
 
@@ -387,7 +387,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _syncTouchpad(valTpdEnabled, valSendEvents, isGconfInSync) {
-        logging(`_syncTouchpad(${valTpdEnabled}, ${valSendEvents}, ${isGconfInSync}`);
+        logging(`_syncTouchpad(${valTpdEnabled}, ${valSendEvents}, ${isGconfInSync})`);
 
         // NOTE: When extension's `touchpad-enabled` key is changed, always
         //       sync this change on to the system's `send-events` key, then
@@ -424,12 +424,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _onsetSendEvents(valTpdEnabled, valSendEvents) {
-        logging('_onsetSendEvents');
+        logging(`_onsetSendEvents(${valTpdEnabled}, ${valSendEvents})`);
 
         // `send-events` is OFF / not ON; `touchpad-enabled` is ON
         //  set `touchpad-enabled` to OFF
         if ((valSendEvents !== 'enabled') && (valTpdEnabled !== false)) {
-            logging('_onsetSendEvents: false');
+            logging('_onsetSendEvents(...): set `touchpad-enabled` to false');
             this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
             return;
         }
@@ -437,24 +437,24 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // `send-events` is ON; `touchpad-enabled` is OFF
         //  set `touchpad-enabled` to ON
         if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
-            logging('_onsetSendEvents: true');
             // Reset if touchpad was externally enabled through gsettings
             // and extension switch method is other than gconf.
             if (this._switchMethod !== Lib.METHOD.GCONF) {
                 this.xinput._enableByType('touchpad');
                 this.synclient._enable();
             }
+            logging('_onsetSendEvents(...): set touchpad-enabled` to true');
             this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
         }
     }
 
     _onsetTouchpadEnable(valTpdEnabled, valSendEvents) {
-        logging('_onsetTouchpadEnable');
+        logging(`_onsetTouchpadEnable(${valTpdEnabled}, ${valSendEvents})`);
 
         // `touchpad-enabled` is ON; `send-events` is OFF / not ON;
         //  set `send-events` to ON
         if ((valTpdEnabled === true) && (valSendEvents !== 'enabled')) {
-            logging('_onsetTouchpadEnable: enabled');
+            logging('_onsetTouchpadEnable(...): set `send-events` to enabled');
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
             return;
         }
@@ -462,7 +462,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // `touchpad-enabled` is OFF; `send-events` is ON / not OFF;
         //  set `send-events` to OFF
         if ((valTpdEnabled === false) && (valSendEvents !== 'disabled')) {
-            logging('_onsetTouchpadEnable: disabled');
+            logging('_onsetTouchpadEnable(...): set `send-events` to disabled');
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'disabled');
         }
     }
@@ -596,6 +596,7 @@ function enable() {
 
 // eslint-disable-next-line no-unused-vars
 function disable() {
+    logging('disable()');
     // NOTE: This is called when activating Lock Screen (eg. Super+L) besides
     //       when explicitly disabling the extension eg. through Tweak Tool.
     _indicator._disconnectSignals();

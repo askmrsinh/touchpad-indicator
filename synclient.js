@@ -30,7 +30,9 @@ const Lib = Me.imports.lib;
 const USE_SYNCLIENT = true;
 
 function logging(event) {
-    Lib.logger(`Synclient.${event}`);
+    if (Lib.DEBUG) {
+        Lib.logger(`Synclient.${event}`);
+    }
 }
 
 class Synclient {
