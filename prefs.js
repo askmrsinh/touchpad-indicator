@@ -25,7 +25,6 @@
 
 
 const { Gio, Gtk } = imports.gi;
-const Lang = imports.lang;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 
@@ -37,10 +36,6 @@ const Synclient = Me.imports.synclient;
 // Settings
 const SCHEMA_EXTENSION = 'org.gnome.shell.extensions.touchpad-indicator';
 const SCHEMA_TOUCHPAD = 'org.gnome.desktop.peripherals.touchpad';
-
-function logging(event) {
-    Lib.logger(`TouchpadIndicatorSettings.${event}`);
-}
 
 var Settings = class TouchpadIndicatorSettings {
     constructor() {
@@ -63,7 +58,6 @@ var Settings = class TouchpadIndicatorSettings {
         this._notebook = this._builder.get_object('ti_notebook');
         this.widget.add(this._notebook);
 
-
         this._populateAboutTab();
         this._populateDebugTab(settings, synclient, xinput);
 
@@ -72,7 +66,7 @@ var Settings = class TouchpadIndicatorSettings {
         // Set a reasonable initial window height
         this.widget.connect('realize', () => {
             let window = this.widget.get_toplevel();
-            window.resize(610, 550);
+            window.resize(640, 550);
         });
     }
 
@@ -146,7 +140,6 @@ var Settings = class TouchpadIndicatorSettings {
             'active',
             Gio.SettingsBindFlags.DEFAULT);
 
-
         this._builder.get_object('debug_switch').connect('state-set',
             () => {
                 let state = !this._builder.get_object('debug_switch').get_state();
@@ -218,8 +211,6 @@ function init() {
 }
 
 function buildPrefsWidget() {
-    logging('buildPrefsWidget()');
-
     let settings = new Settings();
     let widget = settings.widget;
     widget.show();
