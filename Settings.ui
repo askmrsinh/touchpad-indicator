@@ -114,7 +114,7 @@ Author: Ashesh Singh
                                 <property name="can_focus">False</property>
                                 <property name="active">0</property>
                                 <items>
-                                  <item id="0">GSetting</item>
+                                  <item id="0">GSettings</item>
                                   <item id="1">synclient</item>
                                   <item id="2">xinput</item>
                                 </items>
@@ -785,6 +785,7 @@ Author: Ashesh Singh
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
                                     <property name="label" translatable="yes">'send-events' key:</property>
+                                    <property name="selectable">True</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -812,6 +813,7 @@ Author: Ashesh Singh
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
                                     <property name="label" translatable="yes">'touchpad-enabled' key:</property>
+                                    <property name="selectable">True</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -1045,7 +1047,7 @@ Author: Ashesh Singh
                             <property name="halign">start</property>
                             <property name="valign">start</property>
                             <property name="margin_top">6</property>
-                            <property name="icon_name">dialog-warning</property>
+                            <property name="icon_name">dialog-information</property>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
