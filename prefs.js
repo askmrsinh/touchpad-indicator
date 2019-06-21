@@ -215,3 +215,6 @@ function buildPrefsWidget() {
     widget.show();
     return widget;
 }
+
+
+/* exported init buildPrefsWidget*/

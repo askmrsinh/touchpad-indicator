@@ -26,16 +26,13 @@
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Me.imports.lib;
 
-// for consistency, does nothing.
-const USE_XINPUT = true;
-
 function logging(event) {
     if (Lib.DEBUG) {
         Lib.logger(`XInput.${event}`);
     }
 }
 
-class XInput {
+var XInput = class XInput {
     constructor() {
         this._init();
     }
@@ -94,9 +91,9 @@ class XInput {
                 pointingDevice.driver = this._getDriver(pointingDevice.id);
                 // eslint-disable-next-line prefer-template
                 logging('_makePointingDevice(): Found ' + pointingDevice.type +
-                        ', Id="' + pointingDevice.id + '"' +
-                        ', Name="' + pointingDevice.name + '"' +
-                        ', Driver="' + pointingDevice.driver + '"');
+                    ', Id="' + pointingDevice.id + '"' +
+                    ', Name="' + pointingDevice.name + '"' +
+                    ', Driver="' + pointingDevice.driver + '"');
                 return pointingDevice;
             }
         }
@@ -144,7 +141,7 @@ class XInput {
         }
     }
 
-    _filterByType (deviceType) {
+    _filterByType(deviceType) {
         let ids = [];
         let names = [];
         let drivers = [];
@@ -175,4 +172,7 @@ class XInput {
         }
         return 'other';
     }
-}
+};
+
+
+/* exported XInput */

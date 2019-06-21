@@ -345,39 +345,39 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 (this._switchMethod !== Lib.METHOD.SYNCLIENT)) {
                 this.synclient._switch(valTpdEnabled);
             }
-            logging(`_queueSyncPointingDevice(...) - Already in sync.`);
+            logging('_queueSyncPointingDevice(...) - Already in sync.');
             return;
         }
 
         switch (key) {
         case KEY_PEN_ENABLED:
-            logging(`_queueSyncPointingDevice(...): KEY_PEN_ENABLED`);
+            logging('_queueSyncPointingDevice(...): KEY_PEN_ENABLED');
             this.xinput._switchByType(
                 'pen', this._extSettings.get_boolean(KEY_PEN_ENABLED));
             break;
         case KEY_FTH_ENABLED:
-            logging(`_queueSyncPointingDevice(...): KEY_FTH_ENABLED`);
+            logging('_queueSyncPointingDevice(...): KEY_FTH_ENABLED');
             this.xinput._switchByType(
                 'fingertouch', this._extSettings.get_boolean(KEY_FTH_ENABLED));
             break;
         case KEY_TSN_ENABLED:
-            logging(`_queueSyncPointingDevice(...): KEY_TSN_ENABLED`);
+            logging('_queueSyncPointingDevice(...): KEY_TSN_ENABLED');
             this.xinput._switchByType(
                 'touchscreen', this._extSettings.get_boolean(KEY_TSN_ENABLED));
             break;
         case KEY_TPT_ENABLED:
-            logging(`_queueSyncPointingDevice(...): KEY_TPT_ENABLED`);
+            logging('_queueSyncPointingDevice(...): KEY_TPT_ENABLED');
             this.xinput._switchByType(
                 'trackpoint', this._extSettings.get_boolean(KEY_TPT_ENABLED));
             break;
         // Touchpad enabled/disabled through SCHEMA_EXTENSION 'touchpad-enabled'
         case KEY_TPD_ENABLED:
-            logging(`_queueSyncPointingDevice(...): KEY_TPD_ENABLED`);
+            logging('_queueSyncPointingDevice(...): KEY_TPD_ENABLED');
             this._syncTouchpad(valTpdEnabled, valSendEvents, isGconfInSync);
             break;
         // Touchpad enabled/disabled through SCHEMA_TOUCHPAD 'send-events'
         default:
-            logging(`_queueSyncPointingDevice(...): default`);
+            logging('_queueSyncPointingDevice(...): default');
             this._onsetSendEvents(valTpdEnabled, valSendEvents);
         }
 
@@ -580,13 +580,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 });
 
-// eslint-disable-next-line no-unused-vars
 function init() {
 }
 
 let _indicator;
 
-// eslint-disable-next-line no-unused-vars
 function enable() {
     logging('enable()');
 
@@ -594,7 +592,6 @@ function enable() {
     Main.panel.addToStatusArea('touchpad-indicator', _indicator);
 }
 
-// eslint-disable-next-line no-unused-vars
 function disable() {
     logging('disable()');
     // NOTE: This is called when activating Lock Screen (eg. Super+L) besides
@@ -604,3 +601,6 @@ function disable() {
     _indicator._resetConfig();
     _indicator.destroy();
 }
+
+
+/* exported init enable disable*/

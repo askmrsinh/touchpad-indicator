@@ -35,7 +35,7 @@ function logging(event) {
     }
 }
 
-class Synclient {
+var Synclient = class Synclient {
     constructor() {
         this._init();
     }
@@ -92,5 +92,7 @@ class Synclient {
             return this._disable();
         }
     }
-}
+};
 
+
+/* exported Synclient */

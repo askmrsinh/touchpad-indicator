@@ -28,10 +28,6 @@ const ByteArray = imports.byteArray;
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-// Settings
-const SCHEMA_EXTENSION = 'org.gnome.shell.extensions.touchpad-indicator';
-const SCHEMA_TOUCHPAD = 'org.gnome.desktop.peripherals.touchpad';
-
 // Debug Mode Settings
 const LOG_FILEPATH = GLib.build_filenamev([Me.path, 'touchpad-indicator.log']);
 const LOG_PREFIX = `[${Me.uuid}] `;
@@ -190,3 +186,6 @@ function removeSource(...args) {
 function addTimeout(...args) {
     return GLib.timeout_add(GLib.PRIORITY_DEFAULT, ...args);
 }
+
+
+/* exported DEBUG METHOD executeCmdAsync listPointingDevices watchDevInput removeSource addTimeout */
