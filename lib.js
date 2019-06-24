@@ -73,11 +73,12 @@ function createLogFile(filepath) {
 
 }
 
-function writeLog(filepath, contents) {
-    filepath = (filepath !== undefined) ? filepath : LOG_FILEPATH;
+function writeLog(contents) {
     let isSuccess = false;
     try {
-        isSuccess = GLib.file_set_contents(filepath, contents);
+        let file = Gio.File.new_for_path(LOG_FILEPATH);
+        let fileOutputStream = file.append_to(Gio.FileCreateFlags.NONE, null);
+        isSuccess = fileOutputStream.write(contents, null).close(null);
         return isSuccess;
     } catch (err) {
         let error = `Sorry could not write to logfile!\n${err}`;
@@ -85,11 +86,10 @@ function writeLog(filepath, contents) {
     }
 }
 
-function readLog(filepath) {
-    filepath = (filepath !== undefined) ? filepath : LOG_FILEPATH;
+function readLog() {
     let [isSuccess, contents] = [false, ''];
     try {
-        [isSuccess, contents] = GLib.file_get_contents(filepath);
+        [isSuccess, contents] = GLib.file_get_contents(LOG_FILEPATH);
         return [isSuccess, ByteArray.toString(contents)];
     } catch (err) {
         let error = `Sorry could not read from logfile!\n${err}`;
@@ -97,20 +97,15 @@ function readLog(filepath) {
     }
 }
 
-function logger(event, filepath) {
-    // TODO: Fix log file exists check
-    filepath = (filepath !== undefined) ? filepath : LOG_FILEPATH;
-    let logFileExists = true;
-    if (DEBUG_TO_FILE && !logFileExists) {
-        createLogFile(filepath);
-    }
-    // TODO: More structured logging.
+function logger(event) {
+    // NOTE: Each file has preemptive check on DEBUG variable.
+    // TODO: Structured logging.
     let timestamp = new Date(new Date().getTime()).toISOString();
     let message = `${timestamp} ${event}`;
     global.log(LOG_PREFIX + message);
-    if (DEBUG_TO_FILE && logFileExists) {
-        let messages = readLog(filepath)[1] + message;
-        writeLog(filepath, `${messages}\n`);
+
+    if (DEBUG_TO_FILE) {
+        writeLog(`${message}\n`);
     }
 }
 
@@ -188,4 +183,4 @@ function addTimeout(...args) {
 }
 
 
-/* exported DEBUG METHOD executeCmdAsync listPointingDevices watchDevInput removeSource addTimeout */
+/* exported DEBUG METHOD createLogFile readLog executeCmdAsync listPointingDevices watchDevInput removeSource addTimeout */

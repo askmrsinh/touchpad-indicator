@@ -92,7 +92,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._debugToFile = this._extSettings.get_boolean('debug-to-file');
         Lib.DEBUG_TO_FILE = this._debugToFile;
         this._keyDebugToFileSignal = this._extSettings.connect(
-            'changed::debug',
+            'changed::debug-to-file',
             this._onDebugSignal.bind(this));
 
         this._extSettings.connect(
@@ -551,12 +551,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
     _onDebugSignal() {
         this._debug = this._extSettings.get_boolean('debug');
-        if (Lib.DEBUG !== this._debug) {
-            Lib.DEBUG = this._debug;
-        }
+        Lib.DEBUG = this._debug;
         this._debugToFile = this._extSettings.get_boolean('debug-to-file');
-        if (Lib.DEBUG_TO_FILE !== this._debugToFile) {
-            Lib.DEBUG_TO_FILE = this._debugToFile;
+        Lib.DEBUG_TO_FILE = this._debugToFile;
+
+        if (this._debug && this._debugToFile) {
+            Lib.createLogFile();
         }
     }
 
