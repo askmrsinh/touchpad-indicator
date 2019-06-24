@@ -55,6 +55,9 @@ const KEY_PEN_ENABLED = 'pen-enabled';
 //icons
 const ICON_ENABLED = 'input-touchpad-symbolic';
 
+//sets
+const NON_TPD_SET = [KEY_PEN_ENABLED, KEY_FTH_ENABLED, KEY_TSN_ENABLED, KEY_TPT_ENABLED];
+
 function logging(event) {
     if (Lib.DEBUG) {
         Lib.logger(`TouchpadIndicator.${event}`);
@@ -338,8 +341,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // NOTE: When switch method is other than gconf (ie. xinput, synclient)
         //       let system's touchpad settings (`send-events` key) work on top
         //       of the switch method's touchpad enabling/disabling mechanism.
-        if (!([KEY_PEN_ENABLED, KEY_FTH_ENABLED, KEY_TSN_ENABLED].includes(key))
-             && (this._switchMethodChanged === false) && isGconfInSync) {
+        if (isGconfInSync && (this._switchMethodChanged === false) &&
+            !NON_TPD_SET.includes(key)) {
             // TODO: Check this on gnome-shell reload.
             if (this.synclient.isUsable &&
                 (this._switchMethod !== Lib.METHOD.SYNCLIENT)) {
