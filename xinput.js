@@ -97,7 +97,6 @@ var XInput = class XInput {
                 return pointingDevice;
             }
         }
-        return;
     }
 
     _enableAll() {

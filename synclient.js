@@ -70,18 +70,12 @@ var Synclient = class Synclient {
 
     _disable() {
         logging('_disable()');
-        if (Lib.executeCmdAsync('synclient TouchpadOff=1')) {
-            this.tpdOff = true;
-        } else
-            this.tpdOff = false;
+        this.tpdOff = !!Lib.executeCmdAsync('synclient TouchpadOff=1');
     }
 
     _enable() {
         logging('_enable()');
-        if (Lib.executeCmdAsync('synclient TouchpadOff=0')) {
-            this.tpdOff = true;
-        } else
-            this.tpdOff = false;
+        this.tpdOff = !!Lib.executeCmdAsync('synclient TouchpadOff=0');
     }
 
     _switch(state) {

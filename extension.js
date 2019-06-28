@@ -436,7 +436,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
             return;
         }
-
         // `send-events` is ON; `touchpad-enabled` is OFF
         //  set `touchpad-enabled` to ON
         if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
@@ -461,7 +460,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
             return;
         }
-
         // `touchpad-enabled` is OFF; `send-events` is ON / not OFF;
         //  set `send-events` to OFF
         if ((valTpdEnabled === false) && (valSendEvents !== 'disabled')) {
