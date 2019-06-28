@@ -95,10 +95,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             'changed::debug-to-file',
             this._onDebugSignal.bind(this));
 
-        this._extSettings.connect(
+        this._logEKeyChangeSignal = this._extSettings.connect(
             `changed::${KEY_TPD_ENABLED}`,
             this._logEKeyChange.bind(this));
-        this._tpdSettings.connect(
+        this._logSKeyChangeSignal = this._tpdSettings.connect(
             `changed::${KEY_SEND_EVENTS}`,
             this._logSKeyChange.bind(this));
 
@@ -204,11 +204,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _logSKeyChange() {
-        logging('_logSKeyChange(): System Key Changed');
+        logging('_logSKeyChange(): System `send-events` Key Changed');
     }
 
     _logEKeyChange() {
-        logging('_logEKeyChange(): Extension Key Changed');
+        logging('_logEKeyChange(): Extension `touchpad-enabled` Key Changed');
     }
 
     _buildItemExtended(string, initialValue, writable, onSet) {
@@ -240,7 +240,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._extSettings.is_writable(key),
             (enabled) => {
                 if (this._extSettings.get_boolean(key) !== enabled) {
-                    logging(`_buildItem(): ${string} switch set to ${enabled}.`);
+                    logging(`_buildItem(...): ${string} switch set to ${enabled}.`);
                     this._extSettings.set_boolean(key, enabled);
                 }
             });
@@ -511,7 +511,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _onDevicePlugged(filemonitor, file, otherFile, eventType) {
-        logging(`_onDevicePlugged: ${file.get_path()} ${eventType}`);
+        logging(`_onDevicePlugged(...): ${file.get_path()} ${eventType}`);
 
         if (file.get_path().indexOf('mouse') !== -1) {
             if ((eventType > 1) && (eventType < 4)) {
@@ -569,6 +569,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._extSettings.disconnect(this._keySwitchMthdSignal);
         this._extSettings.disconnect(this._keyAlwaysShowSignal);
         this._tpdSettings.disconnect(this._tpdSendEventsSignal);
+
+        this._extSettings.disconnect(this._logEKeyChangeSignal);
+        this._tpdSettings.disconnect(this._logSKeyChangeSignal);
     }
 
     // Make sure to enable related config when extension is disabled

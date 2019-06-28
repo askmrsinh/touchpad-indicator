@@ -90,7 +90,7 @@ var XInput = class XInput {
                 pointingDevice.type = type;
                 pointingDevice.driver = this._getDriver(pointingDevice.id);
                 // eslint-disable-next-line prefer-template
-                logging('_makePointingDevice(): Found ' + pointingDevice.type +
+                logging('_makePointingDevice(...): Found ' + pointingDevice.type +
                     ', Id="' + pointingDevice.id + '"' +
                     ', Name="' + pointingDevice.name + '"' +
                     ', Driver="' + pointingDevice.driver + '"');
