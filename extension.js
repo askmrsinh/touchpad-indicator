@@ -103,6 +103,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._logSKeyChange.bind(this));
 
         logging('_init()');
+        // TODO: Let user set program start touchpad state
+        //       None, Enabled, Disabled
 
         // SYNCLIENT related
         this.synclient = new Synclient.Synclient();
@@ -194,7 +196,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             Lib.executeCmdAsync(`gnome-shell-extension-prefs ${Me.uuid}`);
         });
 
-        this.actor.show();
+        this._syncMenuVisibility();
 
         this._watchDevInput = Lib.watchDevInput();
         this._watchDevInputSignal = this._watchDevInput.connect('changed',
@@ -229,7 +231,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             widget.setToggleState(this._extSettings.get_boolean(key));
             this._queueSyncPointingDevice(key);
             this._queueSyncMenuVisibility();
-            this._makeNotification(string);
             this._updateIcon();
         });
 
@@ -263,7 +264,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         let alwaysShow = this._extSettings.get_boolean(KEY_ALWAYS_SHOW);
         let items = this.menu._getMenuItems();
 
-        this.actor.visible = alwaysShow || items.some(f => !!f.state);
+        // Show panel icon if 'show-panelicon' is true or at least one of the
+        // device switches is in the off position.
+        this.visible = alwaysShow || items.some(f => f.state === false);
 
         return GLib.SOURCE_REMOVE;
     }
@@ -407,10 +410,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
             }
             this.xinput._switchByType('touchpad', valTpdEnabled);
-            // TODO: Check this condition.
-            // if ((valTpdEnabled === false) && !this.xinput.isPresent) {
-            //     this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
-            // }
+            if ((valTpdEnabled === false) &&
+                !this.xinput._isPresent('touchpad')) {
+                this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
+            }
             break;
         case Lib.METHOD.SYNCLIENT:
             logging('_syncTouchpad(...): Lib.METHOD.SYNCLIENT');
@@ -418,8 +421,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
             }
             this.synclient._switch(valTpdEnabled);
-            // TODO: Check this condition.
-            if ((valTpdEnabled === false) && !this.synclient.tpdOff) {
+            if ((valTpdEnabled === false) &&
+                !this.synclient.tpdOff) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
             }
             break;
@@ -473,8 +476,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             let valSendEvents = this._tpdSettings.get_string(KEY_SEND_EVENTS);
             let valTpdEnabled = this._extSettings.get_boolean(KEY_TPD_ENABLED);
 
-            // TODO: Refactor to show notifcations only when device(s) is/are
-            //       automatically enabled/disbaled.
             if (valSendEvents === 'enabled' && valTpdEnabled) {
                 this._notify('dialog-information',
                     `Touchpad Indicator ${Me.uuid}`,
@@ -494,6 +495,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _addKeybinding() {
+        // TODO: Simplify setup of custom keyboard shortcut.
+        //       issues/23#issuecomment-504754287, https://git.io/fjwX2
+        let shortcut = this._extSettings.get_strv('toggle-touchpad');
+        this._extSettings.set_strv('toggle-touchpad', shortcut);
         Main.wm.addKeybinding('toggle-touchpad', this._extSettings,
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.ALL,
@@ -524,6 +529,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         logging(`_onMouseDevicePlugged(${eventType})`);
 
         // TODO: Check auto switch behaviour on resume from sleep, restart.
+        // TODO: Consider autoswitch-* key was set to 'false' while touchpad
+        //       is disabled and then user unplugs the mouse.
         if (this._extSettings.get_boolean('autoswitch-touchpad')) {
             let pointingDevices = Lib.listPointingDevices()[1];
             let mouseDevices = pointingDevices.filter(p => p.type === 'mouse');
@@ -535,15 +542,15 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             if (eventType === 2 && mouseCount === 0 &&
                 !this._extSettings.get_boolean(KEY_TPD_ENABLED)) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
+                this._makeNotification('Touchpad');
                 return;
             }
             // mouse device(s) is/are plugged in
             if (eventType === 3 && mouseCount !== 0 &&
                 this._extSettings.get_boolean(KEY_TPD_ENABLED)) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
+                this._makeNotification('Touchpad');
             }
-            // TODO: Consider autoswitch-* key was set to 'false' while touchpad
-            //       is disabled and then user unplugs the mouse.
         }
     }
 
@@ -577,6 +584,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     // Make sure to enable related config when extension is disabled
     _resetConfig() {
         logging('_resetConfig');
+        // TODO: Let user set program exit touchpad state
+        //       None, Enabled, Disabled
         this.synclient._enable();
         this.xinput._enableAll();
 
