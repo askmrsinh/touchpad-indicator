@@ -110,41 +110,43 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // TODO: Let user set program start touchpad state
         //       None, Enabled, Disabled
 
-        // SYNCLIENT related
-        this.synclient = new Synclient.Synclient();
-        if (this.synclient.isUsable !== true) {
-            logging('_init(): Can`t use Synclient');
-            this._extSettings.set_enum('switchmethod', Lib.METHOD.GCONF);
-        } else {
-            logging('_init(): Synclient OK.');
-        }
-
-        // XINPUT related
-        this.xinput = new XInput.XInput();
-        if (this.xinput.isUsable !== true) {
-            logging('_init(): Can`t use Xinput');
-            this._extSettings.set_enum('switchmethod', Lib.METHOD.GCONF);
-            this._extSettings.set_boolean('autoswitch-trackpoint', false);
-        } else {
-            logging('_init(): Xinput OK.');
-        }
-
         // Switch method to start with
         this._switchMethod = this._extSettings.get_enum(KEY_SWCH_METHOD);
         this._switchMethodChanged = false;
 
         logging(`_init(): Switch method is ${this._switchMethod}`);
 
+        // SYNCLIENT related
+        this.synclient = new Synclient.Synclient();
+        if (this.synclient.isUsable !== true &&
+            this._switchMethod === Lib.METHOD.SYNCLIENT) {
+            logging('_init(): Can`t use Synclient, defaulting to GSettings');
+            this._extSettings.set_enum(KEY_SWCH_METHOD, Lib.METHOD.GSETTINGS);
+            this._switchMethodChanged = true;
+        }
+
+        // XINPUT related
+        this.xinput = new XInput.XInput();
+        if (this.xinput.isUsable !== true &&
+            this._switchMethod === Lib.METHOD.XINPUT) {
+            logging('_init(): Can`t use Xinput, defaulting to GSettings');
+            this._extSettings.set_enum(KEY_SWCH_METHOD, Lib.METHOD.GSETTINGS);
+            this._extSettings.set_boolean('autoswitch-trackpoint', false);
+            this._switchMethodChanged = true;
+        }
+
         // Resets
-        if (this._switchMethod !== Lib.METHOD.SYNCLIENT) {
+        if (this._switchMethod !== Lib.METHOD.SYNCLIENT &&
+            this.synclient.isUsable) {
             this.synclient._enable();
         }
 
-        if (this._switchMethod !== Lib.METHOD.XINPUT) {
+        if (this._switchMethod !== Lib.METHOD.XINPUT &&
+            this.xinput.isUsable) {
             this.xinput._enableAll();
         }
 
-        if (this._switchMethod !== Lib.METHOD.GCONF) {
+        if (this._switchMethod !== Lib.METHOD.GSETTINGS) {
             if (this._tpdSettings.get_string(KEY_SEND_EVENTS) !== 'enabled' &&
                 this._extSettings.get_boolean(KEY_TPD_ENABLED) === true)
                 this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
@@ -404,8 +406,8 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         //       procceed to enable/disable touchpad through the current
         //       switch method (if need be).
         switch (this._switchMethod) {
-        case Lib.METHOD.GCONF:
-            logging('_syncTouchpad(...): Lib.METHOD.GCONF');
+        case Lib.METHOD.GSETTINGS:
+            logging('_syncTouchpad(...): Lib.METHOD.GSETTINGS');
             this._onsetTouchpadEnable(valTpdEnabled, valSendEvents);
             break;
         case Lib.METHOD.XINPUT:
@@ -448,7 +450,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         if ((valSendEvents === 'enabled') && (valTpdEnabled === false)) {
             // Reset if touchpad was externally enabled through gsettings
             // and extension switch method is other than gconf.
-            if (this._switchMethod !== Lib.METHOD.GCONF) {
+            if (this._switchMethod !== Lib.METHOD.GSETTINGS) {
                 this.xinput._enableByType('touchpad');
                 this.synclient._enable();
             }

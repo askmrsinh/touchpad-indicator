@@ -53,7 +53,7 @@ var ALL_TOUCHPADS = TOUCHPADS.slice();
 var ALL_OTHERS = OTHERS.slice();
 
 // Methods to enable or disable the touchpad
-var METHOD = { GCONF: 0, SYNCLIENT: 1, XINPUT: 2 };
+var METHOD = { GSETTINGS: 0, SYNCLIENT: 1, XINPUT: 2 };
 
 function createLogFile(filepath) {
     const PERMISSIONS_MODE = 0o755;

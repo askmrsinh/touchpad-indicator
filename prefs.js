@@ -57,8 +57,9 @@ var Settings = class TouchpadIndicatorSettings {
         this._notebook = this._builder.get_object('ti_notebook');
         this.widget.add(this._notebook);
 
-        this._populateAboutTab();
+        this._populateGeneralTab(synclient, xinput);
         this._populateDebugTab(settings, synclient, xinput);
+        this._populateAboutTab();
 
         this._bindSettings(synclient, xinput);
 
@@ -69,32 +70,11 @@ var Settings = class TouchpadIndicatorSettings {
         });
     }
 
-    // TODO: refactor, simplify
     _bindSettings(synclient, xinput) {
-        if (synclient.isUsable !== true) {
-            this._builder.get_object('switchmethod_combo').remove(1);
-        }
-
-        if (xinput.isUsable !== true) {
-            this._builder.get_object('switchmethod_combo').remove(2);
-        }
-
-        // Basic
-        this._builder.get_object('switchmethod_combo').connect('changed',
-            (widget) => {
-                this._settings.set_enum('switchmethod',
-                    widget.get_active_id());
-            });
-
-        this._builder.get_object('switchmethod_combo').set_active_id(
-            this._settings.get_enum('switchmethod').toString()
-        );
-
-        // TODO: Fix update combobox on GSetting change
-        //       bind_with_mapping unusable
+        // on General tab
         this._settings.bind('switchmethod',
             this._builder.get_object('switchmethod_combo'),
-            'active',
+            'active-id',
             Gio.SettingsBindFlags.DEFAULT);
 
         this._settings.bind('show-panelicon',
@@ -102,7 +82,6 @@ var Settings = class TouchpadIndicatorSettings {
             'active',
             Gio.SettingsBindFlags.DEFAULT);
 
-        // Auto switch
         this._settings.bind('autoswitch-touchpad',
             this._builder.get_object('autoswitch_touchpad_switch'),
             'active',
@@ -113,7 +92,6 @@ var Settings = class TouchpadIndicatorSettings {
             'active',
             Gio.SettingsBindFlags.DEFAULT);
 
-        // Reset
         this._builder.get_object('reset_button').connect('clicked',
             () => {
                 let keys = this._settings.list_keys();
@@ -129,6 +107,7 @@ var Settings = class TouchpadIndicatorSettings {
             }
         );
 
+        // on Debug tab
         this._settings.bind('debug',
             this._builder.get_object('debug_switch'),
             'active',
@@ -147,11 +126,26 @@ var Settings = class TouchpadIndicatorSettings {
                 this._builder.get_object('log_scrolled_window').set_visible(state);
             });
 
+        // on About tab
         this._builder.get_object('issue_button').connect('clicked',
             () => {
                 Lib.executeCmdAsync(`xdg-open ${Me.metadata.repository}/issues/new`);
             }
         );
+    }
+
+    _populateGeneralTab(synclient, xinput) {
+        if (synclient.isUsable !== true) {
+            this._builder.get_object('switchmethod_combo').remove(
+                Lib.METHOD.SYNCLIENT
+            );
+        }
+
+        if (xinput.isUsable !== true) {
+            this._builder.get_object('switchmethod_combo').remove(
+                Lib.METHOD.XINPUT
+            );
+        }
     }
 
     _populateDebugTab(settings, synclient, xinput) {
