@@ -146,6 +146,13 @@ var Settings = class TouchpadIndicatorSettings {
                 Lib.METHOD.XINPUT
             );
         }
+
+        // Format the toggle Touchpad shortcut string.
+        // Setting incorrect custom keybinding is user's fault.
+        let toggleTouchpad = this._settings.get_strv('toggle-touchpad').toString();
+        toggleTouchpad = toggleTouchpad.split(/<(.*?)>/g).filter(Boolean).join(' + ');
+        toggleTouchpad = `<tt>${toggleTouchpad}</tt>`;
+        this._builder.get_object('toggle_touchpad_label').set_label(toggleTouchpad);
     }
 
     _populateDebugTab(settings, synclient, xinput) {
