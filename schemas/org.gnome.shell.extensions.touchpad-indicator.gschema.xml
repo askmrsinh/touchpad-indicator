@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="touchpad-indicator@orangeshirt">
+<schemalist gettext-domain="gnome-shell-extensions">
     <enum id='org.gnome.shell.extensions.touchpad-indicator.switchmethod'>
         <value value="0" nick="gconf"/>
         <value value="1" nick="synclient"/>

@@ -58,6 +58,10 @@ const ICON_ENABLED = 'input-touchpad-symbolic';
 //sets
 const NON_TPD_SET = [KEY_PEN_ENABLED, KEY_FTH_ENABLED, KEY_TSN_ENABLED, KEY_TPT_ENABLED];
 
+//localization
+const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
+const _ = Gettext.gettext;
+
 function logging(event) {
     if (Lib.DEBUG) {
         Lib.logger(`TouchpadIndicator.${event}`);
@@ -168,31 +172,31 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // To store all change signals on *-enabled extension keys
         this._enabledSignals = [];
 
-        let touchpad = this._buildItem('Touchpad', KEY_TPD_ENABLED);
+        let touchpad = this._buildItem(_('Touchpad'), KEY_TPD_ENABLED);
         this.menu.addMenuItem(touchpad);
 
         if (this.xinput._isPresent('trackpoint')) {
-            let trackpoint = this._buildItem('Trackpoint', KEY_TPT_ENABLED);
+            let trackpoint = this._buildItem(_('Trackpoint'), KEY_TPT_ENABLED);
             this.menu.addMenuItem(trackpoint);
         }
         if (this.xinput._isPresent('touchscreen')) {
-            let touchscreen = this._buildItem('Touchscreen', KEY_TSN_ENABLED);
+            let touchscreen = this._buildItem(_('Touchscreen'), KEY_TSN_ENABLED);
             this.menu.addMenuItem(touchscreen);
         }
         if (this.xinput._isPresent('fingertouch')) {
-            let fingertouch = this._buildItem('Fingertouch', KEY_FTH_ENABLED);
+            let fingertouch = this._buildItem(_('Fingertouch'), KEY_FTH_ENABLED);
             this.menu.addMenuItem(fingertouch);
         }
         if (this.xinput._isPresent('pen')) {
-            let pen = this._buildItem('Pen', KEY_PEN_ENABLED);
+            let pen = this._buildItem(_('Pen'), KEY_PEN_ENABLED);
             this.menu.addMenuItem(pen);
         }
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        this.menu.addSettingsAction('Mouse & Touchpad Preferences',
+        this.menu.addSettingsAction(_('Mouse & Touchpad Preferences'),
             'gnome-mouse-panel.desktop');
-        this.menu.addAction('Indicator Preferences', () => {
+        this.menu.addAction(_('Indicator Preferences'), () => {
             Lib.executeCmdAsync(`gnome-shell-extension-prefs ${Me.uuid}`);
         });
 
@@ -478,12 +482,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
             if (valSendEvents === 'enabled' && valTpdEnabled) {
                 this._notify('dialog-information',
-                    `Touchpad Indicator ${Me.uuid}`,
-                    `${forType} Enabled`);
+                    `${_('Touchpad Indicator')} ${Me.uuid}`,
+                    `${_(forType)} ${_('Enabled')}`);
             } else {
                 this._notify('dialog-information',
-                    `Touchpad Indicator ${Me.uuid}`,
-                    `${forType} Disabled`);
+                    `${_('Touchpad Indicator')} ${Me.uuid}`,
+                    `${_(forType)} ${_('Disabled')}`);
             }
         }
     }
@@ -594,6 +598,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 });
 
 function init() {
+    ExtensionUtils.initTranslations();
 }
 
 let _indicator;

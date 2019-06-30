@@ -1,0 +1,211 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Touchpad Indicator package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Touchpad Indicator\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-29 11:00+0530\n"
+"PO-Revision-Date: 2019-06-29 11:07+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: extension.js\n"
+"X-Poedit-SearchPath-1: prefs.js\n"
+"X-Poedit-SearchPath-2: Settings.ui\n"
+
+#: Settings.ui:37
+msgid "No events logged yet."
+msgstr "कोई घटना अभी तक लॉग नहीं हुई है।"
+
+#: Settings.ui:81
+msgid "Backend to use for enabling or disbaling the Touchpad."
+msgstr "टचपैड को सक्षम या अक्षम करने के लिए उपयोग करने के लिए बैकेंड।"
+
+#: Settings.ui:98
+msgid "Switch Method"
+msgstr "स्विच विधि"
+
+#: Settings.ui:183
+msgid "Show Icon"
+msgstr "आइकॉन दिखाओ"
+
+#: Settings.ui:196
+msgid "If enabled, symbolic icon is shown in top panel."
+msgstr "यदि सक्षम है, तो प्रतीकात्मक आइकन शीर्ष पैनल में दिखाया गया है।"
+
+#: Settings.ui:226
+msgid "Basic Settings"
+msgstr "मूल सेटिंग्स"
+
+#: Settings.ui:295
+msgid "Autoswitch Touchpad"
+msgstr "ऑटोस्विच टचपैड"
+
+#: Settings.ui:308
+msgid "Toggle the touchpad when an external mouse is plugged/unplugged."
+msgstr "टचपैड को तब टॉगल करें जब बाहरी माउस प्लग / अनप्लग हो।"
+
+#: Settings.ui:367
+msgid "Show Notifications"
+msgstr "सूचनाएं दिखाएं"
+
+#: Settings.ui:380
+msgid "Get notfications when touchpad is automatically toggled."
+msgstr "जब टचपैड स्वचालित रूप से टॉगल किया जाता है तो नोटिफिकेशन प्राप्त करें।"
+
+#: Settings.ui:416
+msgid "Kebinding to force toggle the touchpad"
+msgstr "टचपैड को टॉगल करने के लिए कीबोर्ड शॉर्टकट"
+
+#: Settings.ui:453
+msgid "Auto Switch"
+msgstr "स्वचालित स्विच"
+
+#: Settings.ui:497
+msgid "Use this to restore settings and enable all pointing devices."
+msgstr "सेटिंग्स को पुनर्स्थापित करने और सभी पॉइंटिंग डिवाइस को सक्षम करने के लिए इसका उपयोग करें।"
+
+#: Settings.ui:514
+msgid "Reset Configuration"
+msgstr "कॉन्फ़िगरेशन रीसेट करें"
+
+#: Settings.ui:529
+msgid "Reset"
+msgstr "रीसेट"
+
+#: Settings.ui:575
+msgid "General"
+msgstr "आम"
+
+#: Settings.ui:620
+msgid "Here you can find some details about your system which might be helpful in debugging."
+msgstr "यहां आप अपने सिस्टम के बारे में कुछ विवरण पा सकते हैं जो डिबगिंग में सहायक हो सकता है।"
+
+#: Settings.ui:850
+msgid ""
+"These details are a <i>snapshot</i> of the system prior to opening this preference window. Any setting "
+"changes made in current window session will not refelct above but will be applied."
+msgstr ""
+"ये विवरण इस वरीयता विंडो को खोलने से पहले सिस्टम का एक <i>स्नैपशॉट</i> हैं। वर्तमान विंडो सत्र में किए गए कोई भी सेटिंग "
+"परिवर्तन ऊपर से रिफलेक्ट नहीं होंगे पर लागू किए जाएंगे।"
+
+#: Settings.ui:891
+msgid "System Information"
+msgstr "प्रणाली की जानकारी"
+
+#: Settings.ui:968
+msgid "Also write logs to a temporary file in extension folder"
+msgstr "एक्सटेंशन फ़ोल्डर में एक अस्थायी फ़ाइल में लॉग भी लिखें"
+
+#: Settings.ui:985
+msgid "Enable Debug logging"
+msgstr "दोषमार्जन प्रचालेखन सुरु करे"
+
+#: Settings.ui:998
+msgid ""
+"Log extension events in <a href=\"https://wiki.archlinux.org/index.php/Systemd/Journal\">systemd journal</"
+"a>."
+msgstr ""
+"<a href=\"https://wiki.archlinux.org/index.php/Systemd/Journal\">systemd journal</a> में एक्सटेंशन ईवेंट लॉग करें।"
+
+#: Settings.ui:1062
+msgid ""
+"Please note that logging is resource intensive and can slow down performance. Keep logging disabled when "
+"not required."
+msgstr "कृपया ध्यान दें कि लॉगिंग संसाधन गहन है और प्रदर्शन को धीमा कर सकता है। आवश्यकता न होने पर लॉगिंग को अक्षम रखें।"
+
+#: Settings.ui:1089
+msgid "Debug Logging"
+msgstr "दोषमार्जन प्रचालेखन"
+
+#: Settings.ui:1114
+msgid "Debug"
+msgstr "दोषमार्जन"
+
+#: Settings.ui:1162
+msgid ""
+"Automatically disable other pointing devices when an external mouse is plugged in. Optionally, switch the "
+"touchpad, trackpoint, fingertouch, touchscreen or a pen device on and off easily from the top panel.\n"
+"\n"
+"This a fork of orangeshirt's '<a href=\"https://github.com/orangeshirt/gnome-shell-extension-touchpad-"
+"indicator\">gnome-shell-extension-touchpad-indicator</a>'."
+msgstr ""
+"बाहरी माउस को प्लग इन करने पर अन्य पॉइंटिंग डिवाइस को स्वचालित रूप से अक्षम करें। वैकल्पिक रूप से, टचपैड, ट्रैकपॉइंट, "
+"फिंगरप्रिंट, टचस्क्रीन या एक पेन डिवाइस को स्विच करें और शीर्ष पैनल से आसानी से बंद करें।\n"
+"\n"
+"यह orangeshirt के '<a href=\"https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator\"> "
+"gnome-shell-extension-touchpad-indicator</a> का एक फोर्क है।"
+
+#: Settings.ui:1194
+msgid "Touchpad management GNOME Shell Extension"
+msgstr "टचपैड प्रबंधन गनोम शैल एक्सटेंशन"
+
+#: Settings.ui:1234
+msgid ""
+"Please use <a href=\"https://github.com/user501254/TouchpadIndicator#touchpad-indicator\">Github</a> for "
+"reporting bugs and feature requests."
+msgstr ""
+"बग्स और फ़ीचर अनुरोधों की रिपोर्टिंग के लिए कृपया <a href=\"https://github.com/user501254/"
+"TouchpadIndicator#touchpad-indicator\">Github</a> का उपयोग करें।"
+
+#: Settings.ui:1252
+msgid "Feature Request / Bug Report"
+msgstr "फ़ीचर अनुरोध / बग रिपोर्ट"
+
+#: Settings.ui:1267
+msgid "New Issue"
+msgstr "नया मुद्दा"
+
+#: Settings.ui:1382
+msgid "About"
+msgstr "विवरण"
+
+#: extension.js:74 extension.js:485 extension.js:489
+msgid "Touchpad Indicator"
+msgstr "टचपैड संकेतक"
+
+#: extension.js:175
+msgid "Touchpad"
+msgstr "टचपैड"
+
+#: extension.js:179
+msgid "Trackpoint"
+msgstr "ट्रैकपॉइंट"
+
+#: extension.js:183
+msgid "Touchscreen"
+msgstr "टचस्क्रीन"
+
+#: extension.js:187
+msgid "Fingertouch"
+msgstr "फिंगरटच"
+
+#: extension.js:191
+msgid "Pen"
+msgstr "पेन"
+
+#: extension.js:197
+msgid "Mouse & Touchpad Preferences"
+msgstr "माउस व टचपैड की पूर्ववृत्ति"
+
+#: extension.js:199
+msgid "Indicator Preferences"
+msgstr "संकेतक की पूर्ववृत्ति"
+
+#: extension.js:486
+msgid "Enabled"
+msgstr "सक्षम है"
+
+#: extension.js:490
+msgid "Disabled"
+msgstr "अक्षम है"

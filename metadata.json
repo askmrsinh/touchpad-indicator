@@ -5,6 +5,7 @@
     "shell-version": [
         "3.32.0"
     ],
+    "gettext-domain": "touchpad-indicator",
     "url": "https://user501254.github.io/TouchpadIndicator",
     "repository": "https://github.com/user501254/TouchpadIndicator"
 }

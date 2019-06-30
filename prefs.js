@@ -48,7 +48,7 @@ var Settings = class TouchpadIndicatorSettings {
         this._rtl = (Gtk.Widget.get_default_direction() === Gtk.TextDirection.RTL);
 
         this._builder = new Gtk.Builder();
-        //this._builder.set_translation_domain(Me.metadata['gettext-domain']);
+        this._builder.set_translation_domain(Me.metadata['gettext-domain']);
         this._builder.add_from_file(`${Me.path}/Settings.ui`);
 
         this.widget = new Gtk.ScrolledWindow({
@@ -206,7 +206,7 @@ var Settings = class TouchpadIndicatorSettings {
 };
 
 function init() {
-    //ExtensionUtils.initTranslations();
+    ExtensionUtils.initTranslations();
 }
 
 function buildPrefsWidget() {

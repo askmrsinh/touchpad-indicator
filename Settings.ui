@@ -424,7 +424,7 @@ Author: Ashesh Singh
                           <object class="GtkLabel" id="toggle_touchpad_label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">&lt;tt&gt;Ctrl + Super + Alt + T&lt;/tt&gt;</property>
+                            <property name="label">&lt;tt&gt;Ctrl + Super + Alt + T&lt;/tt&gt;</property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -660,7 +660,7 @@ Author: Ashesh Singh
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
-                                    <property name="label" translatable="yes">Gnome Shell Version:</property>
+                                    <property name="label">Gnome Shell Version:</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -674,7 +674,7 @@ Author: Ashesh Singh
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
-                                    <property name="label" translatable="yes">Switch Method:</property>
+                                    <property name="label">Switch Method:</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -688,7 +688,7 @@ Author: Ashesh Singh
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
-                                    <property name="label" translatable="yes">Touchpad(s):</property>
+                                    <property name="label">Touchpad(s):</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -702,7 +702,7 @@ Author: Ashesh Singh
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
-                                    <property name="label" translatable="yes">synclient:</property>
+                                    <property name="label">synclient:</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -716,7 +716,7 @@ Author: Ashesh Singh
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
-                                    <property name="label" translatable="yes">xinpt:</property>
+                                    <property name="label">xinpt:</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -781,10 +781,10 @@ Author: Ashesh Singh
                                   <object class="GtkLabel">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="tooltip_text" translatable="yes">org.gnome.desktop.peripherals.touchpad send-events</property>
+                                    <property name="tooltip_text">org.gnome.desktop.peripherals.touchpad send-events</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
-                                    <property name="label" translatable="yes">'send-events' key:</property>
+                                    <property name="label">'send-events' key:</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -809,10 +809,10 @@ Author: Ashesh Singh
                                   <object class="GtkLabel">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="tooltip_text" translatable="yes">org.gnome.shell.extensions.touchpad-indicator trackpoint-enabled</property>
+                                    <property name="tooltip_text">org.gnome.shell.extensions.touchpad-indicator trackpoint-enabled</property>
                                     <property name="halign">end</property>
                                     <property name="hexpand">True</property>
-                                    <property name="label" translatable="yes">'touchpad-enabled' key:</property>
+                                    <property name="label">'touchpad-enabled' key:</property>
                                     <property name="selectable">True</property>
                                   </object>
                                   <packing>
@@ -1347,7 +1347,7 @@ This a fork of orangeshirt's '&lt;a href="https://github.com/orangeshirt/gnome-s
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="valign">end</property>
-                        <property name="label" translatable="yes">&lt;span size="small"&gt;This program comes with ABSOLUTELY NO WARRANTY.
+                        <property name="label">&lt;span size="small"&gt;This program comes with ABSOLUTELY NO WARRANTY.
 See the &lt;a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"&gt;GNU General Public License, version 2 or later&lt;/a&gt; for details.&lt;/span&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="justify">center</property>
