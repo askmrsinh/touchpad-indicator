@@ -136,13 +136,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
 
         // Resets
-        if (this._switchMethod !== Lib.METHOD.SYNCLIENT &&
-            this.synclient.isUsable) {
+        if (this._switchMethod !== Lib.METHOD.SYNCLIENT) {
             this.synclient._enable();
         }
 
-        if (this._switchMethod !== Lib.METHOD.XINPUT &&
-            this.xinput.isUsable) {
+        if (this._switchMethod !== Lib.METHOD.XINPUT) {
             this.xinput._enableAll();
         }
 
@@ -152,15 +150,17 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this._tpdSettings.set_string(KEY_SEND_EVENTS, 'enabled');
         }
 
-        // Touchpad related change signals
-        this._keyAlwaysShowSignal = this._extSettings.connect(
-            `changed::${KEY_ALWAYS_SHOW}`,
-            this._queueSyncMenuVisibility.bind(this));
+        // System `send-events` change signal
         this._tpdSendEventsSignal = this._tpdSettings.connect(
             `changed::${KEY_SEND_EVENTS}`,
             this._queueSyncPointingDevice.bind(this));
 
-        // Switch Method change signal
+        // Extension `show-panelicon` change signal
+        this._keyAlwaysShowSignal = this._extSettings.connect(
+            `changed::${KEY_ALWAYS_SHOW}`,
+            this._queueSyncMenuVisibility.bind(this));
+
+        // Extension `switchmethod` change signal
         this._keySwitchMthdSignal = this._extSettings.connect(
             `changed::${KEY_SWCH_METHOD}`,
             this._syncSwitchMethod.bind(this));
@@ -171,7 +171,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._queueSyncPointingDevice(KEY_TPD_ENABLED);
         this._updateIcon();
 
-        // To store all change signals on *-enabled extension keys
+        // To store all change signals on `*-enabled` extension keys
         this._enabledSignals = [];
 
         let touchpad = this._buildItem(_('Touchpad'), KEY_TPD_ENABLED);
@@ -222,13 +222,14 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _buildItemExtended(string, initialValue, writable, onSet) {
         let widget = new PopupMenu.PopupSwitchMenuItem(string,
             initialValue);
-        if (!writable)
+        if (!writable) {
             widget.actor.reactive = false;
-        else
+        } else {
             widget.connect('toggled', item => {
                 onSet(item.state);
             });
-            // TODO: Warn/Confirm if user is disabling the last pointing device.
+        }
+        // TODO: Warn/Confirm if user is disabling the last pointing device.
         return widget;
     }
 
@@ -255,8 +256,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     }
 
     _queueSyncMenuVisibility() {
-        if (this._syncMenuVisibilityIdle)
+        if (this._syncMenuVisibilityIdle) {
             return;
+        }
 
         this._syncMenuVisibilityIdle = Mainloop.idle_add(
             this._syncMenuVisibility.bind(this));
@@ -270,16 +272,17 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         let alwaysShow = this._extSettings.get_boolean(KEY_ALWAYS_SHOW);
         let items = this.menu._getMenuItems();
 
-        // Show panel icon if 'show-panelicon' is true or at least one of the
+        // Show panel icon if `show-panelicon` is true or at least one of the
         // device switches is in the off position.
-        this.visible = alwaysShow || items.some(f => f.state === false);
+        this.visible = alwaysShow || items.some(s => s.state === false);
 
         return GLib.SOURCE_REMOVE;
     }
 
     _notify(iconName, title, text) {
-        if (this._notification)
+        if (this._notification) {
             this._notification.destroy();
+        }
 
         this._ensureSource();
 
@@ -319,8 +322,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
             this.xinput._enableByType('touchpad');
         }
-        if ((this._switchMethod !== Lib.METHOD.SYNCLIENT) &&
-            this.synclient.isUsable) {
+        if (this._switchMethod !== Lib.METHOD.SYNCLIENT) {
             this.synclient._enable();
         }
 
@@ -353,8 +355,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         if (isGconfInSync && (this._switchMethodChanged === false) &&
             !NON_TPD_SET.includes(key)) {
             // TODO: Check this on gnome-shell reload.
-            if (this.synclient.isUsable &&
-                (this._switchMethod !== Lib.METHOD.SYNCLIENT)) {
+            if (this._switchMethod !== Lib.METHOD.SYNCLIENT) {
                 this.synclient._switch(valTpdEnabled);
             }
             logging('_queueSyncPointingDevice(...) - Already in sync.');
@@ -382,12 +383,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this.xinput._switchByType(
                 'trackpoint', this._extSettings.get_boolean(KEY_TPT_ENABLED));
             break;
-        // Touchpad enabled/disabled through SCHEMA_EXTENSION 'touchpad-enabled'
+        // Touchpad enabled/disabled through SCHEMA_EXTENSION `touchpad-enabled`
         case KEY_TPD_ENABLED:
             logging('_queueSyncPointingDevice(...): KEY_TPD_ENABLED');
             this._syncTouchpad(valTpdEnabled, valSendEvents, isGconfInSync);
             break;
-        // Touchpad enabled/disabled through SCHEMA_TOUCHPAD 'send-events'
+        // Touchpad enabled/disabled through SCHEMA_TOUCHPAD `send-events`
         default:
             logging('_queueSyncPointingDevice(...): default');
             this._onsetSendEvents(valTpdEnabled, valSendEvents);
