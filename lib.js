@@ -129,6 +129,12 @@ function executeCmdSync(command) {
     }
 }
 
+function watchLogFile(filepath) {
+    filepath = (filepath !== undefined) ? filepath : LOG_FILEPATH;
+    let file = Gio.File.new_for_path(filepath);
+    return file.monitor_file(Gio.FileMonitorFlags.NONE, null);
+}
+
 function watchDevInput() {
     let file = Gio.file_new_for_path('/dev/input');
     return file.monitor_directory(Gio.FileMonitorFlags.WATCH_MOUNTS, null);
@@ -183,4 +189,4 @@ function addTimeout(...args) {
 }
 
 
-/* exported DEBUG METHOD createLogFile readLog executeCmdAsync listPointingDevices watchDevInput removeSource addTimeout */
+/* exported DEBUG METHOD createLogFile readLog executeCmdAsync listPointingDevices watchLogFile watchDevInput removeSource addTimeout */

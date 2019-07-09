@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Touchpad Indicator\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-29 11:00+0530\n"
-"PO-Revision-Date: 2019-06-29 11:07+0530\n"
+"POT-Creation-Date: 2019-07-08 22:35+0530\n"
+"PO-Revision-Date: 2019-07-08 22:36+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi\n"
@@ -35,177 +35,181 @@ msgstr "टचपैड को सक्षम या अक्षम करन�
 msgid "Switch Method"
 msgstr "स्विच विधि"
 
-#: Settings.ui:183
+#: Settings.ui:182
 msgid "Show Icon"
 msgstr "आइकॉन दिखाओ"
 
-#: Settings.ui:196
+#: Settings.ui:195
 msgid "If enabled, symbolic icon is shown in top panel."
 msgstr "यदि सक्षम है, तो प्रतीकात्मक आइकन शीर्ष पैनल में दिखाया गया है।"
 
-#: Settings.ui:226
+#: Settings.ui:225
 msgid "Basic Settings"
 msgstr "मूल सेटिंग्स"
 
-#: Settings.ui:295
+#: Settings.ui:294
 msgid "Autoswitch Touchpad"
 msgstr "ऑटोस्विच टचपैड"
 
-#: Settings.ui:308
+#: Settings.ui:307
 msgid "Toggle the touchpad when an external mouse is plugged/unplugged."
 msgstr "टचपैड को तब टॉगल करें जब बाहरी माउस प्लग / अनप्लग हो।"
 
-#: Settings.ui:367
+#: Settings.ui:366
 msgid "Show Notifications"
 msgstr "सूचनाएं दिखाएं"
 
-#: Settings.ui:380
+#: Settings.ui:379
 msgid "Get notfications when touchpad is automatically toggled."
 msgstr "जब टचपैड स्वचालित रूप से टॉगल किया जाता है तो नोटिफिकेशन प्राप्त करें।"
 
-#: Settings.ui:416
+#: Settings.ui:415
 msgid "Kebinding to force toggle the touchpad"
 msgstr "टचपैड को टॉगल करने के लिए कीबोर्ड शॉर्टकट"
 
-#: Settings.ui:453
+#: Settings.ui:452
 msgid "Auto Switch"
 msgstr "स्वचालित स्विच"
 
-#: Settings.ui:497
+#: Settings.ui:496
 msgid "Use this to restore settings and enable all pointing devices."
 msgstr "सेटिंग्स को पुनर्स्थापित करने और सभी पॉइंटिंग डिवाइस को सक्षम करने के लिए इसका उपयोग करें।"
 
-#: Settings.ui:514
+#: Settings.ui:513
 msgid "Reset Configuration"
 msgstr "कॉन्फ़िगरेशन रीसेट करें"
 
-#: Settings.ui:529
+#: Settings.ui:528
 msgid "Reset"
 msgstr "रीसेट"
 
-#: Settings.ui:575
+#: Settings.ui:574
 msgid "General"
 msgstr "आम"
 
-#: Settings.ui:620
+#: Settings.ui:618
 msgid "Here you can find some details about your system which might be helpful in debugging."
 msgstr "यहां आप अपने सिस्टम के बारे में कुछ विवरण पा सकते हैं जो डिबगिंग में सहायक हो सकता है।"
 
-#: Settings.ui:850
-msgid ""
-"These details are a <i>snapshot</i> of the system prior to opening this preference window. Any setting "
-"changes made in current window session will not refelct above but will be applied."
-msgstr ""
-"ये विवरण इस वरीयता विंडो को खोलने से पहले सिस्टम का एक <i>स्नैपशॉट</i> हैं। वर्तमान विंडो सत्र में किए गए कोई भी सेटिंग "
-"परिवर्तन ऊपर से रिफलेक्ट नहीं होंगे पर लागू किए जाएंगे।"
-
-#: Settings.ui:891
+#: Settings.ui:861
 msgid "System Information"
 msgstr "प्रणाली की जानकारी"
 
-#: Settings.ui:968
+#: Settings.ui:937
 msgid "Also write logs to a temporary file in extension folder"
 msgstr "एक्सटेंशन फ़ोल्डर में एक अस्थायी फ़ाइल में लॉग भी लिखें"
 
-#: Settings.ui:985
+#: Settings.ui:955
 msgid "Enable Debug logging"
 msgstr "दोषमार्जन प्रचालेखन सुरु करे"
 
-#: Settings.ui:998
+#: Settings.ui:968
 msgid ""
-"Log extension events in <a href=\"https://wiki.archlinux.org/index.php/Systemd/Journal\">systemd journal</"
-"a>."
+"Log extension events in <a href=\"https://wiki.archlinux.org/index.php/Systemd/Journal"
+"\">systemd journal</a>."
 msgstr ""
-"<a href=\"https://wiki.archlinux.org/index.php/Systemd/Journal\">systemd journal</a> में एक्सटेंशन ईवेंट लॉग करें।"
+"<a href=\"https://wiki.archlinux.org/index.php/Systemd/Journal\">systemd journal</a> में "
+"एक्सटेंशन ईवेंट लॉग करें।"
 
-#: Settings.ui:1062
+#: Settings.ui:1032
 msgid ""
-"Please note that logging is resource intensive and can slow down performance. Keep logging disabled when "
-"not required."
-msgstr "कृपया ध्यान दें कि लॉगिंग संसाधन गहन है और प्रदर्शन को धीमा कर सकता है। आवश्यकता न होने पर लॉगिंग को अक्षम रखें।"
+"Please note that logging is resource intensive and can slow down performance. Keep logging "
+"disabled when not required."
+msgstr ""
+"कृपया ध्यान दें कि लॉगिंग संसाधन गहन है और प्रदर्शन को धीमा कर सकता है। आवश्यकता न होने पर लॉगिंग को अक्षम "
+"रखें।"
 
-#: Settings.ui:1089
+#: Settings.ui:1060
 msgid "Debug Logging"
 msgstr "दोषमार्जन प्रचालेखन"
 
-#: Settings.ui:1114
+#: Settings.ui:1085
 msgid "Debug"
 msgstr "दोषमार्जन"
 
-#: Settings.ui:1162
+#: Settings.ui:1134
 msgid ""
-"Automatically disable other pointing devices when an external mouse is plugged in. Optionally, switch the "
-"touchpad, trackpoint, fingertouch, touchscreen or a pen device on and off easily from the top panel.\n"
+"Automatically disable other pointing devices when an external mouse is plugged in. "
+"Optionally, switch the touchpad, trackpoint, fingertouch, touchscreen or a pen device on and "
+"off easily from the top panel.\n"
 "\n"
-"This a fork of orangeshirt's '<a href=\"https://github.com/orangeshirt/gnome-shell-extension-touchpad-"
-"indicator\">gnome-shell-extension-touchpad-indicator</a>'."
+"This a fork of orangeshirt's '<a href=\"https://github.com/orangeshirt/gnome-shell-extension-"
+"touchpad-indicator\">gnome-shell-extension-touchpad-indicator</a>'."
 msgstr ""
-"बाहरी माउस को प्लग इन करने पर अन्य पॉइंटिंग डिवाइस को स्वचालित रूप से अक्षम करें। वैकल्पिक रूप से, टचपैड, ट्रैकपॉइंट, "
-"फिंगरप्रिंट, टचस्क्रीन या एक पेन डिवाइस को स्विच करें और शीर्ष पैनल से आसानी से बंद करें।\n"
+"बाहरी माउस को प्लग इन करने पर अन्य पॉइंटिंग डिवाइस को स्वचालित रूप से अक्षम करें। वैकल्पिक रूप से, टचपैड, "
+"ट्रैकपॉइंट, फिंगरप्रिंट, टचस्क्रीन या एक पेन डिवाइस को स्विच करें और शीर्ष पैनल से आसानी से बंद करें।\n"
 "\n"
-"यह orangeshirt के '<a href=\"https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator\"> "
-"gnome-shell-extension-touchpad-indicator</a> का एक फोर्क है।"
+"यह orangeshirt के '<a href=\"https://github.com/orangeshirt/gnome-shell-extension-touchpad-"
+"indicator\"> gnome-shell-extension-touchpad-indicator</a> का एक फोर्क है।"
 
-#: Settings.ui:1194
+#: Settings.ui:1167
 msgid "Touchpad management GNOME Shell Extension"
 msgstr "टचपैड प्रबंधन गनोम शैल एक्सटेंशन"
 
-#: Settings.ui:1234
+#: Settings.ui:1207
 msgid ""
-"Please use <a href=\"https://github.com/user501254/TouchpadIndicator#touchpad-indicator\">Github</a> for "
-"reporting bugs and feature requests."
+"Please use <a href=\"https://github.com/user501254/TouchpadIndicator#touchpad-indicator"
+"\">Github</a> for reporting bugs and feature requests."
 msgstr ""
 "बग्स और फ़ीचर अनुरोधों की रिपोर्टिंग के लिए कृपया <a href=\"https://github.com/user501254/"
 "TouchpadIndicator#touchpad-indicator\">Github</a> का उपयोग करें।"
 
-#: Settings.ui:1252
+#: Settings.ui:1225
 msgid "Feature Request / Bug Report"
 msgstr "फ़ीचर अनुरोध / बग रिपोर्ट"
 
-#: Settings.ui:1267
+#: Settings.ui:1240
 msgid "New Issue"
 msgstr "नया मुद्दा"
 
-#: Settings.ui:1382
+#: Settings.ui:1355
 msgid "About"
 msgstr "विवरण"
 
-#: extension.js:74 extension.js:485 extension.js:489
-msgid "Touchpad Indicator"
-msgstr "टचपैड संकेतक"
-
-#: extension.js:175
+#: extension.js:177
 msgid "Touchpad"
 msgstr "टचपैड"
 
-#: extension.js:179
+#: extension.js:181
 msgid "Trackpoint"
 msgstr "ट्रैकपॉइंट"
 
-#: extension.js:183
+#: extension.js:185
 msgid "Touchscreen"
 msgstr "टचस्क्रीन"
 
-#: extension.js:187
+#: extension.js:189
 msgid "Fingertouch"
 msgstr "फिंगरटच"
 
-#: extension.js:191
+#: extension.js:193
 msgid "Pen"
 msgstr "पेन"
 
-#: extension.js:197
+#: extension.js:199
 msgid "Mouse & Touchpad Preferences"
 msgstr "माउस व टचपैड की पूर्ववृत्ति"
 
-#: extension.js:199
+#: extension.js:201
 msgid "Indicator Preferences"
 msgstr "संकेतक की पूर्ववृत्ति"
 
-#: extension.js:486
+#: extension.js:488 extension.js:492
+msgid "Touchpad Indicator"
+msgstr "टचपैड संकेतक"
+
+#: extension.js:489
 msgid "Enabled"
 msgstr "सक्षम है"
 
-#: extension.js:490
+#: extension.js:493
 msgid "Disabled"
 msgstr "अक्षम है"
+
+#~ msgid ""
+#~ "These details are a <i>snapshot</i> of the system prior to opening this preference "
+#~ "window. Any setting changes made in current window session will not refelct above but "
+#~ "will be applied."
+#~ msgstr ""
+#~ "ये विवरण इस वरीयता विंडो को खोलने से पहले सिस्टम का एक <i>स्नैपशॉट</i> हैं। वर्तमान विंडो सत्र में किए "
+#~ "गए कोई भी सेटिंग परिवर्तन ऊपर से रिफलेक्ट नहीं होंगे पर लागू किए जाएंगे।"

@@ -61,7 +61,7 @@ var Settings = class TouchpadIndicatorSettings {
         this._populateDebugTab(settings, synclient, xinput);
         this._populateAboutTab();
 
-        this._bindSettings(synclient, xinput);
+        this._bindSettings(settings, synclient, xinput);
 
         // Set a reasonable initial window height
         this.widget.connect('realize', () => {
@@ -70,7 +70,13 @@ var Settings = class TouchpadIndicatorSettings {
         });
     }
 
-    _bindSettings(synclient, xinput) {
+    _bindSettings(settings, synclient, xinput) {
+        // repopulate debug tab on notebook page switch
+        this._builder.get_object('ti_notebook').connect('switch-page',
+            () => {
+                this._populateDebugTab(settings, synclient, xinput);
+            });
+
         // on General tab
         this._settings.bind('switchmethod',
             this._builder.get_object('switchmethod_combo'),
@@ -102,10 +108,8 @@ var Settings = class TouchpadIndicatorSettings {
                 synclient._enable();
                 xinput._enableAll();
 
-                this._builder.get_object('switchmethod_combo').set_active(0);
                 this._builder.get_object('reset_button').set_sensitive(false);
-            }
-        );
+            });
 
         // on Debug tab
         this._settings.bind('debug',
@@ -123,15 +127,24 @@ var Settings = class TouchpadIndicatorSettings {
                 let state = !this._builder.get_object('debug_switch').get_state();
                 this._builder.get_object('debug_to_file_checkbox').set_visible(state);
                 this._builder.get_object('debug_to_file_checkbox').set_active(state);
-                this._builder.get_object('log_scrolled_window').set_visible(state);
             });
+
+        this._builder.get_object('debug_to_file_checkbox').connect('toggled',
+            () => {
+                let state = this._builder.get_object('debug_to_file_checkbox').get_active();
+                this._builder.get_object('log_scrolled_window').set_visible(state);
+                this._builder.get_object('log_text_view').set_visible(state);
+            });
+
+        this._watchLogFile = Lib.watchLogFile();
+        this._watchLogFileSignal = this._watchLogFile.connect('changed',
+            this._updateLogView.bind(this));
 
         // on About tab
         this._builder.get_object('issue_button').connect('clicked',
             () => {
                 Lib.executeCmdAsync(`xdg-open ${Me.metadata.repository}/issues/new`);
-            }
-        );
+            });
     }
 
     _populateGeneralTab(synclient, xinput) {
@@ -181,18 +194,30 @@ var Settings = class TouchpadIndicatorSettings {
             this._builder.get_object('xinput').set_label(xinputVersion);
         }
 
-        if (this._settings.get_boolean('debug')) {
+        let debug = this._settings.get_boolean('debug');
+        let debugToFile = this._settings.get_boolean('debug-to-file');
+
+        if (debug) {
             this._builder.get_object('debug_to_file_checkbox').set_visible(true);
             this._builder.get_object('debug_to_file_checkbox').set_active(
-                this._settings.get_boolean('debug-to-file'));
-            // TODO: Read logs on set intervals and update buffer
-            this._builder.get_object('log_text_buffer').set_text(Lib.readLog()[1], -1);
-            this._builder.get_object('log_text_view').scroll_to_mark(
-                this._builder.get_object('log_text_buffer').get_insert(),
-                0.0, true, 0.5, 1
-            );
-            this._builder.get_object('log_scrolled_window').set_visible(true);
+                debugToFile);
+            this._builder.get_object('log_scrolled_window').set_visible(
+                debugToFile);
+            this._builder.get_object('log_text_view').set_visible(
+                debugToFile);
+
+            if (debugToFile) {
+                this._updateLogView();
+            }
         }
+    }
+
+    _updateLogView() {
+        this._builder.get_object('log_text_buffer').set_text(Lib.readLog()[1], -1);
+        this._builder.get_object('log_text_view').scroll_to_iter(
+            this._builder.get_object('log_text_buffer').get_end_iter(),
+            0.0, true, 0.5, 1
+        );
     }
 
     _populateAboutTab() {

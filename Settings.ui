@@ -610,7 +610,6 @@ Author: Ashesh Singh
                         <property name="margin_right">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
-                        <property name="column_spacing">2</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
@@ -841,34 +840,6 @@ Author: Ashesh Singh
                             <property name="width">2</property>
                           </packing>
                         </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_top">12</property>
-                            <property name="label" translatable="yes">These details are a &lt;i&gt;snapshot&lt;/i&gt; of the system prior to opening this preference window. Any setting changes made in current window session will not refelct above but will be applied.</property>
-                            <property name="use_markup">True</property>
-                            <property name="wrap">True</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="valign">start</property>
-                            <property name="margin_top">6</property>
-                            <property name="icon_name">dialog-information</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
                       </object>
                     </child>
                   </object>
@@ -925,7 +896,6 @@ Author: Ashesh Singh
                         <property name="margin_right">12</property>
                         <property name="margin_top">12</property>
                         <property name="margin_bottom">12</property>
-                        <property name="column_spacing">2</property>
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="visible">True</property>
@@ -968,6 +938,7 @@ Author: Ashesh Singh
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="margin_top">6</property>
+                                    <property name="margin_bottom">6</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
@@ -1020,11 +991,11 @@ Author: Ashesh Singh
                           <object class="GtkScrolledWindow" id="log_scrolled_window">
                             <property name="height_request">150</property>
                             <property name="can_focus">True</property>
+                            <property name="margin_bottom">12</property>
                             <property name="hexpand">True</property>
                             <property name="shadow_type">in</property>
                             <child>
                               <object class="GtkTextView" id="log_text_view">
-                                <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="editable">False</property>
                                 <property name="buffer">log_text_buffer</property>
@@ -1045,7 +1016,6 @@ Author: Ashesh Singh
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
                             <property name="valign">start</property>
-                            <property name="margin_top">6</property>
                             <property name="icon_name">dialog-information</property>
                           </object>
                           <packing>
@@ -1057,10 +1027,12 @@ Author: Ashesh Singh
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="margin_top">12</property>
+                            <property name="margin_left">8</property>
+                            <property name="hexpand">True</property>
                             <property name="label" translatable="yes">Please note that logging is resource intensive and can slow down performance. Keep logging disabled when not required.</property>
                             <property name="use_markup">True</property>
                             <property name="wrap">True</property>
+                            <property name="xalign">0</property>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1157,7 +1129,8 @@ Author: Ashesh Singh
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="margin_bottom">12</property>
+                            <property name="margin_top">6</property>
+                            <property name="margin_bottom">6</property>
                             <property name="label" translatable="yes">Automatically disable other pointing devices when an external mouse is plugged in. Optionally, switch the touchpad, trackpoint, fingertouch, touchscreen or a pen device on and off easily from the top panel.
 
 This a fork of orangeshirt's '&lt;a href="https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator"&gt;gnome-shell-extension-touchpad-indicator&lt;/a&gt;'.</property>
@@ -1189,7 +1162,8 @@ This a fork of orangeshirt's '&lt;a href="https://github.com/orangeshirt/gnome-s
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="margin_bottom">12</property>
+                            <property name="margin_top">6</property>
+                            <property name="margin_bottom">6</property>
                             <property name="label" translatable="yes">Touchpad management GNOME Shell Extension</property>
                             <property name="justify">center</property>
                             <property name="wrap">True</property>
