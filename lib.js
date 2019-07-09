@@ -61,8 +61,9 @@ function createLogFile(filepath) {
     filepath = (filepath !== undefined) ? filepath : LOG_FILEPATH;
     try {
         let file = Gio.File.new_for_path(filepath);
+        let header = `${filepath}\n`;
         if (GLib.mkdir_with_parents(file.get_parent().get_path(), PERMISSIONS_MODE) === 0) {
-            isSuccess = file.replace_contents('', null, false,
+            isSuccess = file.replace_contents(header, null, false,
                 Gio.FileCreateFlags.REPLACE_DESTINATION, null)[0];
         }
         return isSuccess;
