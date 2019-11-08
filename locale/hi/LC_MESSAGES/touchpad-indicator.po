@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Touchpad Indicator\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-08 22:35+0530\n"
-"PO-Revision-Date: 2019-07-08 22:36+0530\n"
+"POT-Creation-Date: 2019-11-07 21:10-0600\n"
+"PO-Revision-Date: 2019-11-07 21:10-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 "Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: ../../..\n"
@@ -40,8 +40,8 @@ msgid "Show Icon"
 msgstr "आइकॉन दिखाओ"
 
 #: Settings.ui:195
-msgid "If enabled, symbolic icon is shown in top panel."
-msgstr "यदि सक्षम है, तो प्रतीकात्मक आइकन शीर्ष पैनल में दिखाया गया है।"
+msgid "If enabled, a persistent symbolic icon is shown in panel."
+msgstr "यदि सक्षम है, तो नित्य प्रतीकात्मक आइकन पैनल में दिखाई देगा।"
 
 #: Settings.ui:225
 msgid "Basic Settings"
@@ -166,34 +166,6 @@ msgstr "नया मुद्दा"
 msgid "About"
 msgstr "विवरण"
 
-#: extension.js:177
-msgid "Touchpad"
-msgstr "टचपैड"
-
-#: extension.js:181
-msgid "Trackpoint"
-msgstr "ट्रैकपॉइंट"
-
-#: extension.js:185
-msgid "Touchscreen"
-msgstr "टचस्क्रीन"
-
-#: extension.js:189
-msgid "Fingertouch"
-msgstr "फिंगरटच"
-
-#: extension.js:193
-msgid "Pen"
-msgstr "पेन"
-
-#: extension.js:199
-msgid "Mouse & Touchpad Preferences"
-msgstr "माउस व टचपैड की पूर्ववृत्ति"
-
-#: extension.js:201
-msgid "Indicator Preferences"
-msgstr "संकेतक की पूर्ववृत्ति"
-
 #: extension.js:488 extension.js:492
 msgid "Touchpad Indicator"
 msgstr "टचपैड संकेतक"
@@ -205,6 +177,27 @@ msgstr "सक्षम है"
 #: extension.js:493
 msgid "Disabled"
 msgstr "अक्षम है"
+
+#~ msgid "Touchpad"
+#~ msgstr "टचपैड"
+
+#~ msgid "Trackpoint"
+#~ msgstr "ट्रैकपॉइंट"
+
+#~ msgid "Touchscreen"
+#~ msgstr "टचस्क्रीन"
+
+#~ msgid "Fingertouch"
+#~ msgstr "फिंगरटच"
+
+#~ msgid "Pen"
+#~ msgstr "पेन"
+
+#~ msgid "Mouse & Touchpad Preferences"
+#~ msgstr "माउस व टचपैड की पूर्ववृत्ति"
+
+#~ msgid "Indicator Preferences"
+#~ msgstr "संकेतक की पूर्ववृत्ति"
 
 #~ msgid ""
 #~ "These details are a <i>snapshot</i> of the system prior to opening this preference "

@@ -192,7 +192,7 @@ Author: Ashesh Singh
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
-                            <property name="label" translatable="yes">If enabled, symbolic icon is shown in top panel.</property>
+                            <property name="label" translatable="yes">If enabled, a persistent symbolic icon is shown in panel.</property>
                             <property name="wrap">True</property>
                             <property name="xalign">0</property>
                             <style>

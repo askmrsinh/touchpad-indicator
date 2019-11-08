@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Touchpad Indicator\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-08 22:45+0530\n"
+"POT-Creation-Date: 2019-11-07 21:05-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: Settings.ui\n"
 "X-Poedit-SearchPath-1: prefs.js\n"
@@ -38,7 +38,7 @@ msgid "Show Icon"
 msgstr ""
 
 #: Settings.ui:195
-msgid "If enabled, symbolic icon is shown in top panel."
+msgid "If enabled, a persistent symbolic icon is shown in panel."
 msgstr ""
 
 #: Settings.ui:225
@@ -142,34 +142,6 @@ msgstr ""
 
 #: Settings.ui:1355
 msgid "About"
-msgstr ""
-
-#: extension.js:177
-msgid "Touchpad"
-msgstr ""
-
-#: extension.js:181
-msgid "Trackpoint"
-msgstr ""
-
-#: extension.js:185
-msgid "Touchscreen"
-msgstr ""
-
-#: extension.js:189
-msgid "Fingertouch"
-msgstr ""
-
-#: extension.js:193
-msgid "Pen"
-msgstr ""
-
-#: extension.js:199
-msgid "Mouse & Touchpad Preferences"
-msgstr ""
-
-#: extension.js:201
-msgid "Indicator Preferences"
 msgstr ""
 
 #: extension.js:488 extension.js:492

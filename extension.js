@@ -120,7 +120,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.synclient = new Synclient.Synclient();
         if (this.synclient.isUsable !== true &&
             this._switchMethod === Lib.METHOD.SYNCLIENT) {
-            logging('_init(): Can`t use Synclient, defaulting to GSettings');
+            logging('_init(): Can\'t use Synclient, defaulting to GSettings');
             this._extSettings.set_enum(KEY_SWCH_METHOD, Lib.METHOD.GSETTINGS);
             this._switchMethodChanged = true;
         }
@@ -129,7 +129,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.xinput = new XInput.XInput();
         if (this.xinput.isUsable !== true &&
             this._switchMethod === Lib.METHOD.XINPUT) {
-            logging('_init(): Can`t use Xinput, defaulting to GSettings');
+            logging('_init(): Can\'t use Xinput, defaulting to GSettings');
             this._extSettings.set_enum(KEY_SWCH_METHOD, Lib.METHOD.GSETTINGS);
             this._extSettings.set_boolean('autoswitch-trackpoint', false);
             this._switchMethodChanged = true;
@@ -455,7 +455,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
                 this.xinput._enableByType('touchpad');
                 this.synclient._enable();
             }
-            logging('_onsetSendEvents(...): set touchpad-enabled` to true');
+            logging('_onsetSendEvents(...): set `touchpad-enabled` to true');
             this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
         }
     }
