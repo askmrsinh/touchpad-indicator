@@ -51,6 +51,7 @@ const KEY_TPT_ENABLED = 'trackpoint-enabled';
 const KEY_TSN_ENABLED = 'touchscreen-enabled';
 const KEY_FTH_ENABLED = 'fingertouch-enabled';
 const KEY_PEN_ENABLED = 'pen-enabled';
+const KEY_MOUSECOUNT  = 'mouse-count';
 
 //icons
 const ICON_ENABLED = 'input-touchpad-symbolic';
@@ -546,14 +547,16 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             logging(`_onMouseDevicePlugged(${eventType}) - mouseCount is ${mouseCount}`);
 
             // no mouse device(s) is/are plugged in
-            if (eventType === 2 && mouseCount === 0 &&
+            if (eventType === 2 && 
+                mouseCount <= this._extSettings.get_int(KEY_MOUSECOUNT) &&
                 !this._extSettings.get_boolean(KEY_TPD_ENABLED)) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, true);
                 this._makeNotification('Touchpad');
                 return;
             }
             // mouse device(s) is/are plugged in
-            if (eventType === 3 && mouseCount !== 0 &&
+            if (eventType === 3 && 
+                mouseCount > this._extSettings.get_int(KEY_MOUSECOUNT) &&
                 this._extSettings.get_boolean(KEY_TPD_ENABLED)) {
                 this._extSettings.set_boolean(KEY_TPD_ENABLED, false);
                 this._makeNotification('Touchpad');
