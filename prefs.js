@@ -107,7 +107,7 @@ var Settings = class TouchpadIndicatorSettings {
                 let mouseCount = mouseDevices.length;
 
                 this._settings.set_int('mouse-count', mouseCount);
-                        });
+            });
         
         this._builder.get_object('reset_button').connect('clicked',
             () => {
