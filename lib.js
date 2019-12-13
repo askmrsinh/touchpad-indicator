@@ -49,7 +49,9 @@ var ALL_TYPES = {
     'pen': PENS,
     'other': OTHERS
 };
+// eslint-disable-next-line no-unused-vars
 var ALL_TOUCHPADS = TOUCHPADS.slice();
+// eslint-disable-next-line no-unused-vars
 var ALL_OTHERS = OTHERS.slice();
 
 // Methods to enable or disable the touchpad
@@ -119,6 +121,10 @@ function executeCmdAsync(command) {
     }
 }
 
+/**
+ * @param {string} command - The command to execute.
+ * @return {array} Executed command success state and output if any.
+ */
 function executeCmdSync(command) {
     let [isSuccess, stdOut] = [false, ''];
     try {
@@ -126,7 +132,7 @@ function executeCmdSync(command) {
         return [isSuccess, ByteArray.toString(stdOut).trim()];
     } catch (err) {
         logger(err.message.toString());
-        return false;
+        return [false, undefined];
     }
 }
 
