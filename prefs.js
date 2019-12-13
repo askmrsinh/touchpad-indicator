@@ -98,6 +98,17 @@ var Settings = class TouchpadIndicatorSettings {
             'active',
             Gio.SettingsBindFlags.DEFAULT);
 
+        this._builder.get_object('calibrate_button').connect('clicked',
+            () => {
+
+                // Grab number of mouse devices and set it as the new extension value
+                let pointingDevices = Lib.listPointingDevices()[1];
+                let mouseDevices = pointingDevices.filter(p => p.type === 'mouse');
+                let mouseCount = mouseDevices.length;
+
+                this._settings.set_int('mouse-count', mouseCount);
+            });
+        
         this._builder.get_object('reset_button').connect('clicked',
             () => {
                 let keys = this._settings.list_keys();
