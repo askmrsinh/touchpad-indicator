@@ -35,12 +35,20 @@ function logging(event) {
 var XInput = class XInput {
     constructor() {
         this._init();
+        this.isUsable = this._isUsable();
     }
 
     _init() {
         logging('_init()');
-        this.pointingDevices = this._listPointingDevices()[1];
-        this.isUsable = this._isUsable();
+        this.pointingDevices = [];
+
+        const [ok, pointingDevices] = this._listPointingDevices();
+        if (!ok) {
+            logging(pointingDevices);
+            return;
+        }
+
+        this.pointingDevices = pointingDevices;
     }
 
     _isUsable() {
