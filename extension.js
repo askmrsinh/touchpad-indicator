@@ -60,6 +60,7 @@ const NON_TPD_SET = [KEY_PEN_ENABLED, KEY_FTH_ENABLED, KEY_TSN_ENABLED, KEY_TPT_
 
 //localization
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
+// eslint-disable-next-line no-redeclare
 const _ = Gettext.gettext;
 
 function logging(event) {
