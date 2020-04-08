@@ -141,7 +141,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         }
 
         if (this._switchMethod !== Lib.METHOD.XINPUT) {
-            this.xinput._enableAll();
+            this.xinput._enableByType("mouse");
         }
 
         if (this._switchMethod !== Lib.METHOD.GSETTINGS) {
