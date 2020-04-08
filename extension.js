@@ -107,6 +107,11 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
             this._logSKeyChange.bind(this));
 
         logging('_init()');
+
+        // Retrive all pointing device handlers
+        this.pointingDevices = Lib.listPointingDevices()[1];
+        logging(`_init(): Pointing devices are ${JSON.stringify(this.pointingDevices)}`);
+
         // TODO: Let user set program start touchpad state
         //       None, Enabled, Disabled
 
@@ -539,10 +544,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         // TODO: Consider autoswitch-* key was set to 'false' while touchpad
         //       is disabled and then user unplugs the mouse.
         if (this._extSettings.get_boolean('autoswitch-touchpad')) {
-            let pointingDevices = Lib.listPointingDevices()[1];
-            let mouseDevices = pointingDevices.filter(p => p.type === 'mouse');
+            let mouseDevices = this.pointingDevices.filter(p => p.type === 'mouse');
             let mouseCount = mouseDevices.length;
-
+            logging(`_onMouseDevicePlugged(${eventType}) - mouseDevices are ${JSON.stringify(mouseDevices)}`);
             logging(`_onMouseDevicePlugged(${eventType}) - mouseCount is ${mouseCount}`);
 
             // no mouse device(s) is/are plugged in

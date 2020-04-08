@@ -157,6 +157,7 @@ function makePointingDevice(pointingDeviceLines) {
                 break;
             }
         }
+        logger(JSON.stringify(pointingDevice));
         return pointingDevice;
     }
 }
