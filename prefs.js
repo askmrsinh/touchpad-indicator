@@ -148,15 +148,15 @@ var Settings = class TouchpadIndicatorSettings {
     }
 
     _populateGeneralTab(synclient, xinput) {
-        if (synclient.isUsable !== true) {
-            this._builder.get_object('switchmethod_combo').remove(
-                Lib.METHOD.SYNCLIENT
-            );
-        }
-
         if (xinput.isUsable !== true) {
             this._builder.get_object('switchmethod_combo').remove(
                 Lib.METHOD.XINPUT
+            );
+        }
+
+        if (synclient.isUsable !== true) {
+            this._builder.get_object('switchmethod_combo').remove(
+                Lib.METHOD.SYNCLIENT
             );
         }
 
