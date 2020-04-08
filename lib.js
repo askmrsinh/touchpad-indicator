@@ -34,6 +34,9 @@ const LOG_PREFIX = `[${Me.uuid}] `;
 var DEBUG = false;
 var DEBUG_TO_FILE = false;
 
+//Session Type
+const SESSION_TYPE = GLib.getenv('XDG_SESSION_TYPE');
+
 // Possible Devices
 const TOUCHPADS = ['touchpad', 'glidepoint', 'fingersensingpad', 'bcm5974', 'trackpad', 'smartpad'];
 const TRACKPOINTS = ['trackpoint', 'accu point', 'trackstick', 'touchstyk', 'pointing stick', 'dualpoint stick'];

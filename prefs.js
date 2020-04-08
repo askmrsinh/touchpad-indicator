@@ -181,6 +181,9 @@ var Settings = class TouchpadIndicatorSettings {
         let touchpads = xinput._filterByType('touchpad').names.toString();
         this._builder.get_object('touchpads').set_label(touchpads);
 
+        let sessiontype = Lib.SESSION_TYPE;
+        this._builder.get_object('sessiontype').set_label(sessiontype);
+
         let switchmethod = this._settings.get_string('switchmethod');
         this._builder.get_object('switchmethod').set_label(switchmethod);
 

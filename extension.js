@@ -112,6 +112,12 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.pointingDevices = Lib.listPointingDevices()[1];
         logging(`_init(): Pointing devices are ${JSON.stringify(this.pointingDevices)}`);
 
+        // Current session type
+        // You may face issues using this extension under Wayland.
+        // https://github.com/user501254/TouchpadIndicator/issues/11
+        this._sessionType = Lib.SESSION_TYPE;
+        logging(`_init(): Session type is ${this._sessionType}`);
+
         // TODO: Let user set program start touchpad state
         //       None, Enabled, Disabled
 

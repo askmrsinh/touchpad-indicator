@@ -26,6 +26,9 @@
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Lib = Me.imports.lib;
 
+// Disable Xinput manually to prevent errors
+const USE_XINPUT = true;
+
 function logging(event) {
     if (Lib.DEBUG) {
         Lib.logger(`XInput.${event}`);
@@ -39,14 +42,27 @@ var XInput = class XInput {
 
     _init() {
         logging('_init()');
-        this.pointingDevices = this._listPointingDevices()[1];
         this.isUsable = this._isUsable();
+        this.pointingDevices = this._listPointingDevices()[1];
     }
 
     _isUsable() {
+        if (Lib.SESSION_TYPE.indexOf('wayland') !== -1) {
+            logging('_isUsable(): ignoring xinput on wayland');
+            return false;
+        }
+
+        if (!USE_XINPUT) {
+            logging('_isUsable(): xinput manually disabled');
+            return false;
+        }
+
         let comp = Lib.executeCmdSync('xinput --list');
-        if (comp[1]) {
-            logging('_isUsable(): xinput found and ready to use');
+        if ((comp[1] === undefined) || (comp[0] === false)) {
+            logging('_isUsable(): xinput not found');
+            return false;
+        } else if (comp[1].includes("Virtual core pointer")) {
+            logging('_isUsable(): xinput found');
             return true;
         }
 
@@ -100,10 +116,12 @@ var XInput = class XInput {
     }
 
     _enableAll() {
-        logging('_enableAll()');
-        for (let i = 0; i < this.pointingDevices.length; ++i) {
-            let id = this.pointingDevices[i].id;
-            Lib.executeCmdAsync(`xinput set-prop ${id} "Device Enabled" 1`);
+        if (this.isUsable) {
+            logging('_enableAll()');
+            for (let i = 0; i < this.pointingDevices.length; ++i) {
+                let id = this.pointingDevices[i].id;
+                Lib.executeCmdAsync(`xinput set-prop ${id} "Device Enabled" 1`);
+            }
         }
     }
 
@@ -127,16 +145,20 @@ var XInput = class XInput {
     }
 
     _enable(ids) {
-        logging(`_enable(${ids})`);
-        for (let i = 0; i < ids.length; ++i) {
-            Lib.executeCmdAsync(`xinput set-prop ${ids[i]} "Device Enabled" 1`);
+        if (this.isUsable) {
+            logging(`_enable(${ids})`);
+            for (let i = 0; i < ids.length; ++i) {
+                Lib.executeCmdAsync(`xinput set-prop ${ids[i]} "Device Enabled" 1`);
+            }
         }
     }
 
     _disable(ids) {
-        logging(`_disable(${ids})`);
-        for (let i = 0; i < ids.length; ++i) {
-            Lib.executeCmdAsync(`xinput set-prop ${ids[i]} "Device Enabled" 0`);
+        if (this.isUsable) {
+            logging(`_disable(${ids})`);
+            for (let i = 0; i < ids.length; ++i) {
+                Lib.executeCmdAsync(`xinput set-prop ${ids[i]} "Device Enabled" 0`);
+            }
         }
     }
 
@@ -144,14 +166,18 @@ var XInput = class XInput {
         let ids = [];
         let names = [];
         let drivers = [];
-        let filteredPointingDevices = this.pointingDevices.filter((d) => {
-            return (d.type === deviceType);
-        });
-        for (let i = 0; i < filteredPointingDevices.length; i++) {
-            ids.push(filteredPointingDevices[i].id);
-            names.push(filteredPointingDevices[i].name);
-            drivers.push(filteredPointingDevices[i].driver);
+
+        if (this.isUsable) {
+            let filteredPointingDevices = this.pointingDevices.filter((d) => {
+                return (d.type === deviceType);
+            });
+            for (let i = 0; i < filteredPointingDevices.length; i++) {
+                ids.push(filteredPointingDevices[i].id);
+                names.push(filteredPointingDevices[i].name);
+                drivers.push(filteredPointingDevices[i].driver);
+            }
         }
+
         return { 'ids': ids, 'names': names, 'drivers': drivers };
     }
 

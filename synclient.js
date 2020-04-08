@@ -42,25 +42,30 @@ var Synclient = class Synclient {
 
     _init() {
         logging('_init()');
-        this.tpdOff = false;
         this.isUsable = this._isUsable();
+        this.tpdOff = false;
     }
 
     _isUsable() {
+        if (Lib.SESSION_TYPE.indexOf('wayland') !== -1) {
+            logging('_isUsable(): ignoring synclient on wayland');
+            return false;
+        }
+
         if (!USE_SYNCLIENT) {
             logging('_isUsable(): synclient manually disabled');
             return false;
         }
 
         let comp = Lib.executeCmdSync('synclient -l');
-        if ((comp[0] === false) || (comp[1] === undefined)) {
+        if ((comp[1] === undefined) || (comp[0] === false)) {
             logging('_isUsable(): synclient not found');
             return false;
         } else if (comp[1].includes("Couldn't find synaptics properties")) {
             logging('_isUsable(): no properties found');
             return false;
         } else if (comp[1].includes('TouchpadOff')) {
-            logging('_isUsable(): synclient found and ready to use');
+            logging('_isUsable(): synclient found');
             return true;
         }
 
@@ -69,15 +74,15 @@ var Synclient = class Synclient {
     }
 
     _disable() {
-        logging('_disable()');
         if (this.isUsable) {
+            logging('_disable()');
             this.tpdOff = !!Lib.executeCmdAsync('synclient TouchpadOff=1');
         }
     }
 
     _enable() {
-        logging('_enable()');
         if (this.isUsable) {
+            logging('_enable()');
             this.tpdOff = !!Lib.executeCmdAsync('synclient TouchpadOff=0');
         }
     }
