@@ -3,9 +3,10 @@
     "description": "Automatically disable other pointing devices when an external mouse is plugged in.",
     "uuid": "touchpad-indicator@orangeshirt",
     "shell-version": [
-        "3.32.0"
+        "3.32",
+        "3.34"
     ],
     "gettext-domain": "touchpad-indicator",
-    "url": "https://user501254.github.io/TouchpadIndicator",
+    "url": "https://github.com/user501254/TouchpadIndicator#touchpadindicator",
     "repository": "https://github.com/user501254/TouchpadIndicator"
 }
