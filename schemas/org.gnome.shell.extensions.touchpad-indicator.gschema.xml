@@ -13,6 +13,9 @@
             <default>true</default>
         </key>
         <!--  -->
+        <key type="b" name="autoswitch-trackpoint">
+            <default>true</default>
+        </key>
         <key type="b" name="autoswitch-touchpad">
             <default>true</default>
         </key>
