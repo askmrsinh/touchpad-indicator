@@ -143,7 +143,7 @@ var Settings = class TouchpadIndicatorSettings {
         // on About tab
         this._builder.get_object('issue_button').connect('clicked',
             () => {
-                Lib.executeCmdAsync(`xdg-open ${Me.metadata.repository}/issues/new`);
+                Lib.executeCmdAsync(`xdg-open ${Me.metadata.repository}/issues/new/choose`);
             });
     }
 
