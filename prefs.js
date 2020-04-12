@@ -66,7 +66,7 @@ var Settings = class TouchpadIndicatorSettings {
         // Set a reasonable initial window height
         this.widget.connect('realize', () => {
             let window = this.widget.get_toplevel();
-            window.resize(640, 550);
+            window.resize(640, 720);
         });
     }
 
