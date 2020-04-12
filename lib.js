@@ -34,9 +34,6 @@ const LOG_PREFIX = `[${Me.uuid}] `;
 var DEBUG = false;
 var DEBUG_TO_FILE = false;
 
-//Session Type
-const SESSION_TYPE = GLib.getenv('XDG_SESSION_TYPE');
-
 // Possible Devices
 const TOUCHPADS = ['touchpad', 'glidepoint', 'fingersensingpad', 'bcm5974', 'trackpad', 'smartpad'];
 const TRACKPOINTS = ['trackpoint', 'accu point', 'trackstick', 'touchstyk', 'pointing stick', 'dualpoint stick'];
@@ -57,6 +54,9 @@ var ALL_OTHERS = OTHERS.slice();
 
 // Methods to enable or disable the touchpad
 var METHOD = { GSETTINGS: 0, SYNCLIENT: 1, XINPUT: 2 };
+
+//Session Type
+var SESSION_TYPE = GLib.getenv('XDG_SESSION_TYPE');
 
 function createLogFile(filepath) {
     const PERMISSIONS_MODE = 0o755;
