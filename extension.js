@@ -110,7 +110,6 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
         // Retrive all pointing device handlers
         this.pointingDevices = Lib.listPointingDevices()[1];
-        logging(`_init(): Pointing devices are ${JSON.stringify(this.pointingDevices)}`);
 
         // Current session type
         // You may face issues using this extension under Wayland.
@@ -545,6 +544,9 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
 
     _onMouseDevicePlugged(eventType) {
         logging(`_onMouseDevicePlugged(${eventType})`);
+
+        // Retrive all pointing device handlers
+        this.pointingDevices = Lib.listPointingDevices()[1];
 
         // TODO: Check auto switch behaviour on resume from sleep, restart.
         // TODO: Consider autoswitch-* key was set to 'false' while touchpad
