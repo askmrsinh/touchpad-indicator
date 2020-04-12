@@ -546,6 +546,10 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
     _onMouseDevicePlugged(eventType) {
         logging(`_onMouseDevicePlugged(${eventType})`);
 
+        // Retrive all pointing device handlers
+        this.pointingDevices = Lib.listPointingDevices()[1];
+        logging(`_onMouseDevicePlugged(${eventType}) - Pointing devices are ${JSON.stringify(this.pointingDevices)}`);
+
         // TODO: Check auto switch behaviour on resume from sleep, restart.
         // TODO: Consider autoswitch-* key was set to 'false' while touchpad
         //       is disabled and then user unplugs the mouse.
