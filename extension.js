@@ -304,7 +304,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this._notification.connect('destroy', () => {
             this._notification = null;
         });
-        this._source.notify(this._notification);
+        this._source.showNotification(this._notification);
     }
 
     _ensureSource() {
