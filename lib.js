@@ -106,7 +106,12 @@ function logger(event) {
     // TODO: Structured logging.
     let timestamp = new Date(new Date().getTime()).toISOString();
     let message = `${timestamp} ${event}`;
-    global.log(LOG_PREFIX + message);
+
+    if (typeof global !== 'undefined') {
+        global.log(LOG_PREFIX + message);
+    } else {
+        log(LOG_PREFIX + message);
+    }
 
     if (DEBUG_TO_FILE) {
         writeLog(`${message}\n`);
