@@ -209,7 +209,7 @@ class TouchpadIndicatorButton extends PanelMenu.Button {
         this.menu.addSettingsAction(_('Mouse & Touchpad Preferences'),
             'gnome-mouse-panel.desktop');
         this.menu.addAction(_('Indicator Preferences'), () => {
-            Lib.executeCmdAsync(`gnome-shell-extension-prefs ${Me.uuid}`);
+            Lib.executeCmdAsync(`gnome-extensions prefs ${Me.uuid}`);
         });
 
         this._syncMenuVisibility();
