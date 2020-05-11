@@ -9,7 +9,7 @@ Optionally, switch the touchpad, trackpoint, fingertouch, touchscreen or a pen d
 
 ## Installation
 
-**From GNOME Shell Extension Website**
+**From GNOME Shell Extension Website** (recommended)
  1. Visit [https://extensions.gnome.org/extension/131/touchpad-indicator/](https://extensions.gnome.org/extension/131/touchpad-indicator/) in Firefox browser.
  2. Click on the switch at right side to toggle it from OFF to ON.
  3. Accept any installation prompts.
