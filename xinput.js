@@ -97,6 +97,10 @@ var XInput = class XInput {
         let pointingDevice = {};
         let id = pointingDeviceLine.split('id=')[1].split('\t')[0];
         let name = Lib.executeCmdSync(`xinput --list --name-only ${id}`)[1];
+        //Dirty fix for ELAN Touchscreen which is present in some DELL models (e.g. XPS 9500, Precision 5500)
+        if (name == 'ELAN29E2:00 04F3:29E2'){
+ 		name = name.concat(" Touchscreen");
+    	}
         for (let type in Lib.ALL_TYPES) {
             if (Lib.ALL_TYPES[type].some((t) => {
                 return (name.toLowerCase().indexOf(t) >= 0);

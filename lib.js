@@ -157,6 +157,10 @@ function makePointingDevice(pointingDeviceLines) {
         pointingDevice.name = pointingDeviceLines[1].split('"')[1];
         pointingDevice.phys = pointingDeviceLines[2].split('=')[1];
         pointingDevice.type = 'mouse'; //default
+	//Dirty fix for ELAN Touchscreen which is present in some DELL models (e.g. XPS 9500, Precision 5500)
+    	if (pointingDevice.name == 'ELAN29E2:00 04F3:29E2'){
+ 		pointingDevice.name = pointingDevice.name.concat(" Touchscreen");
+    	}
         for (let type in ALL_TYPES) {
             if (ALL_TYPES[type].some((t) => {
                 return (pointingDevice.name.toLowerCase().indexOf(t) >= 0);
