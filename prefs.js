@@ -55,7 +55,7 @@ var Settings = class TouchpadIndicatorSettings {
             hscrollbar_policy: Gtk.PolicyType.NEVER
         });
         this._notebook = this._builder.get_object('ti_notebook');
-        this.widget.add(this._notebook);
+        this.widget.set_child(this._notebook);
 
         this._populateGeneralTab(synclient, xinput);
         this._populateDebugTab(settings, synclient, xinput);
@@ -63,11 +63,8 @@ var Settings = class TouchpadIndicatorSettings {
 
         this._bindSettings(settings, synclient, xinput);
 
-        // Set a reasonable initial window height
-        this.widget.connect('realize', () => {
-            let window = this.widget.get_toplevel();
-            window.resize(640, 720);
-        });
+        // Set a reasonable minimal window height
+        this.widget.set_size_request(640, 720);
     }
 
     _bindSettings(settings, synclient, xinput) {
