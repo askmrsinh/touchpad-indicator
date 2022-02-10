@@ -67,7 +67,7 @@ Author: Ashesh Singh
                             <child>
                               <object class="GtkLabel">
                                 <property name="hexpand">1</property>
-                                <property name="label" translatable="yes">Backend to use for enabling or disbaling the Touchpad.</property>
+                                <property name="label" translatable="yes">Backend to use for enabling or disabling the Touchpad.</property>
                                 <property name="wrap">1</property>
                                 <property name="xalign">0</property>
                                 <style>
@@ -320,7 +320,7 @@ Author: Ashesh Singh
                               <object class="GtkLabel">
                                 <property name="halign">start</property>
                                 <property name="hexpand">1</property>
-                                <property name="label" translatable="yes">Kebinding to force toggle the touchpad</property>
+                                <property name="label" translatable="yes">Keybinding to force toggle the touchpad</property>
                                 <layout>
                                   <property name="column">0</property>
                                   <property name="row">0</property>
@@ -511,7 +511,7 @@ Author: Ashesh Singh
                                       <object class="GtkLabel">
                                         <property name="halign">end</property>
                                         <property name="hexpand">1</property>
-                                        <property name="label">xinpt:</property>
+                                        <property name="label">xinput:</property>
                                         <property name="selectable">1</property>
                                         <layout>
                                           <property name="column">0</property>
@@ -894,7 +894,8 @@ Author: Ashesh Singh
                               <object class="GtkLabel">
                                 <property name="margin_top">6</property>
                                 <property name="margin_bottom">6</property>
-                                <property name="label" translatable="yes">Automatically disable other pointing devices when an external mouse is plugged in. Optionally, switch the touchpad, trackpoint, fingertouch, touchscreen or a pen device on and off easily from the top panel.\nThis a fork of orangeshirt&apos;s &apos;&lt;a href=&quot;https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator&quot;&gt;gnome-shell-extension-touchpad-indicator&lt;/a&gt;&apos;.</property>
+                                <property name="label" translatable="yes">Automatically disable other pointing devices when an external mouse is plugged in. Optionally, switch the touchpad, trackpoint, fingertouch, touchscreen or a pen device on and off easily from the top panel.
+This a fork of orangeshirt&apos;s &apos;&lt;a href=&quot;https://github.com/orangeshirt/gnome-shell-extension-touchpad-indicator&quot;&gt;gnome-shell-extension-touchpad-indicator&lt;/a&gt;&apos;.</property>
                                 <property name="use_markup">1</property>
                                 <property name="justify">center</property>
                                 <property name="wrap">1</property>
@@ -1038,7 +1039,8 @@ Author: Ashesh Singh
                           <object class="GtkLabel">
                             <property name="focusable">1</property>
                             <property name="valign">end</property>
-                            <property name="label">&lt;span size=&quot;small&quot;&gt;This program comes with ABSOLUTELY NO WARRANTY.See the &lt;a href=&quot;https://www.gnu.org/licenses/old-licenses/gpl-2.0.html&quot;&gt;GNU General Public License, version 2 or later&lt;/a&gt; for details.&lt;/span&gt;</property>
+                            <property name="label">&lt;span size=&quot;small&quot;&gt;This program comes with ABSOLUTELY NO WARRANTY.
+See the &lt;a href=&quot;https://www.gnu.org/licenses/old-licenses/gpl-2.0.html&quot;&gt;GNU General Public License, version 2 or later&lt;/a&gt; for details.&lt;/span&gt;</property>
                             <property name="use_markup">1</property>
                             <property name="justify">center</property>
                             <property name="wrap">1</property>
