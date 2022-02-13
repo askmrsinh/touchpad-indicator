@@ -43,6 +43,9 @@ var XInput = class XInput {
     _init() {
         logging('_init()');
         this.isUsable = this._isUsable();
+        if (!this.isUsable){
+            return;
+        }
         this.pointingDevices = this._listPointingDevices()[1];
     }
 
