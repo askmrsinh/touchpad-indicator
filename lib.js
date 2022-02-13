@@ -153,9 +153,22 @@ function makePointingDevice(pointingDeviceLines) {
     //assuming that N: & P: always appear at lines 2 and 3 respectively
     if (pointingDeviceLines[1].startsWith('N: Name=') &&
         pointingDeviceLines[2].startsWith('P: Phys=')) {
+
+        let name = pointingDeviceLines[1].split('"')[1];
+        let phys = pointingDeviceLines[2].split('=')[1];
+
+        // Ignore i2c mouse devices: they are ephemeral.
+        // See https://askubuntu.com/q/1280003
+        // WARNING: don't make check for 'touchpad' device!
+        // Related (to be tested) issues: #40, #61, #64 and maybe #67
+        // TODO: How can we check in a clean way not hardcoded?
+        if (name.toLowerCase().indexOf("mouse") !== -1 && phys.toLowerCase().startsWith("i2c")) {
+            return;
+        }
+
         let pointingDevice = {};
-        pointingDevice.name = pointingDeviceLines[1].split('"')[1];
-        pointingDevice.phys = pointingDeviceLines[2].split('=')[1];
+        pointingDevice.name = name;
+        pointingDevice.phys = phys;
         pointingDevice.type = 'mouse'; //default
         for (let type in ALL_TYPES) {
             if (ALL_TYPES[type].some((t) => {
@@ -175,7 +188,7 @@ function listPointingDevices() {
     let comp = executeCmdSync('cat /proc/bus/input/devices');
     let allDeviceChunks = comp[1].split('\n\n');
     for (let x = 0; x < allDeviceChunks.length; x++) {
-        if (allDeviceChunks[x].indexOf('mouse') !== -1) {
+        if (allDeviceChunks[x].toLowerCase().indexOf('mouse') !== -1) {
             let pointingDeviceLines = allDeviceChunks[x].split('\n');
             let pointingDevice = makePointingDevice(pointingDeviceLines);
             if (pointingDevice !== undefined) {
