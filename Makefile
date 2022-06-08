@@ -3,7 +3,7 @@ PACKAGE=touchpad-indicator
 GETTEXT_PACKAGE = $(PACKAGE)
 UUID = $(PACKAGE)@orangeshirt
 
-DOC_FILES=README.md
+DOC_FILES=README.md COPYING
 SRC_FILES=extension.js prefs.js lib.js synclient.js xinput.js Settings.ui
 MO_FILE=hi/LC_MESSAGES/$(GETTEXT_PACKAGE).mo
 SCHEMA_FILES=schemas/gschemas.compiled schemas/org.gnome.shell.extensions.touchpad-indicator.gschema.xml
