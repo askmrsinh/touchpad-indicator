@@ -38,8 +38,8 @@ var DEBUG_TO_FILE = false;
 const TOUCHPADS = ['touchpad', 'glidepoint', 'fingersensingpad', 'bcm5974', 'trackpad', 'smartpad'];
 const TRACKPOINTS = ['trackpoint', 'accu point', 'trackstick', 'touchstyk', 'pointing stick', 'dualpoint stick'];
 const TOUCHSCREENS = ['touchscreen', 'maxtouch', 'touch digitizer', 'touch system'];
-const FINGERTOUCHES = ['finger touch'];
-const PENS = ['pen stylus', 'pen eraser'];
+const FINGERTOUCHES = ['finger touch', 'finger'];
+const PENS = ['pen stylus', 'pen eraser', 'pen'];
 const OTHERS = [];
 var ALL_TYPES = {
     'touchpad': TOUCHPADS,
