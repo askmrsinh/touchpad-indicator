@@ -4,7 +4,8 @@
     "uuid": "touchpad-indicator@orangeshirt",
     "shell-version": [
         "3.38",
-        "40"
+        "40",
+        "41"
     ],
     "gettext-domain": "touchpad-indicator",
     "url": "https://github.com/user501254/TouchpadIndicator#touchpadindicator",
