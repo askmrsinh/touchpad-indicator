@@ -18,7 +18,7 @@ Optionally, switch the touchpad, trackpoint, fingertouch, touchscreen or a pen d
  1. Open a terminal and run:
     ```bash
     rm -rf ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt;
-    git clone --depth=1 "https://github.com/askmrsinh/TouchpadIndicator.git" ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt;
+    git clone --depth=1 "https://github.com/askmrsinh/touchpad-indicator.git" ~/.local/share/gnome-shell/extensions/touchpad-indicator@orangeshirt;
     ```
  2. Restart GNOME Shell by pressing `Alt+F2`, `r`, `Enter` or by Logging out and Logging in.
  3. Enable the extension in *[gnome-tweak-tool](https://wiki.gnome.org/action/show/Apps/Tweaks)*.
